@@ -1,0 +1,42 @@
+{
+    "development": {
+        "username": "root",
+        "password": "",
+        "database": "astcbusinfo",
+        "host": "127.0.0.1",
+        "dialect": "mysql",
+        "operatorsAliases": false,
+        "FILE_UPLOAD_PATH":"D:\\ADRP\\lakhimi\\backend\\image",
+        "cert": {
+			"key": "./cert/temp/key.pem",
+			"crt": "./cert/temp/cert.pem"
+		}
+    },
+    "test": {
+      "username": "",
+      "password": "",
+      "database": "",
+      "host": "localhost",
+        "dialect": "mysql",
+        "operatorsAliases": false,
+        "FILE_UPLOAD_PATH": "/home/lakhimisr/eoffice_lakhimisr_in/backend/image",
+        "cert": {
+          "key": "./cert/privkey.pem",
+			    "crt": "./cert/cert.pem"
+		}
+    },
+    "production": {
+        "username": "",
+        "password": "",
+        "database": "",
+        "host": "localhost",
+        "dialect": "mysql",
+        "operatorsAliases": false,
+        "FILE_UPLOAD_PATH": "/home/ec2-user/dohua/files",
+        "cert": {
+			"key": "./cert/example.key",
+			"crt": "./cert/skaplinkservices.com.crt",
+			"bundle": "./cert/skaplinkservices.com.ca-bundle"
+		}
+    }
+}

@@ -1,0 +1,71 @@
+<section class="container py-4">
+    <h2 class="mb-3">Find Events</h2>
+    <form class="row g-3">
+      <div class="col-md-3">
+        <label for="stateFilter" class="form-label">State</label>
+        <select class="form-select" id="stateFilter">
+          <option selected>All</option>
+          <option>Assam</option>
+          <option>Manipur</option>
+          <option>Meghalaya</option>
+          <option>Mizoram</option>
+          <option>Nagaland</option>
+          <option>Sikkim</option>
+          <option>Tripura</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="monthFilter" class="form-label">Month</label>
+        <select class="form-select" id="monthFilter">
+          <option selected>All</option>
+          <option>January</option>
+          <option>February</option>
+          <option>March</option>
+          <option>April</option>
+          <option>May</option>
+          <option>June</option>
+          <option>July</option>
+          <option>August</option>
+          <option>September</option>
+          <option>October</option>
+          <option>November</option>
+          <option>December</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label for="typeFilter" class="form-label">Type of Event</label>
+        <select class="form-select" id="typeFilter">
+          <option selected>All</option>
+          <option>Festival</option>
+          <option>Charity</option>
+          <option>Cultural</option>
+          <option>Online</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-grid align-self-end">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Map Section -->
+  <section class="container">
+    <div id="map"></div>
+  </section>
+
+  <!-- Events List Section -->
+  <section class="container">
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card event-card">
+          <img src="https://images.pexels.com/photos/2747446/pexels-photo-2747446.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200" class="card-img-top" alt="Event Flyer">
+          <div class="card-body">
+            <h5 class="card-title">Bihu Celebration</h5>
+            <p class="card-text">Date: April 14<br>Location: Guwahati, Assam<br>Type: Cultural</p>
+            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+          </div>
+        </div>
+      </div>
+      <!-- Repeat for more events -->
+    </div>
+  </section>

@@ -1,0 +1,36 @@
+<main class="container d-flex align-items-center justify-content-center my-5">
+    <div class="register-card mt-5">
+      <h3 class="text-center mb-4">Create Your Account</h3>
+      <form>
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="name" placeholder="Your full name" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+          <input type="email" class="form-control" id="email" placeholder="you@example.com" required />
+        </div>
+
+        <div class="mb-3">
+          <label for="phone" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+          <input type="tel" class="form-control" id="phone" placeholder="Enter your mobile number" required />
+        </div>
+
+        <div class="d-grid mb-3">
+          <button type="button" class="btn btn-outline-primary" onclick="sendOTP()">Send OTP</button>
+        </div>
+
+        <div class="mb-3">
+          <label for="otp" class="form-label">Enter OTP</label>
+          <input type="text" class="form-control" id="otp" placeholder="6-digit OTP" />
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary">Register</button>
+        </div>
+
+        <p class="text-center mt-3">Already have an account? <a routerLink="/login">Login</a></p>
+      </form>
+    </div>
+  </main>

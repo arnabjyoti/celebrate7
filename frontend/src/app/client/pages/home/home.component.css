@@ -1,0 +1,29 @@
+body {
+    padding-top: 80px;
+}
+
+.hero-section {
+    background-image: url('https://images.pexels.com/photos/1047442/pexels-photo-1047442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+    padding-top: 80px;
+}
+
+.hero-section .container {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.festival-gallery img {
+    border-radius: 10px;
+    height: 200px;
+    object-fit: cover;
+}
