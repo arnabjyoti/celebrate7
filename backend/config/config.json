@@ -1,12 +1,17 @@
 {
     "development": {
-        "username": "root",
-        "password": "",
-        "database": "astcbusinfo",
-        "host": "127.0.0.1",
-        "dialect": "mysql",
+      "username": "root",
+      "password": "",
+      "database": "celebrate",
+      "host": "127.0.0.1",
+      "dialect": "mysql",
+        "dialectOptions": {
+          "timezone": "local"
+        },
+        "logging": false,
+        "timezone": "+05:30",
         "operatorsAliases": false,
-        "FILE_UPLOAD_PATH":"D:\\ADRP\\lakhimi\\backend\\image",
+        "FILE_UPLOAD_PATH":"image",
         "cert": {
 			"key": "./cert/temp/key.pem",
 			"crt": "./cert/temp/cert.pem"
