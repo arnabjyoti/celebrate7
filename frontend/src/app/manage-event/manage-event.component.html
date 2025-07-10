@@ -1,0 +1,55 @@
+<div class="container">
+  <h2>Add New Event</h2>
+  <div class="col-6">
+    <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="card p-3">
+      <div class="pb-3">
+        <label for="eventName">Event Name:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="eventName"
+          name="eventName"
+          [(ngModel)]="event.eventName"
+          required
+        />
+      </div>
+
+      <div class="pb-3">
+        <label for="eventDate">Date:</label>
+        <input
+          class="form-control"
+          type="date"
+          id="eventDate"
+          name="eventDate"
+          [(ngModel)]="event.eventDate"
+          required
+        />
+      </div>
+
+      <div class="pb-3">
+        <label for="location">Location:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="location"
+          name="location"
+          [(ngModel)]="event.location"
+          required
+        />
+      </div>
+
+      <div class="pb-3">
+          <button class="btn btn-primary" type="submit" [disabled]="!eventForm.form.valid">
+              Add Event
+            </button>
+        </div>
+    </form>
+  </div>
+
+  <div *ngIf="submitted">
+    <h3>Event Added:</h3>
+    <p><strong>Name:</strong> {{ event.eventName }}</p>
+    <p><strong>Date:</strong> {{ event.eventDate }}</p>
+    <p><strong>Location:</strong> {{ event.location }}</p>
+  </div>
+</div>

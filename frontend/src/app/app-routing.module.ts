@@ -10,6 +10,7 @@ import { RegisterComponent } from './client/pages/register/register.component';
 import { EventsComponent } from './client/pages/events/events.component';
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { ManageEventComponent } from './manage-event/manage-event.component';
 const routes: Routes = [
   {
     path: '',
@@ -27,6 +28,7 @@ const routes: Routes = [
     component: AdminLayoutComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'manage-event', component: ManageEventComponent },
       // { path: 'users', component: UsersComponent },
       // { path: 'settings', component: SettingsComponent },
       // { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
