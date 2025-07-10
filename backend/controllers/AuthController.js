@@ -76,29 +76,6 @@ module.exports = {
         });
     },
 
-  getUserList(req, res){
-      let query={
-          raw: true,
-          order: [
-              ['position', 'ASC']
-            ],
-            where: {
-              role: { [Op.ne]: "head_office" }
-            }
-      }
-
-  console.log("Query is==========> ",query);
-  return usersModel
-    .findAll(query)
-    .then(user => {
-      return res.status(200).send(user);
-    })
-    .catch(error => {
-      console.log(error);
-      return res.status(400).send(error);
-    });
-
-  },
 
     
 };
