@@ -35,7 +35,7 @@ import { MatCardModule } from '@angular/material/card';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ManageEventComponent } from './manage-event/manage-event.component';
-
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -76,6 +76,8 @@ import { ManageEventComponent } from './manage-event/manage-event.component';
       preventDuplicates: true,
     }),
     BrowserAnimationsModule,
+    QuillModule.forRoot(),
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [AuthService, AuthGuardService, DatePipe],

@@ -15,6 +15,8 @@ export class ManageEventComponent {
 
 
   submitted = false;
+  content: string = '';
+
 
   onSubmit() {
     this.submitted = true;
