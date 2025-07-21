@@ -9,8 +9,14 @@ export class ManageEventComponent {
 
   event = {
     eventName: '',
+    type: '',
     eventDate: '',
-    location: ''
+    eventTime: '',
+    country: '',
+    state:'',
+    city:'',
+    fullAddress:'',
+
   };
 
 
