@@ -1,0 +1,30 @@
+<div class="event-details-container">
+    <h2>Event Details</h2>
+  
+    <div class="event-field"><strong>Event Name:</strong> {{ event?.eventName }}</div>
+    <div class="event-field"><strong>Organizer:</strong> {{ event.organizer }}</div>
+    <div class="event-field"><strong>Type:</strong> {{ event.type }}</div>
+    <div class="event-field"><strong>Date:</strong> {{ event.eventDate }}</div>
+    <div class="event-field"><strong>Time:</strong> {{ event.eventTime }}</div>
+    <div class="event-field"><strong>Country:</strong> {{ event.country }}</div>
+    <div class="event-field"><strong>State:</strong> {{ event.state }}</div>
+    <div class="event-field"><strong>City:</strong> {{ event.city }}</div>
+    <div class="event-field"><strong>Address:</strong> {{ event.fullAddress }}</div>
+    <div class="event-field"><strong>Description:</strong> <span [innerHTML]="content"></span></div>
+    
+    <div class="event-field"><strong>Status:</strong> {{ event.status }}</div>
+  
+    <div class="event-images">
+      <h3>Images</h3>
+      <div *ngIf="selectedFiles.length > 0; else noImages">
+        <div class="image-preview" *ngFor="let file of selectedFiles">
+          <img [src]="getImagePreview(file)" alt="Event Image" />
+         <!-- path: {{url}}/{{ file.path }} -->
+        </div>
+      </div>
+      <ng-template #noImages>
+        <p>No images selected.</p>
+      </ng-template>
+    </div>
+  </div>
+  

@@ -1,0 +1,174 @@
+<div class="container">
+
+  <!-- <div>
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+  </div> -->
+
+    <h2>Add New Event</h2>
+  
+    <div class="form1 card" *ngIf="activeForm === 1">
+      <div class="row">
+        <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="card p-3">
+          <div class="row">
+            <div class="col-md-12 pb-3">
+              <label for="eventName">Event Name:</label>
+              <input
+                class="form-control"
+                type="text"
+                id="eventName"
+                name="eventName"
+                [(ngModel)]="event.eventName"
+                required
+              />
+            </div>
+            <div class="col-md-12 pb-3">
+              <label for="organizer">Organizer:</label>
+              <input
+                class="form-control"
+                type="text"
+                id="organizer"
+                name="organizer"
+                [(ngModel)]="event.organizer"
+                required
+              />
+            </div>
+  
+            <div class="col-md-4 pb-3">
+              <label for="type">Type:</label>
+  
+              <select
+                name="type"
+                id="type"
+                class="form-control"
+                [(ngModel)]="event.type"
+              >
+                <option value="Festival">Festival</option>
+                <option value="Sports">Sports</option>
+                <option value="Party">Party</option>
+                <option value="Charity">Charity</option>
+                <option value="Cultural">Cultural</option>
+                <option value="Event">Event</option>
+              </select>
+            </div>
+  
+            <div class="col-md-4 pb-3">
+              <label for="eventDate">Date:</label>
+              <input
+                class="form-control"
+                type="date"
+                id="eventDate"
+                name="eventDate"
+                [(ngModel)]="event.eventDate"
+                required
+              />
+            </div>
+  
+            <div class="col-md-4 pb-3">
+              <label for="eventTime">Time:</label>
+              <input
+                class="form-control"
+                type="time"
+                id="eventTime"
+                name="eventTime"
+                [(ngModel)]="event.eventTime"
+                required
+              />
+            </div>
+  
+            <div class="col-md-4 pb-3">
+              <label for="country">Country:</label>
+              <input
+                class="form-control"
+                type="text"
+                id="country"
+                name="country"
+                [(ngModel)]="event.country"
+                required
+              />
+            </div>
+            <div class="col-md-4 pb-3">
+              <label for="state">State:</label>
+              <input
+                class="form-control"
+                type="text"
+                id="state"
+                name="state"
+                [(ngModel)]="event.state"
+                required
+              />
+            </div>
+            <div class="col-md-4 pb-3">
+              <label for="city">City:</label>
+              <input
+                class="form-control"
+                type="text"
+                id="city"
+                name="city"
+                [(ngModel)]="event.city"
+                required
+              />
+            </div>
+  
+            <div class="pb-3">
+              <label for="fullAddress">Full address:</label>
+              <input
+                class="form-control"
+                type="text"
+                id="fullAddress"
+                name="fullAddress"
+                [(ngModel)]="event.fullAddress"
+                required
+              />
+            </div>
+  
+            <div>
+              <label for="content">Description:</label>
+              <quill-editor [(ngModel)]="content"  name="editorContent"></quill-editor>
+              <!-- <div [innerHTML]="content"></div> -->
+            </div>
+  
+            <div class="pb-3"  *ngIf="routeName !== 'edit-event'">
+
+              <!-- [disabled]="!eventForm.form.valid" -->
+              <button class="btn btn-primary" (click)="handleNext()" type="submit">Next</button>
+            </div>
+            
+          </div>
+        </form>
+
+        <div class="pb-3" *ngIf="routeName === 'edit-event'">
+          
+          <!-- [disabled]="!eventForm.form.valid" -->
+          <button class="btn btn-primary" (click)="onUpdate()">Update event</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="form2 card" *ngIf="activeForm === 2">
+      <div class="row">
+        <form #eventForm="ngForm" class="card p-3">
+          <div class="row">
+            
+  
+            <form #eventForm="ngForm" class="card p-4">
+              <!-- Other fields -->
+              <app-file-upload (filesSelected)="onFilesReceived($event)"></app-file-upload>
+            
+              <button class="btn btn-success mt-3" type="submit" (click)="onSubmit()">Submit</button>
+            </form>
+  
+            <div class="pb-3">
+              <!-- [disabled]="!eventForm.form.valid" -->
+              <button class="btn btn-primary" (click)="handlePrevious()" type="submit">Previous</button>
+            </div>
+  
+          </div>
+  
+        </form>
+      </div>
+    </div>
+  
+  </div>
+  

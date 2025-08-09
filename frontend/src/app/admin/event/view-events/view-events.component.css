@@ -1,0 +1,10 @@
+.table-container {
+    margin: 20px;
+    overflow-x: auto;
+  }
+  
+  mat-form-field {
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  

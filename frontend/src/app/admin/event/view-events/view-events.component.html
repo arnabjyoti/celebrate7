@@ -1,0 +1,74 @@
+<div class="table-container">
+  <table class="table table-sm">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Event Name</th>
+        <th scope="col">Organizer</th>
+        <th scope="col">Date</th>
+        <th scope="col">City</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let event of dataSource; let i = index">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ event.eventName }}</td>
+        <td>{{ event.organizer }}</td>
+        <td>{{ event.eventDate }}</td>
+        <td>{{ event.city }}</td>
+        <td>{{ event.status }}</td>
+        <td>
+          <!-- Example Action Buttons -->
+          <button class="btn btn-primary btn-sm" (click)="viewEvent(event)">
+            View
+          </button>
+          <button class="btn btn-primary btn-sm" (click)="editEvent(event)">
+            Edit
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="deleteEvent(event)">
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <nav aria-label="Page navigation" *ngIf="totalPages > 1">
+    <ul class="pagination justify-content-center">
+      <!-- Previous -->
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <div class="page-link" (click)="changePage(currentPage - 1)" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </div>
+      </li>
+  
+      <!-- Page Numbers -->
+      <li
+        class="page-item"
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        [class.active]="currentPage === i + 1"
+      >
+        <div class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</div>
+      </li>
+  
+      <!-- Next -->
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <div class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </div>
+      </li>
+    </ul>
+  </nav>
+  
+
+
+  <div>
+    Total Events: {{ totalItems }}
+  </div>
+
+
+
+
+</div>

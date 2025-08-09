@@ -34,8 +34,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { ManageEventComponent } from './manage-event/manage-event.component';
 import { QuillModule } from 'ngx-quill';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { AddEventComponent } from './admin/event/add-event/add-event.component';
+import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
+import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +55,10 @@ import { QuillModule } from 'ngx-quill';
     DashboardComponent,
     RegisterComponent,
     EventsComponent,
-    ManageEventComponent,
+    FileUploadComponent,
+    AddEventComponent,
+    ViewEventsComponent,
+    EventDetailsComponent,
   ],
   imports: [
     FormsModule,
