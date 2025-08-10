@@ -27,3 +27,26 @@ body {
     height: 200px;
     object-fit: cover;
 }
+
+.hero-slider .carousel-inner {
+    max-height: 500px; /* Adjust height here */
+  }
+
+  .hero-slider .carousel-item img {
+    object-fit: cover;
+    height: 500px; /* Match this to max-height above */
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .hero-slider .carousel-item img {
+      height: 250px; /* Smaller height on mobile */
+    }
+  }
+
+  .event-card {
+  background: linear-gradient(to bottom, #fffde4, #ffeaa7);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
