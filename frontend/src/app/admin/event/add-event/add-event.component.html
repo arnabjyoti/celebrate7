@@ -1,16 +1,16 @@
 <div class="container">
-
   <!-- <div>
     <button mat-icon-button (click)="goBack()">
       <mat-icon>arrow_back</mat-icon>
     </button>
   </div> -->
 
+  <div class="card border shadow p-3">
     <h2>Add New Event</h2>
-  
-    <div class="form1 card" *ngIf="activeForm === 1">
+
+    <div class="form1" *ngIf="activeForm === 1">
       <div class="row">
-        <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="card p-3">
+        <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="">
           <div class="row">
             <div class="col-md-12 pb-3">
               <label for="eventName">Event Name:</label>
@@ -34,10 +34,10 @@
                 required
               />
             </div>
-  
+
             <div class="col-md-4 pb-3">
               <label for="type">Type:</label>
-  
+
               <select
                 name="type"
                 id="type"
@@ -52,7 +52,7 @@
                 <option value="Event">Event</option>
               </select>
             </div>
-  
+
             <div class="col-md-4 pb-3">
               <label for="eventDate">Date:</label>
               <input
@@ -64,7 +64,7 @@
                 required
               />
             </div>
-  
+
             <div class="col-md-4 pb-3">
               <label for="eventTime">Time:</label>
               <input
@@ -76,7 +76,7 @@
                 required
               />
             </div>
-  
+
             <div class="col-md-4 pb-3">
               <label for="country">Country:</label>
               <input
@@ -110,7 +110,7 @@
                 required
               />
             </div>
-  
+
             <div class="pb-3">
               <label for="fullAddress">Full address:</label>
               <input
@@ -122,53 +122,87 @@
                 required
               />
             </div>
-  
-            <div>
-              <label for="content">Description:</label>
-              <quill-editor [(ngModel)]="content"  name="editorContent"></quill-editor>
-              <!-- <div [innerHTML]="content"></div> -->
-            </div>
-  
-            <div class="pb-3"  *ngIf="routeName !== 'edit-event'">
 
-              <!-- [disabled]="!eventForm.form.valid" -->
-              <button class="btn btn-primary" (click)="handleNext()" type="submit">Next</button>
+
+            <!-- *********************************************** -->
+            <div class="col-md-12 pb-3">
+              <label for="mapSearch">Search Location on Map:</label>
+              <input
+                type="text"
+                id="mapSearch"
+                class="form-control"
+                placeholder="Search for a place"
+              />
+              <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
             </div>
             
+            <!-- *********************************************** -->
+
+            <div>
+              <label for="content">Description:</label>
+              <quill-editor
+                [(ngModel)]="content"
+                name="editorContent"
+              ></quill-editor>
+              <!-- <div [innerHTML]="content"></div> -->
+            </div>
+
+            <!-- <div class="pb-3" *ngIf="routeName !== 'edit-event'"> -->
+            <div class="pb-3">
+              <!-- [disabled]="!eventForm.form.valid" -->
+              <button
+                class="btn btn-primary"
+                (click)="handleNext()"
+                type="submit"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </form>
 
         <div class="pb-3" *ngIf="routeName === 'edit-event'">
-          
           <!-- [disabled]="!eventForm.form.valid" -->
-          <button class="btn btn-primary" (click)="onUpdate()">Update event</button>
+          <button class="btn btn-primary" (click)="onUpdate()">
+            Update event
+          </button>
         </div>
       </div>
     </div>
-  
-    <div class="form2 card" *ngIf="activeForm === 2">
+
+    <div class="form2" *ngIf="activeForm === 2">
       <div class="row">
-        <form #eventForm="ngForm" class="card p-3">
+        <form #eventForm="ngForm" class=" p-3">
           <div class="row">
-            
-  
-            <form #eventForm="ngForm" class="card p-4">
+            <form #eventForm="ngForm" class=" p-4">
               <!-- Other fields -->
-              <app-file-upload (filesSelected)="onFilesReceived($event)"></app-file-upload>
-            
-              <button class="btn btn-success mt-3" type="submit" (click)="onSubmit()">Submit</button>
+              <app-file-upload
+                (filesSelected)="onFilesReceived($event)"
+                [staticFiles]="staticFiles"
+              ></app-file-upload>
+
+              <button
+                class="btn btn-success mt-3"
+                type="submit"
+                (click)="onSubmit()"
+              >
+                Submit
+              </button>
             </form>
-  
+
             <div class="pb-3">
               <!-- [disabled]="!eventForm.form.valid" -->
-              <button class="btn btn-primary" (click)="handlePrevious()" type="submit">Previous</button>
+              <button
+                class="btn btn-primary"
+                (click)="handlePrevious()"
+                type="submit"
+              >
+                Previous
+              </button>
             </div>
-  
           </div>
-  
         </form>
       </div>
     </div>
-  
   </div>
-  
+</div>

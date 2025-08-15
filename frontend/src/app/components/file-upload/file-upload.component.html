@@ -11,7 +11,7 @@
     >
       <div class="text-center">
         <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
-        <p class="mb-0">Drag & drop images here or</p>
+        <p class="mb-0">Drag & drop images here or </p>
         <label for="fileInput" class="btn btn-outline-primary mt-2">Browse Files</label>
         <input
           type="file"
@@ -31,5 +31,20 @@
         <button class="btn btn-sm btn-danger w-100 mt-1" (click)="removeImage(i)">Remove</button>
       </div>
     </div>
+    
+    <!-- {{staticFiles}} -->
+    <!-- static images for edit  -->
+    <div *ngIf="staticFiles.length > 0" class="preview-box row">
+      <div class="col-md-3 mb-3" *ngFor="let url of staticFiles; let i = index">
+        <img [src]="envUrl+'/'+url.path" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
+        <button class="btn btn-sm btn-danger w-100 mt-1" (click)="removeImage(i)">Remove</button>
+      </div>
+    </div>
+
+
+
+
+
+
   </div>
   

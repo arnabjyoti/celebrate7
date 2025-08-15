@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
   templateUrl: './add-event.component.html',
   styleUrls: ['./add-event.component.css'],
 })
-export class AddEventComponent {
+export class AddEventComponent implements OnInit, AfterViewInit {
   constructor(
     private toastr: ToastrService,
     private http: HttpClient,
@@ -18,32 +18,14 @@ export class AddEventComponent {
     private location: Location
   ) {}
 
-  routeName: any = '';
+  routeName: string = '';
   eventId: any;
 
-  ngOnInit(): void {
-    this.eventId = this.route.snapshot.paramMap.get('id');
-    console.log('Event ID:', this.eventId);
-
-    const fullPath = this.route.snapshot.routeConfig?.path; // e.g. "edit-event/:id"
-    const mainRoute = fullPath?.split('/')[0];
-    this.routeName = mainRoute;
-
-    if (mainRoute === 'edit-event') {
-      // this.activeForm = 2;
-      this.getEventDetails(this.eventId);
-    }
-
-    // You can now fetch the event with this ID
-    // this.fetchEvent(this.eventId);
-  }
-
   selectedFiles: File[] = [];
-
-  onFilesReceived(files: File[]) {
-    this.selectedFiles = files;
-    console.log('Received files:', this.selectedFiles);
-  }
+  staticFiles: any = 'abcd';
+  submitted = false;
+  content: string = '';
+  activeForm = 1;
 
   event = {
     eventName: '',
@@ -59,10 +41,93 @@ export class AddEventComponent {
     status: 'draft',
   };
 
-  activeForm = 1;
+  ngOnInit(): void {
+    this.eventId = this.route.snapshot.paramMap.get('id');
+    const fullPath = this.route.snapshot.routeConfig?.path;
+    const mainRoute = fullPath?.split('/')[0];
+    this.routeName = mainRoute || '';
 
-  submitted = false;
-  content: string = '';
+    if (this.routeName === 'edit-event') {
+      this.getEventDetails(this.eventId);
+    }
+  }
+
+  ngAfterViewInit() {
+    this.initMap();
+  }
+
+  initMap() {
+    const defaultLocation = { lat: 40.7128, lng: -74.0060 }; // Default to New York
+  
+    const map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
+      center: defaultLocation,
+      zoom: 8,
+    });
+  
+    const marker = new google.maps.Marker({
+      map,
+      position: defaultLocation,
+      draggable: true,
+    });
+  
+    // Autocomplete setup
+    const input = document.getElementById("mapSearch") as HTMLInputElement;
+    const autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.bindTo("bounds", map);
+  
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry || !place.geometry.location) return;
+  
+      const location = place.geometry.location;
+      map.setCenter(location);
+      marker.setPosition(location);
+  
+      this.updateAddressFromCoords(location.lat(), location.lng());
+    });
+  
+    // Map click listener – get location details on click
+    map.addListener("click", (e: google.maps.MapMouseEvent) => {
+      const lat = e.latLng?.lat();
+      const lng = e.latLng?.lng();
+      if (lat && lng) {
+        const clickedLatLng = new google.maps.LatLng(lat, lng);
+        marker.setPosition(clickedLatLng);
+        map.panTo(clickedLatLng);
+  
+        this.updateAddressFromCoords(lat, lng);
+      }
+    });
+  }
+  
+
+  updateAddressFromCoords(lat: number, lng: number) {
+    const geocoder = new google.maps.Geocoder();
+    const latlng = { lat, lng };
+  
+    geocoder.geocode({ location: latlng }, (results, status) => {
+      if (status === "OK" && results && results.length > 0) {
+        const components = results[0].address_components;
+        const getComponent = (type: string) =>
+          components.find((c) => c.types.includes(type))?.long_name || '';
+  
+        this.event.country = getComponent("country");
+        this.event.state = getComponent("administrative_area_level_1");
+        this.event.city = getComponent("locality") || getComponent("sublocality");
+        this.event.fullAddress = results[0].formatted_address;
+  
+        console.log('Location selected:', this.event);
+      } else {
+        console.warn('Geocoder failed:', status);
+      }
+    });
+  }
+  
+
+  onFilesReceived(files: File[]) {
+    this.selectedFiles = files;
+    console.log('Received files:', this.selectedFiles);
+  }
 
   onChange(event: any) {
     console.log('Editor changed:', event.html);
@@ -78,44 +143,27 @@ export class AddEventComponent {
 
   onSubmit() {
     this.submitted = true;
-    console.log('Event Submitted:', this.event);
-    console.log('content:', this.content);
-    console.log('Selected Files:', this.selectedFiles);
-
     this.event.description = this.content;
 
-    // You can also send it to a backend API here
     const ENDPOINT = `${environment.BASE_URL}/api/saveEvent`;
     const requestOptions = {
-      // headers: this.headers,
       method: 'post',
       data: this.event,
     };
 
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
-        console.log('Success');
-        // return callback && callback(response);
-        console.log('response here ', response);
-        // this.saveEventImg(response);
-        let eventId = response.event.id;
-        console.log('eventIdeventId ', eventId);
-
+        const eventId = response.event.id;
         this.manageImageUpload(eventId);
         this.toastr.success('Event added successfully');
       },
       (error) => {
-        // return callback && callback(error);
-        console.log('error ', error);
-      },
-      () => {
-        console.log('Observable is now completed.');
+        console.error('Submission error:', error);
       }
     );
   }
 
   manageImageUpload(eventId: any) {
-    const formData = new FormData();
     this.selectedFiles.forEach((file, index) => {
       const formData = new FormData();
       formData.append('eventId', eventId);
@@ -131,41 +179,27 @@ export class AddEventComponent {
 
     this.http.post(ENDPOINT, imgData).subscribe(
       (res: any) => {
-        // alert('Upload Successful!');
-        console.log(res);
-        // this.imagePreviews = [];
-        // this.selectedFiles = [];
+        console.log('Image upload response:', res);
       },
       (err) => {
-        console.error(err);
+        console.error('Upload failed:', err);
         alert('Upload Failed!');
       }
     );
   }
-
-  // for edit
 
   getEventDetails(id: any) {
     const ENDPOINT = `${environment.BASE_URL}/api/getEventDetails?id=${id}`;
 
     this.http.get(ENDPOINT).subscribe(
       (response: any) => {
-        console.log('Success');
-        console.log('response here ', response);
-
         this.event = response.event;
         this.content = response.event.description;
-
         this.selectedFiles = response.eventImages;
-
-        // return callback && callback(response);
+        this.staticFiles = response.eventImages;
       },
       (error) => {
-        console.log('error ', error);
-        // return callback && callback(error);
-      },
-      () => {
-        console.log('Observable is now completed.');
+        console.error('Error fetching event details:', error);
       }
     );
   }
@@ -177,30 +211,21 @@ export class AddEventComponent {
   onUpdate() {
     const ENDPOINT = `${environment.BASE_URL}/api/updateEvent`;
     const requestOptions = {
-      // headers: this.headers,
       method: 'post',
       data: this.event,
     };
 
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
-        console.log('Success');
-        // return callback && callback(response);
-        console.log('response here ', response);
         this.toastr.success('Event updated successfully');
       },
       (error) => {
-        // return callback && callback(error);
-        console.log('error ', error);
-      },
-      () => {
-        console.log('Observable is now completed.');
+        console.error('Update error:', error);
       }
     );
   }
 
   goBack() {
-    // window.history.back();
     this.location.back();
   }
 }

@@ -25,7 +25,7 @@ export class ViewEventsComponent implements OnInit {
   totalItems: number = 0;
   totalPages: number = 0;
   currentPage: number = 1;
-  perPage: number = 10;
+  perPage: number = 13;
 
   fetchEvents(): void {
 

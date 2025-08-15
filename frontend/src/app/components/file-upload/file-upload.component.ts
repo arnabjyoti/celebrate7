@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
@@ -7,10 +7,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
 })
 export class FileUploadComponent {
   @Output() filesSelected = new EventEmitter<File[]>(); // Send array to parent
+  @Input() staticFiles:any = false;
 
   previewUrls: (string | ArrayBuffer | null)[] = [];
   selectedFiles: File[] = [];
   isDragOver = false;
+
+  envUrl = environment.BASE_URL
 
   onFileSelected(event: Event) {
     const fileList = (event.target as HTMLInputElement).files;

@@ -8,3 +8,10 @@
     margin-bottom: 10px;
   }
   
+  td {
+    color: rgb(88, 86, 86);
+  }
+
+  .dropdown-item{
+    cursor: pointer;
+  }
