@@ -19,6 +19,10 @@ module.exports = (sequelize, type) => {
       state: type.STRING,
       city: type.STRING,
       fullAddress: type.TEXT,
+
+      lat: type.TEXT,
+      lng: type.TEXT,
+
       description: type.TEXT,
       status: type.STRING,
       isDeleted: {

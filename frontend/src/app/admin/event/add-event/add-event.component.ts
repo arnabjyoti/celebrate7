@@ -57,72 +57,86 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   initMap() {
-    const defaultLocation = { lat: 40.7128, lng: -74.0060 }; // Default to New York
-  
-    const map = new google.maps.Map(document.getElementById("map") as HTMLElement, {
-      center: defaultLocation,
-      zoom: 8,
-    });
-  
+    const defaultLocation = { lat: 26.1157917, lng: 91.7085933 }; // Default to Guwahati
+
+    const map = new google.maps.Map(
+      document.getElementById('map') as HTMLElement,
+      {
+        center: defaultLocation,
+        zoom: 8,
+      }
+    );
+
     const marker = new google.maps.Marker({
       map,
       position: defaultLocation,
       draggable: true,
     });
-  
+
     // Autocomplete setup
-    const input = document.getElementById("mapSearch") as HTMLInputElement;
+    const input = document.getElementById('mapSearch') as HTMLInputElement;
     const autocomplete = new google.maps.places.Autocomplete(input);
-    autocomplete.bindTo("bounds", map);
-  
-    autocomplete.addListener("place_changed", () => {
+    autocomplete.bindTo('bounds', map);
+
+    autocomplete.addListener('place_changed', () => {
       const place = autocomplete.getPlace();
       if (!place.geometry || !place.geometry.location) return;
-  
+
       const location = place.geometry.location;
       map.setCenter(location);
       marker.setPosition(location);
-  
+
       this.updateAddressFromCoords(location.lat(), location.lng());
     });
-  
+
     // Map click listener – get location details on click
-    map.addListener("click", (e: google.maps.MapMouseEvent) => {
+    map.addListener('click', (e: google.maps.MapMouseEvent) => {
       const lat = e.latLng?.lat();
       const lng = e.latLng?.lng();
       if (lat && lng) {
         const clickedLatLng = new google.maps.LatLng(lat, lng);
         marker.setPosition(clickedLatLng);
         map.panTo(clickedLatLng);
-  
+
+        this.updateAddressFromCoords(lat, lng);
+      }
+    });
+
+    // When marker is dragged
+    marker.addListener('dragend', () => {
+      const position = marker.getPosition();
+      if (position) {
+        const lat = position.lat();
+        const lng = position.lng();
         this.updateAddressFromCoords(lat, lng);
       }
     });
   }
-  
 
   updateAddressFromCoords(lat: number, lng: number) {
     const geocoder = new google.maps.Geocoder();
     const latlng = { lat, lng };
-  
+
     geocoder.geocode({ location: latlng }, (results, status) => {
-      if (status === "OK" && results && results.length > 0) {
+      if (status === 'OK' && results && results.length > 0) {
         const components = results[0].address_components;
         const getComponent = (type: string) =>
           components.find((c) => c.types.includes(type))?.long_name || '';
-  
-        this.event.country = getComponent("country");
-        this.event.state = getComponent("administrative_area_level_1");
-        this.event.city = getComponent("locality") || getComponent("sublocality");
+
+        this.event.country = getComponent('country');
+        this.event.state = getComponent('administrative_area_level_1');
+        this.event.city =
+          getComponent('locality') || getComponent('sublocality');
         this.event.fullAddress = results[0].formatted_address;
-  
+
         console.log('Location selected:', this.event);
+        console.log('Components :', components);
+        console.log('latlng :', latlng);
       } else {
         console.warn('Geocoder failed:', status);
       }
     });
   }
-  
 
   onFilesReceived(files: File[]) {
     this.selectedFiles = files;

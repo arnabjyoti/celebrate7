@@ -77,6 +77,34 @@
               />
             </div>
 
+
+            <div>
+              <label for="content">Description:</label>
+              <quill-editor
+                [(ngModel)]="content"
+                name="editorContent"
+              ></quill-editor>
+              <!-- <div [innerHTML]="content"></div> -->
+            </div>
+
+
+
+            <!-- *********************************************** -->
+            <div class="col-md-12 pb-3">
+              <label for="mapSearch">Search Location on Map:</label>
+              <input
+                type="text"
+                id="mapSearch"
+                class="form-control"
+                placeholder="Search for a place"
+              />
+              <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
+            </div>
+            
+            <!-- *********************************************** -->
+
+
+
             <div class="col-md-4 pb-3">
               <label for="country">Country:</label>
               <input
@@ -124,28 +152,7 @@
             </div>
 
 
-            <!-- *********************************************** -->
-            <div class="col-md-12 pb-3">
-              <label for="mapSearch">Search Location on Map:</label>
-              <input
-                type="text"
-                id="mapSearch"
-                class="form-control"
-                placeholder="Search for a place"
-              />
-              <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
-            </div>
-            
-            <!-- *********************************************** -->
-
-            <div>
-              <label for="content">Description:</label>
-              <quill-editor
-                [(ngModel)]="content"
-                name="editorContent"
-              ></quill-editor>
-              <!-- <div [innerHTML]="content"></div> -->
-            </div>
+           
 
             <!-- <div class="pb-3" *ngIf="routeName !== 'edit-event'"> -->
             <div class="pb-3">
