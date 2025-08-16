@@ -1,0 +1,15 @@
+.event-details-container {
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.event-images img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.badge {
+  font-size: 0.9rem;
+  padding: 0.5em 0.75em;
+}

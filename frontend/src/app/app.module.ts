@@ -34,7 +34,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
-
+import { QuillModule } from 'ngx-quill';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { AddEventComponent } from './admin/event/add-event/add-event.component';
+import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
+import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +55,10 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     DashboardComponent,
     RegisterComponent,
     EventsComponent,
+    FileUploadComponent,
+    AddEventComponent,
+    ViewEventsComponent,
+    EventDetailsComponent,
   ],
   imports: [
     FormsModule,
@@ -74,6 +82,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
       preventDuplicates: true,
     }),
     BrowserAnimationsModule,
+    QuillModule.forRoot(),
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [AuthService, AuthGuardService, DatePipe],

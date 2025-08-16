@@ -56,6 +56,10 @@ var options = {
 	cert: certificate,
 	agent: keepaliveAgent
 };
+
+// Serve images from /uploads/images as static files
+app.use('/uploads/images', express.static(path.join(__dirname, 'uploads/images')));
+
 // Setup a default catch-all route that sends back a welcome message in JSON format.
 app.use(cors());
 require('./routes')(app);

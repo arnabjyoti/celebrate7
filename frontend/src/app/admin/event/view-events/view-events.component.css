@@ -1,0 +1,25 @@
+.table-container {
+    margin: 20px;
+    overflow-x: auto;
+  }
+  
+  mat-form-field {
+    width: 300px;
+    margin-bottom: 10px;
+  }
+  
+  td {
+    color: rgb(88, 86, 86);
+  }
+
+  .dropdown-item{
+    cursor: pointer;
+  }
+
+  .cursor-pointer{
+    cursor: pointer;
+  }
+
+  .min-h-table{
+    min-height: 80vh;
+  }

@@ -1,0 +1,13 @@
+.upload-drop-area {
+    height: 180px;
+    background-color: #f9f9f9;
+    border: 2px dashed #d0d0d0;
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+  }
+  
+  .upload-drop-area.drag-over {
+    background-color: #e8f0fe;
+    border-color: #4285f4;
+  }
+  
