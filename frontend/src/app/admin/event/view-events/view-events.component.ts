@@ -26,13 +26,39 @@ export class ViewEventsComponent implements OnInit {
   totalPages: number = 0;
   currentPage: number = 1;
   perPage: number = 13;
+  search : any;
+  manageSearch : any = {
+    searchByEventName : '',
+    searchByOrganizer : '',
+    searchByCity : '',
+    searchByDate: '',
+    // search : ''
+  }
+
+  onSearchChange(event: any) {
+    console.log(event.target.value);
+    console.log(event.target.name);
+    if(event.target.name == 'searchByEventName') {
+      this.manageSearch.searchByEventName = event.target.value;
+    }
+    if(event.target.name == 'searchByOrganizer') {
+      this.manageSearch.searchByOrganizer = event.target.value;
+    }
+    if(event.target.name == 'searchByCity') {
+      this.manageSearch.searchByCity = event.target.value;
+    }
+    if(event.target.name == 'searchByDate') {
+      this.manageSearch.searchByDate = event.target.value;
+    }
+  }
 
   fetchEvents(): void {
 
     let reqBody = {
       limit : this.perPage,
       page: this.currentPage,
-      search : ''
+      searchBy : 'eventName',
+      search : this.manageSearch || {}
     }
 
 
@@ -71,5 +97,19 @@ export class ViewEventsComponent implements OnInit {
     this.currentPage = page;
     this.fetchEvents();
   }
+
+
+  // activeEvent 
+  activeEvent(event: any): void {
+    console.log('Active Event:', event);
+    let reqBody = {
+      eventId : event.id
+    }
+    this.http.post(`${environment.BASE_URL}/api/activeEvent`, reqBody).subscribe((res: any) => {
+      console.log('getAllEvents', res);
+      this.fetchEvents();
+    });
+  }
+
 
 }

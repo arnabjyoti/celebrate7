@@ -1,11 +1,51 @@
 <div class="table-container p-0 m-0">
-  <div class="border rounded shadow-sm overflow-hidden"> 
+  <div class="border rounded shadow-sm overflow-hidden min-h-table">
     <div>
       <div class="d-flex gap-2 py-2">
-        <input type="search" placeholder="Search Event" class="form-control" name="" id="">
-        <input type="text" placeholder="Search Organizer" class="form-control" name="" id="">
-        <input type="text" placeholder="Search by City" class="form-control" name="" id="">
-        <input type="submit" value="Search" class="form-control btn btn-primary" name="" id="">
+        <input
+          type="search"
+          placeholder="Search Event"
+          [(ngModel)]="manageSearch.searchByEventName"
+          (input)="onSearchChange($event)"
+          class="form-control"
+          name="searchByEventName"
+          id=""
+        />
+        <input
+          type="search"
+          placeholder="Search Organizer"
+          class="form-control"
+          [(ngModel)]="manageSearch.searchByOrganizer"
+          (input)="onSearchChange($event)"
+          name="searchByOrganizer"
+          id=""
+        />
+        <input
+          type="search"
+          placeholder="Search by City"
+          class="form-control"
+          [(ngModel)]="manageSearch.searchByCity"
+          (input)="onSearchChange($event)"
+          name="searchByCity"
+          id=""
+        />
+        <input
+          type="date"
+          placeholder="Search by Date"
+          class="form-control"
+          [(ngModel)]="manageSearch.searchByDate"
+          (input)="onSearchChange($event)"
+          name="searchByDate"
+          id=""
+        />
+        <!-- <input type="submit" value="Search" class="form-control btn btn-primary" (click)="fetchEvents()" id=""> -->
+        <button
+          type="submit"
+          class="form-control btn btn-primary"
+          (click)="fetchEvents()"
+        >
+          <i class="fas fa-search me-2"></i> Search
+        </button>
       </div>
     </div>
     <table class="table table-sm table-hover mb-0">
@@ -22,7 +62,8 @@
       </thead>
       <tbody>
         <tr *ngFor="let event of dataSource; let i = index">
-          <th scope="row" class="text-center">{{ i + 1 }}</th>
+          <!-- <th scope="row" class="text-center">{{ i + 1 }}</th> -->
+          <th scope="row" class="text-center">{{ (currentPage - 1) * perPage + i + 1 }}</th>
           <td>{{ event.eventName }}</td>
           <td>{{ event.organizer }}</td>
           <td>{{ event.eventDate }} / {{ event.eventTime }}</td>
@@ -35,7 +76,7 @@
                 'bg-success': event.status !== 'draft'
               }"
             >
-              {{ event.status === 'draft' ? 'Draft' : 'Active' }}
+              {{ event.status === "draft" ? "Draft" : "Active" }}
             </span>
           </td>
           <td class="text-center">
@@ -49,21 +90,38 @@
               >
                 <i class="bi bi-three-dots-vertical"></i>
               </button>
-              <ul class="dropdown-menu dropdown-menu-end" [attr.aria-labelledby]="'dropdownMenuButton' + i">
+            
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                [attr.aria-labelledby]="'dropdownMenuButton' + i"
+              >
                 <li>
-                  <span class="dropdown-item" (click)="viewEvent(event)">View</span>
+                  <span class="dropdown-item" (click)="viewEvent(event)">
+                    <i class="bi bi-eye me-2"></i> View
+                  </span>
                 </li>
                 <li>
-                  <span class="dropdown-item" (click)="editEvent(event)">Edit</span>
+                  <span class="dropdown-item" (click)="editEvent(event)">
+                    <i class="bi bi-pencil-square me-2"></i> Edit
+                  </span>
                 </li>
                 <li>
-                  <span class="dropdown-item" (click)="editEvent(event)">Make Active</span>
+                  <span class="dropdown-item" (click)="activeEvent(event)">
+                    <i class="bi bi-toggle-{{ event.status === 'draft' ? 'on' : 'off' }} me-2"></i>
+                    {{ event.status === "draft" ? "Make Active" : "Make Draft" }}
+                  </span>
                 </li>
                 <li>
-                  <span class="dropdown-item text-danger" (click)="deleteEvent(event)">Delete</span>
+                  <span
+                    class="dropdown-item text-danger"
+                    (click)="deleteEvent(event)"
+                  >
+                    <i class="bi bi-trash me-2"></i> Delete
+                  </span>
                 </li>
               </ul>
             </div>
+            
           </td>
         </tr>
       </tbody>
@@ -75,30 +133,41 @@
     <ul class="pagination justify-content-center">
       <!-- Previous -->
       <li class="page-item" [class.disabled]="currentPage === 1">
-        <div class="page-link" (click)="changePage(currentPage - 1)" aria-label="Previous">
+        <div
+          class="page-link"
+          (click)="changePage(currentPage - 1)"
+          aria-label="Previous"
+        >
           <span aria-hidden="true">&laquo;</span>
         </div>
       </li>
 
       <!-- Page Numbers -->
       <li
-        class="page-item"
+        class="page-item cursor-pointer"
         *ngFor="let page of [].constructor(totalPages); let i = index"
         [class.active]="currentPage === i + 1"
       >
-        <div class="page-link" (click)="changePage(i + 1)">{{ i + 1 }}</div>
+        <div class="page-link cursor-pointer" (click)="changePage(i + 1)">
+          {{ i + 1 }}
+        </div>
       </li>
 
       <!-- Next -->
-      <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <div class="page-link" (click)="changePage(currentPage + 1)" aria-label="Next">
+      <li
+        class="page-item cursor-pointer"
+        [class.disabled]="currentPage === totalPages"
+      >
+        <div
+          class="page-link"
+          (click)="changePage(currentPage + 1)"
+          aria-label="Next"
+        >
           <span aria-hidden="true">&raquo;</span>
         </div>
       </li>
     </ul>
   </nav>
 
-  <div class="mt-2">
-    Total Events: {{ totalItems }}
-  </div>
+  <div class="mt-2">Total Events: {{ totalItems }}</div>
 </div>

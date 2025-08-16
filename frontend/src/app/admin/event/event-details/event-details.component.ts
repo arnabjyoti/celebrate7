@@ -37,6 +37,8 @@ export class EventDetailsComponent {
   selectedFiles: any[] = [];
   url = environment.BASE_URL;
 
+  ticket_details: any = [];
+
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('id');
@@ -54,6 +56,8 @@ export class EventDetailsComponent {
         this.event = response.event;
         this.content = response.event.description;
         this.selectedFiles = response.eventImages;
+        this.ticket_details = response.ticket_details;
+        // this.
 
         // return callback && callback(response);
       },

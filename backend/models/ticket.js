@@ -1,8 +1,8 @@
 "use strict";
 
 module.exports = (sequelize, type) => {
-  const event_booking_details = sequelize.define(
-    "event_booking_details",
+  const tickets = sequelize.define(
+    "tickets",
     {
       id: {
         type: type.INTEGER,
@@ -11,12 +11,13 @@ module.exports = (sequelize, type) => {
         allowNull: false,
       },
       eventId: type.STRING,
-      booking_type: type.TEXT,
-      booking_description: type.TEXT,
-      price: type.STRING,
-      capacity: type.STRING,
-      booking_start_date: type.STRING,
-      booking_end_date: type.STRING,
+      ticket_type: type.TEXT, 
+
+      ticket_name: type.TEXT,
+      ticket_description: type.TEXT,
+      no_of_tickets: type.STRING,
+      ticket_price: type.STRING,
+
       isActive: {
         type: type.BOOLEAN,
         defaultValue: true, 
@@ -30,8 +31,8 @@ module.exports = (sequelize, type) => {
     },
     {}
   );
-  event_booking_details.associate = function (models) {
+  tickets.associate = function (models) {
     // associations can be defined here
   };
-  return event_booking_details;
+  return tickets;
 };

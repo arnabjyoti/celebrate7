@@ -5,12 +5,27 @@
     </button>
   </div> -->
 
-  <div class="card border shadow p-3">
-    <h2>Add New Event</h2>
+  <!-- Stepper Navigation -->
 
-    <div class="form1" *ngIf="activeForm === 1">
-      <div class="row">
-        <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class="">
+  <div class="card border shadow py-3">
+    <ul class="nav nav-pills mb-4 justify-content-center sticky-stepper">
+      <li class="nav-item" *ngFor="let step of steps; let i = index">
+        <button
+          class="nav-link d-flex align-items-center gap-2"
+          [class.active]="currentStep === i + 1"
+          [class.disabled]="currentStep < i + 1"
+          (click)="goToStep(i + 1)"
+        >
+          <i [class]="step.icon"></i>
+          <span>Step {{ i + 1 }}: {{ step.label }}</span>
+        </button>
+      </li>
+    </ul>
+
+    <div class="p-3">
+      <div class="form1" *ngIf="activeForm === 1">
+        <div class="row">
+          <!-- <form (ngSubmit)="onSubmit()" #eventForm="ngForm" class=""> -->
           <div class="row">
             <div class="col-md-12 pb-3">
               <label for="eventName">Event Name:</label>
@@ -77,8 +92,7 @@
               />
             </div>
 
-
-            <div>
+            <div class="col-md-12 pb-3">
               <label for="content">Description:</label>
               <quill-editor
                 [(ngModel)]="content"
@@ -87,128 +101,321 @@
               <!-- <div [innerHTML]="content"></div> -->
             </div>
 
-
+            <!-- *********************************************** -->
+            <!-- <div class="col-md-12 pb-3">
+            <label for="mapSearch">Search Location on Map:</label>
+            <input
+              type="text"
+              id="mapSearch"
+              class="form-control"
+              placeholder="Search for a place"
+            />
+            <div
+              id="map"
+              style="height: 400px; width: 100%; margin-top: 10px"
+            ></div>
+          </div> -->
 
             <!-- *********************************************** -->
-            <div class="col-md-12 pb-3">
-              <label for="mapSearch">Search Location on Map:</label>
-              <input
-                type="text"
-                id="mapSearch"
-                class="form-control"
-                placeholder="Search for a place"
-              />
-              <div id="map" style="height: 300px; width: 100%; margin-top: 10px;"></div>
-            </div>
-            
-            <!-- *********************************************** -->
 
-
-
-            <div class="col-md-4 pb-3">
-              <label for="country">Country:</label>
-              <input
-                class="form-control"
-                type="text"
-                id="country"
-                name="country"
-                [(ngModel)]="event.country"
-                required
-              />
-            </div>
-            <div class="col-md-4 pb-3">
-              <label for="state">State:</label>
-              <input
-                class="form-control"
-                type="text"
-                id="state"
-                name="state"
-                [(ngModel)]="event.state"
-                required
-              />
-            </div>
-            <div class="col-md-4 pb-3">
-              <label for="city">City:</label>
-              <input
-                class="form-control"
-                type="text"
-                id="city"
-                name="city"
-                [(ngModel)]="event.city"
-                required
-              />
-            </div>
-
-            <div class="pb-3">
-              <label for="fullAddress">Full address:</label>
-              <input
-                class="form-control"
-                type="text"
-                id="fullAddress"
-                name="fullAddress"
-                [(ngModel)]="event.fullAddress"
-                required
-              />
-            </div>
-
-
-           
+            <!-- <div class="col-md-4 pb-3">
+            <label for="country">Country:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="country"
+              name="country"
+              [(ngModel)]="event.country"
+              required
+            />
+          </div>
+          <div class="col-md-4 pb-3">
+            <label for="state">State:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="state"
+              name="state"
+              [(ngModel)]="event.state"
+              required
+            />
+          </div>
+          <div class="col-md-4 pb-3">
+            <label for="city">City:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="city"
+              name="city"
+              [(ngModel)]="event.city"
+              required
+            />
+          </div>
+          <div class="pb-3">
+            <label for="fullAddress">Full address:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="fullAddress"
+              name="fullAddress"
+              [(ngModel)]="event.fullAddress"
+              required
+            />
+          </div> -->
 
             <!-- <div class="pb-3" *ngIf="routeName !== 'edit-event'"> -->
-            <div class="pb-3">
+            <div class="pb-3 text-right">
               <!-- [disabled]="!eventForm.form.valid" -->
               <button
                 class="btn btn-primary"
                 (click)="handleNext()"
                 type="submit"
               >
-                Next
+                Next <i class="bi bi-arrow-right-circle"></i>
               </button>
             </div>
           </div>
-        </form>
+          <!-- </form> -->
 
-        <div class="pb-3" *ngIf="routeName === 'edit-event'">
-          <!-- [disabled]="!eventForm.form.valid" -->
-          <button class="btn btn-primary" (click)="onUpdate()">
-            Update event
-          </button>
+          
         </div>
       </div>
-    </div>
 
-    <div class="form2" *ngIf="activeForm === 2">
-      <div class="row">
-        <form #eventForm="ngForm" class=" p-3">
-          <div class="row">
-            <form #eventForm="ngForm" class=" p-4">
-              <!-- Other fields -->
-              <app-file-upload
-                (filesSelected)="onFilesReceived($event)"
-                [staticFiles]="staticFiles"
-              ></app-file-upload>
+      <!-- *************************** form 2 ************************ -->
+      <div class="form2" *ngIf="activeForm === 2">
+        <div class="row">
+          <!-- *********************************************** -->
+          <div class="col-md-12 pb-3">
+            <label for="mapSearch">Search Location on Map:</label>
+            <input
+              type="text"
+              id="mapSearch"
+              class="form-control"
+              placeholder="Search for a place"
+            />
+            <div
+              id="map"
+              style="height: 300px; width: 100%; margin-top: 10px"
+            ></div>
+          </div>
+
+          <!-- *********************************************** -->
+
+          <div class="col-md-4 pb-3">
+            <label for="country">Country:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="country"
+              name="country"
+              [(ngModel)]="event.country"
+              required
+            />
+          </div>
+          <div class="col-md-4 pb-3">
+            <label for="state">State:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="state"
+              name="state"
+              [(ngModel)]="event.state"
+              required
+            />
+          </div>
+          <div class="col-md-4 pb-3">
+            <label for="city">City:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="city"
+              name="city"
+              [(ngModel)]="event.city"
+              required
+            />
+          </div>
+          <div class="pb-3">
+            <label for="fullAddress">Full address:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="fullAddress"
+              name="fullAddress"
+              [(ngModel)]="event.fullAddress"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <div class="pb-3">
+            <div class="d-flex justify-content-between">
+              <button
+                class="btn btn-secondary"
+                (click)="handlePrevious()"
+                type="submit"
+              >
+              <i class="bi bi-arrow-left-circle"></i>  Previous
+              </button>
 
               <button
+                class="btn btn-primary"
+                (click)="handleNext()"
+                type="submit"
+              >
+                Next <i class="bi bi-arrow-right-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- *************************** form 3 ************************ -->
+
+      <div class="form3" *ngIf="activeForm === 3">
+        <div class="row">
+          <!-- <div class="col-md-12 pb-3">
+          <label for="country">Ticket Type:</label> &nbsp; &nbsp; &nbsp;
+          <input
+            type="radio"
+            id="single"
+            name="ticket_type"
+            value="single"
+            [(ngModel)]="ticket_details.ticket_type"
+            required
+          /> <label for="single">Single Ticket</label> 
+          
+          &nbsp; &nbsp;
+          <input
+            type="radio"
+            id="multiple"
+            name="ticket_type"
+            value="multiple"
+            [(ngModel)]="ticket_details.ticket_type"
+            required
+          /> <label for="multiple">Multiple Tickets</label> 
+        </div> -->
+
+          <div class="col-md-4 pb-3">
+            <label for="country">Ticket Name:</label>
+            <input
+              class="form-control"
+              type="text"
+              id="country"
+              name="country"
+              [(ngModel)]="ticket_details.ticket_name"
+              required
+            />
+          </div>
+          <div class="col-md-8 pb-3">
+            <label for="country">Ticket Details: (Optional)</label>
+            <input
+              class="form-control"
+              type="text"
+              id="country"
+              name="country"
+              [(ngModel)]="ticket_details.ticket_description"
+              required
+            />
+          </div>
+
+          <div class="col-md-2 pb-3">
+            <label for="state">Price:</label>
+            <input
+              class="form-control"
+              type="number"
+              id="state"
+              name="state"
+              [(ngModel)]="ticket_details.ticket_price"
+              required
+            />
+          </div>
+          <div class="col-md-2 pb-3">
+            <label for="state">Number of tickets:</label>
+            <input
+              class="form-control"
+              type="number"
+              id="state"
+              name="state"
+              [(ngModel)]="ticket_details.no_of_tickets"
+              required
+            />
+          </div>
+
+          <!-- <div class="col-md-2 pb-3">
+          <label for="state"></label>
+          <br>
+          <input
+            class="btn btn-primary"
+            type="button"
+            value="Add"
+          />
+        </div> -->
+        </div>
+
+        <div>
+          <div class="pb-3">
+            <div class="d-flex justify-content-between">
+              <button
+                class="btn btn-secondary"
+                (click)="handlePrevious()"
+                type="submit"
+              >
+              <i class="bi bi-arrow-left-circle"></i>  Previous
+              </button>
+
+              <button
+                class="btn btn-primary"
+                (click)="handleNext()"
+                type="submit"
+              >
+                Next <i class="bi bi-arrow-right-circle"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- *************************** form 4 ************************ -->
+
+      <div class="form4" *ngIf="activeForm === 4">
+        <div class="row">
+          <div class="row">
+            <!-- Other fields -->
+            <app-file-upload
+              (filesSelected)="onFilesReceived($event)"
+              [staticFiles]="staticFiles"
+            ></app-file-upload>
+
+            <div class="d-flex justify-content-between">
+              <!-- [disabled]="!eventForm.form.valid" -->
+              <button
+                class="btn btn-secondary mt-3"
+                (click)="handlePrevious()"
+                type="submit"
+              >
+              <i class="bi bi-arrow-left-circle"></i>  Previous
+              </button>
+
+              <button
+              *ngIf="routeName !== 'edit-event'"
                 class="btn btn-success mt-3"
                 type="submit"
                 (click)="onSubmit()"
               >
-                Submit
+              <i class="bi bi-check-circle"></i>  Submit
               </button>
-            </form>
 
-            <div class="pb-3">
-              <!-- [disabled]="!eventForm.form.valid" -->
-              <button
-                class="btn btn-primary"
-                (click)="handlePrevious()"
-                type="submit"
-              >
-                Previous
-              </button>
+              <!-- <div class="pb-3" *ngIf="routeName === 'edit-event'"> -->
+                <!-- [disabled]="!eventForm.form.valid" -->
+                <button class="btn btn-success mt-3" *ngIf="routeName === 'edit-event'" (click)="onUpdate()">
+                  Update event
+                </button>
+                
+              <!-- </div> -->
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>

@@ -1,9 +1,11 @@
 "use strict";
 const usersModel = require("../models").users;
 const eventModel = require("../models").events;
+const ticketModel = require("../models").tickets;
 const eventImageModel = require("../models").event_images;
 const request = require("request");
 const nodemailer = require("nodemailer");
+const { Op } = require("sequelize");
 
 module.exports = {
   async saveEvent(req, res) {
@@ -31,7 +33,30 @@ module.exports = {
     }
   },
 
+  async saveTicket(req, res) {
+    try {
+      const eventData = req.body.data; // assuming eventData is an object like { eventName: "Test", date: "...", etc. }
 
+      if (!eventData) {
+        return res.status(400).send({ message: "No event data provided" });
+      }
+      eventData.createdBy = "user1";
+      console.log("ticket", eventData);
+      // Save to DB
+      const createdEvent = await ticketModel.create(eventData);
+
+      return res.status(201).send({
+        message: "Ticket saved successfully",
+        event: createdEvent,
+      });
+    } catch (error) {
+      console.error("Error saving ticket:", error);
+      return res.status(500).send({
+        message: "Failed to save ticket",
+        error: error.message,
+      });
+    }
+  },
 
   async saveEventImg(req, res) {
     console.log("here inside saveEventImg");
@@ -75,15 +100,34 @@ module.exports = {
     const offset = (page - 1) * limit;
 
     const search = req.body.search || ""; // search value from query
-    const whereClause = search
-      ? {
-          [Op.or]: [
-            { eventName: { [Op.iLike]: `%${search}%` } }, // Assuming event has 'name' field
-            { organizer: { [Op.iLike]: `%${search}%` } }, // And 'organizer' field
-            // Add more fields as needed
-          ],
-        }
-      : {}; // No filter if search is empty
+    console.log("searchByEventName===>>>> ", search.searchByEventName);
+    console.log("searchByOrganizer===>>>> ", search.searchByOrganizer);
+    console.log("searchByCity===>>>> ", search.searchByCity);
+    const orConditions = [];
+
+    if (search.searchByEventName) {
+      orConditions.push({
+        eventName: { [Op.like]: `%${search.searchByEventName}%` },
+      });
+    }
+
+    if (search.searchByOrganizer) {
+      orConditions.push({
+        organizer: { [Op.like]: `%${search.searchByOrganizer}%` },
+      });
+    }
+
+    if (search.searchByCity) {
+      orConditions.push({ city: { [Op.like]: `%${search.searchByCity}%` } });
+    }
+    if (search.searchByDate) {
+      orConditions.push({
+        eventDate: { [Op.like]: `%${search.searchByDate}%` },
+      });
+    }
+
+    const whereClause =
+      orConditions.length > 0 ? { [Op.or]: orConditions } : {};
 
     eventModel
       .findAndCountAll({
@@ -131,30 +175,34 @@ module.exports = {
         eventId: req.query.id,
       },
     });
+    const ticket_details = await ticketModel.findAll({
+      where: {
+        eventId: req.query.id,
+      },
+    });
 
-    return res.status(200).send({ event, eventImages });
+    return res.status(200).send({ event, eventImages, ticket_details });
   },
-
 
   async updateEvent(req, res) {
     try {
       const eventData = req.body.data;
-  
+
       if (!eventData || !eventData.id) {
         return res.status(400).send({ message: "Missing event ID or data" });
       }
-  
+
       const eventId = eventData.id;
-  
+
       // Check if the event exists
       const existingEvent = await eventModel.findByPk(eventId);
       if (!existingEvent) {
         return res.status(404).send({ message: "Event not found" });
       }
-  
+
       // Update the event
       await existingEvent.update(eventData);
-  
+
       return res.status(200).send({
         message: "Event updated successfully",
         event: existingEvent,
@@ -164,6 +212,39 @@ module.exports = {
       return res.status(500).send({
         message: "Failed to update event",
         error: error.message,
+      });
+    }
+  },
+
+  async activeEvent(req, res) {
+    const eventId = req.body.eventId;
+  
+    try {
+      // 1. Get current value of isActive
+      const event = await eventModel.findByPk(eventId);
+  
+      if (!event) {
+        return res.status(404).json({ success: false, message: 'Event not found' });
+      }
+  
+      // 2. Toggle isActive
+      const newStatus = event.status === 'active'  ? 'draft' : 'active';
+  
+      // 3. Update the value
+      await event.update({ status: newStatus });
+  
+      // 4. Respond
+      res.status(200).json({
+        success: true,
+        message: `Event is now ${newStatus ? 'active' : 'inactive'}`,
+        isActive: newStatus,
+      });
+    } catch (error) {
+      console.error('Error toggling event status:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error,
       });
     }
   }

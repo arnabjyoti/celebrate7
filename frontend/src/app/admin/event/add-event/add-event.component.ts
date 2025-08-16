@@ -22,7 +22,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   eventId: any;
 
   selectedFiles: File[] = [];
-  staticFiles: any = 'abcd';
+  staticFiles: any = '';
   submitted = false;
   content: string = '';
   activeForm = 1;
@@ -36,9 +36,20 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     country: '',
     state: '',
     city: '',
+    lat: 0,
+    lng: 0,
     fullAddress: '',
     description: '',
     status: 'draft',
+  };
+
+  ticket_details = {
+    eventId: '',
+    ticket_name: '',
+    ticket_description: '',
+    no_of_tickets: '',
+    ticket_price: '',
+    isActive: true,
   };
 
   ngOnInit(): void {
@@ -57,13 +68,18 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   initMap() {
+    const mapDiv = document.getElementById('map');
+    if (!mapDiv || mapDiv.hasChildNodes()) {
+      return; // Prevent duplicate map creation
+    }
+
     const defaultLocation = { lat: 26.1157917, lng: 91.7085933 }; // Default to Guwahati
 
     const map = new google.maps.Map(
       document.getElementById('map') as HTMLElement,
       {
         center: defaultLocation,
-        zoom: 8,
+        zoom: 13,
       }
     );
 
@@ -128,6 +144,8 @@ export class AddEventComponent implements OnInit, AfterViewInit {
         this.event.city =
           getComponent('locality') || getComponent('sublocality');
         this.event.fullAddress = results[0].formatted_address;
+        this.event.lat = lat;
+        this.event.lng = lng;
 
         console.log('Location selected:', this.event);
         console.log('Components :', components);
@@ -149,10 +167,29 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
   handleNext() {
     this.activeForm++;
+    if (this.activeForm === 2) {
+      // Wait a tiny bit for the map div to be back in the DOM
+      setTimeout(() => {
+        this.initMap();
+      }, 0);
+    }
+
+    this.nextStep();
   }
 
+  // handlePrevious() {
+  //   this.activeForm--;
+  // }
   handlePrevious() {
     this.activeForm--;
+    if (this.activeForm === 2) {
+      // Wait a tiny bit for the map div to be back in the DOM
+      setTimeout(() => {
+        this.initMap();
+      }, 0);
+    }
+
+    this.previousStep();
   }
 
   onSubmit() {
@@ -169,7 +206,29 @@ export class AddEventComponent implements OnInit, AfterViewInit {
       (response: any) => {
         const eventId = response.event.id;
         this.manageImageUpload(eventId);
+        this.saveTicket(eventId);
         this.toastr.success('Event added successfully');
+      },
+      (error) => {
+        console.error('Submission error:', error);
+      }
+    );
+  }
+
+  saveTicket(eventId: any) {
+    console.log('Ticket saved:', this.ticket_details);
+
+    this.ticket_details.eventId = eventId;
+
+    const ENDPOINT = `${environment.BASE_URL}/api/saveTicket`;
+    const requestOptions = {
+      method: 'post',
+      data: this.ticket_details,
+    };
+
+    this.http.post(ENDPOINT, requestOptions).subscribe(
+      (response: any) => {
+        this.toastr.success('Ticket added successfully');
       },
       (error) => {
         console.error('Submission error:', error);
@@ -207,10 +266,13 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
     this.http.get(ENDPOINT).subscribe(
       (response: any) => {
+        console.log('Success');
+        console.log('response here ', response);
         this.event = response.event;
         this.content = response.event.description;
         this.selectedFiles = response.eventImages;
         this.staticFiles = response.eventImages;
+        this.ticket_details = response.ticket_details[0];
       },
       (error) => {
         console.error('Error fetching event details:', error);
@@ -241,5 +303,41 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
   goBack() {
     this.location.back();
+  }
+
+  // stepper
+  currentStep = 1;
+
+  steps = [
+    { label: 'Basic Details', icon: 'fas fa-info-circle' },
+    { label: 'Location Details', icon: 'fas fa-map-marker-alt' },
+    { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
+    { label: 'Photos', icon: 'fas fa-camera' },
+  ];
+
+  goToStep(step: number) {
+    if (step <= this.currentStep) {
+      this.currentStep = step;
+      this.activeForm = step;
+    }
+
+    if (step === 2) {
+      // Wait a tiny bit for the map div to be back in the DOM
+      setTimeout(() => {
+        this.initMap();
+      }, 0);
+    }
+  }
+
+  nextStep() {
+    if (this.currentStep < this.steps.length) {
+      this.currentStep++;
+    }
+  }
+
+  previousStep() {
+    if (this.currentStep > 1) {
+      this.currentStep--;
+    }
   }
 }

@@ -1,30 +1,106 @@
-<div class="event-details-container">
-    <h2>Event Details</h2>
-  
-    <div class="event-field"><strong>Event Name:</strong> {{ event.eventName }}</div>
-    <div class="event-field"><strong>Organizer:</strong> {{ event.organizer }}</div>
-    <div class="event-field"><strong>Type:</strong> {{ event.type }}</div>
-    <div class="event-field"><strong>Date:</strong> {{ event.eventDate }}</div>
-    <div class="event-field"><strong>Time:</strong> {{ event.eventTime }}</div>
-    <div class="event-field"><strong>Country:</strong> {{ event.country }}</div>
-    <div class="event-field"><strong>State:</strong> {{ event.state }}</div>
-    <div class="event-field"><strong>City:</strong> {{ event.city }}</div>
-    <div class="event-field"><strong>Address:</strong> {{ event.fullAddress }}</div>
-    <div class="event-field"><strong>Description:</strong> <span [innerHTML]="content"></span></div>
-    
-    <div class="event-field"><strong>Status:</strong> {{ event.status }}</div>
-  
-    <div class="event-images">
-      <h3>Images</h3>
-      <div *ngIf="selectedFiles.length > 0; else noImages">
-        <div class="image-preview" *ngFor="let file of selectedFiles">
-          <img [src]="getImagePreview(file)" alt="Event Image" />
-         <!-- path: {{url}}/{{ file.path }} -->
-        </div>
-      </div>
-      <ng-template #noImages>
-        <p>No images selected.</p>
-      </ng-template>
+<div class="event-details-container card shadow-sm p-4">
+  <h2 class="mb-4 border-bottom pb-2">
+    <i class="bi bi-calendar-event"></i> Event Details
+  </h2>
+
+  <!-- Basic Details -->
+  <div class="row mb-3">
+    <div class="col-md-6 mb-2"><strong>Event Name:</strong> {{ event.eventName }}</div>
+    <div class="col-md-6 mb-2"><strong>Organizer:</strong> {{ event.organizer }}</div>
+    <div class="col-md-4 mb-2"><strong>Type:</strong> {{ event.type }}</div>
+    <div class="col-md-4 mb-2"><strong>Date:</strong> {{ event.eventDate }}</div>
+    <div class="col-md-4 mb-2"><strong>Time:</strong> {{ event.eventTime }}</div>
+  </div>
+
+  <!-- Location Details -->
+  <div class="row mb-3">
+    <div class="col-md-4 mb-2"><strong>Country:</strong> {{ event.country }}</div>
+    <div class="col-md-4 mb-2"><strong>State:</strong> {{ event.state }}</div>
+    <div class="col-md-4 mb-2"><strong>City:</strong> {{ event.city }}</div>
+    <div class="col-md-12 mb-2"><strong>Full Address:</strong> {{ event.fullAddress }}</div>
+  </div>
+
+  <!-- Description -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <strong>Description:</strong>
+      <div class="border p-2 rounded bg-light" [innerHTML]="content"></div>
     </div>
   </div>
-  
+
+  <!-- Status -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <strong>Status:</strong>
+      <span
+        class="badge"
+        [ngClass]="{
+          'bg-success': event.status === 'active',
+          'bg-secondary': event.status === 'draft'
+        }"
+      >
+        {{ event.status | titlecase }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Ticket Details -->
+  <div *ngIf="ticket_details?.length > 0" class="ticket-details mb-4">
+    <h4 class="mb-3"><i class="bi bi-ticket-perforated"></i> Ticket Details</h4>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>#</th>
+            <th>Ticket Name</th>
+            <th>No. of Tickets</th>
+            <th>Price</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of ticket_details; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ ticket.ticket_name }}</td>
+            <td>{{ ticket.no_of_tickets }}</td>
+            <td>{{ ticket.ticket_price | currency:'INR':'symbol' }}</td>
+            <td>
+              <span *ngIf="ticket.ticket_description; else noDesc">
+                {{ ticket.ticket_description }}
+              </span>
+              <ng-template #noDesc>
+                <span class="text-muted fst-italic">No description</span>
+              </ng-template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Event Images -->
+  <div class="event-images">
+    <h4 class="mb-3"><i class="bi bi-images"></i> Images</h4>
+
+    <div *ngIf="selectedFiles.length > 0; else noImages">
+      <div class="row g-3">
+        <div
+          class="col-md-3 col-sm-4 col-6"
+          *ngFor="let file of selectedFiles"
+        >
+          <div class="image-preview border rounded shadow-sm p-1 h-100">
+            <img
+              [src]="getImagePreview(file)"
+              alt="Event Image"
+              class="img-fluid rounded"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noImages>
+      <p class="text-muted">No images selected for this event.</p>
+    </ng-template>
+  </div>
+</div>
