@@ -7,8 +7,8 @@
 
   <!-- Stepper Navigation -->
 
-  <div class="card border shadow py-3">
-    <ul class="nav nav-pills mb-4 justify-content-center sticky-stepper">
+  <div class="card border shadow">
+    <ul class="nav nav-pills mb-4 justify-content-center sticky-stepper" *ngIf="activeForm !== 5">
       <li class="nav-item" *ngFor="let step of steps; let i = index">
         <button
           class="nav-link d-flex align-items-center gap-2"
@@ -176,8 +176,6 @@
             </div>
           </div>
           <!-- </form> -->
-
-          
         </div>
       </div>
 
@@ -255,7 +253,7 @@
                 (click)="handlePrevious()"
                 type="submit"
               >
-              <i class="bi bi-arrow-left-circle"></i>  Previous
+                <i class="bi bi-arrow-left-circle"></i> Previous
               </button>
 
               <button
@@ -361,7 +359,7 @@
                 (click)="handlePrevious()"
                 type="submit"
               >
-              <i class="bi bi-arrow-left-circle"></i>  Previous
+                <i class="bi bi-arrow-left-circle"></i> Previous
               </button>
 
               <button
@@ -394,26 +392,69 @@
                 (click)="handlePrevious()"
                 type="submit"
               >
-              <i class="bi bi-arrow-left-circle"></i>  Previous
+                <i class="bi bi-arrow-left-circle"></i> Previous
               </button>
 
               <button
-              *ngIf="routeName !== 'edit-event'"
+                *ngIf="routeName !== 'edit-event'"
                 class="btn btn-success mt-3"
                 type="submit"
                 (click)="onSubmit()"
               >
-              <i class="bi bi-check-circle"></i>  Submit
+                <i class="bi bi-check-circle"></i> Submit
               </button>
 
               <!-- <div class="pb-3" *ngIf="routeName === 'edit-event'"> -->
-                <!-- [disabled]="!eventForm.form.valid" -->
-                <button class="btn btn-success mt-3" *ngIf="routeName === 'edit-event'" (click)="onUpdate()">
-                  Update event
-                </button>
-                
+              <!-- [disabled]="!eventForm.form.valid" -->
+              <button
+                class="btn btn-success mt-3"
+                *ngIf="routeName === 'edit-event'"
+                (click)="onUpdate()"
+              >
+                Update event
+              </button>
+
               <!-- </div> -->
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- success message -->
+
+      <div class="form4" *ngIf="activeForm === 5">
+        <div class="success-page card shadow p-5 mt-5 text-center">
+          <div class="success-icon mb-4">
+            <i
+              class="bi bi-check-circle-fill text-success"
+              style="font-size: 4rem"
+            ></i>
+          </div>
+
+          <h2 class="text-success">Event Added Successfully!</h2>
+          <p class="text-muted mb-4">
+            The event has been saved and is now available in the system.
+          </p>
+
+          <div class="d-flex justify-content-center gap-3 flex-wrap">
+            <button class="btn btn-outline-primary" routerLink="/view-event">
+              <i class="bi bi-card-list me-2"></i> View All Events
+            </button>
+
+            <!-- routerLink="/add-event" -->
+            <button
+              class="btn btn-outline-success"
+              (click)="reloadAddEvent()"
+            >
+              <i class="bi bi-plus-circle me-2"></i> Add Another Event
+            </button>
+
+            <button
+              class="btn btn-outline-secondary"
+              routerLink="/dashboard"
+            >
+              <i class="bi bi-house-door me-2"></i> Go to Dashboard
+            </button>
           </div>
         </div>
       </div>

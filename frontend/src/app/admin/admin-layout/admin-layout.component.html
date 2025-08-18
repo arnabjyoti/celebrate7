@@ -11,8 +11,8 @@
         <span>Users</span>
       </a>
       <a mat-list-item routerLink="/add-event" routerLinkActive="active-link">
-        <mat-icon>event</mat-icon>
-        <span>Events</span>
+        <mat-icon>add</mat-icon>
+        <span>Add Events</span>
       </a>
       <a mat-list-item routerLink="/view-event" routerLinkActive="active-link">
         <mat-icon>event</mat-icon>
@@ -26,14 +26,14 @@
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar>
-  <span class="toolbar-title">Welcome to Celebrate7 Admin Dashboard</span>
-  <span class="spacer"></span>
-  <button mat-button color="accent" >
-    <mat-icon>logout</mat-icon>
-    Logout
-  </button>
-</mat-toolbar>
+    <mat-toolbar class="custom-toolbar">
+      <span class="toolbar-title">Welcome to Celebrate7 Admin Dashboard</span>
+      <span class="spacer"></span>
+      <button mat-button color="accent">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </mat-toolbar>
     <div class="admin-content">
       <router-outlet></router-outlet>
     </div>

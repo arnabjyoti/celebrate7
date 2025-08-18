@@ -208,6 +208,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
         this.manageImageUpload(eventId);
         this.saveTicket(eventId);
         this.toastr.success('Event added successfully');
+        this.activeForm = 5;
       },
       (error) => {
         console.error('Submission error:', error);
@@ -339,5 +340,9 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     if (this.currentStep > 1) {
       this.currentStep--;
     }
+  }
+
+  reloadAddEvent() {
+    window.location.reload();
   }
 }
