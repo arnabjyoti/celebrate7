@@ -36,6 +36,12 @@ import { MatCardModule } from '@angular/material/card';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
+import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
+import { OrganizersComponent } from './super-admin/organizers/organizers.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,6 +57,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     DashboardComponent,
     RegisterComponent,
     EventsComponent,
+    SaDashboardComponent,
+    SaAdminLayoutComponent,
+    OrganizersComponent,
   ],
   imports: [
     FormsModule,
@@ -76,7 +85,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     BrowserAnimationsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [AuthService, AuthGuardService, DatePipe],
+  providers: [AuthService, AuthGuardService, DatePipe, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

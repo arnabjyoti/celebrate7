@@ -26,6 +26,7 @@
             ],
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
             "scripts": [
@@ -97,12 +98,18 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "node_modules/ngx-spinner/animations/ball-scale-multiple.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "0d622c8b-c993-4019-baba-6fcb52101130"
   }
 }
