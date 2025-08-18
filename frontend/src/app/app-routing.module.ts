@@ -1,15 +1,25 @@
 import { NgModule } from '@angular/core';
 import { ExtraOptions, RouterModule, Routes } from '@angular/router';
-
-import { AuthGuardService as AuthGuard } from "./auth/auth-gaurd.service";
+import { RoleGuard } from './auth/role.gaurd';
+import { AuthGuardService as AuthGuard } from './auth/auth-gaurd.service';
 import { HomeComponent } from './client/pages/home/home.component';
 import { ClientLayoutComponent } from './client/client-layout/client-layout.component';
 import { AboutComponent } from './client/pages/about/about.component';
 import { LoginComponent } from './client/pages/login/login.component';
 import { RegisterComponent } from './client/pages/register/register.component';
 import { EventsComponent } from './client/pages/events/events.component';
+
+import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
+import {SaAdminLayoutComponent} from './super-admin/sa-admin-layout/sa-admin-layout.component';
+import { OrganizersComponent } from './super-admin/organizers/organizers.component';
+
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { AddEventComponent } from './admin/event/add-event/add-event.component';
+import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
+import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
+
+
 const routes: Routes = [
   {
     path: '',
@@ -18,30 +28,56 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'events', component: EventsComponent },
+      { path: 'events', component: EventsComponent }
     ]
   },
-
+  {
+    path: '',
+    component: SaAdminLayoutComponent,
+    children: [
+      {
+        path: 'sa-dashboard',
+        component: SaDashboardComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' },
+      },
+      {
+        path: 'organizers',
+        component: OrganizersComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' },
+      }
+    ]
+  },
   {
     path: '',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' }
+      },
       // { path: 'users', component: UsersComponent },
       // { path: 'settings', component: SettingsComponent },
       // { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-    ]
+       { path: 'add-event', component: AddEventComponent },
+      { path: 'edit-event/:id', component: AddEventComponent },
+      { path: 'view-event', component: ViewEventsComponent },
+      { path: 'event-details/:id', component: EventDetailsComponent },
+    ],
   },
-  
-  { path: "**", redirectTo: "home" }
+
+  { path: '**', redirectTo: 'home' },
 ];
 
 const config: ExtraOptions = {
-  useHash: true
+  useHash: true,
 };
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: false })],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

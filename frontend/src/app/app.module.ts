@@ -34,7 +34,17 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { QuillModule } from 'ngx-quill';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { AddEventComponent } from './admin/event/add-event/add-event.component';
+import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
+import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
 
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth/auth.interceptor';
+import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
+import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
+import { OrganizersComponent } from './super-admin/organizers/organizers.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +61,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     DashboardComponent,
     RegisterComponent,
     EventsComponent,
+    SaDashboardComponent,
+    SaAdminLayoutComponent,
+    OrganizersComponent,
+    FileUploadComponent,
+    AddEventComponent,
+    ViewEventsComponent,
+    EventDetailsComponent,
   ],
   imports: [
     FormsModule,
@@ -74,9 +91,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
       preventDuplicates: true,
     }),
     BrowserAnimationsModule,
+    QuillModule.forRoot(),
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  providers: [AuthService, AuthGuardService, DatePipe],
+  providers: [AuthService, AuthGuardService, DatePipe, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

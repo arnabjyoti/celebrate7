@@ -1,26 +1,58 @@
 <main class="container d-flex align-items-center justify-content-center mt-5">
-    <div class="login-card mt-5">
-      <h3 class="text-center mb-4">Login via OTP</h3>
-      <form>
-        <div class="mb-3">
-          <label for="phone" class="form-label">Mobile Number</label>
-          <input type="tel" class="form-control" id="phone" placeholder="Enter your mobile number" required />
-        </div>
-
-        <div class="d-grid mb-3">
-          <button type="button" class="btn btn-outline-primary" onclick="sendOTP()">Send OTP</button>
-        </div>
-
-        <div class="mb-3">
-          <label for="otp" class="form-label">Enter OTP</label>
-          <input type="text" class="form-control" id="otp" placeholder="6-digit OTP" />
-        </div>
-
-        <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Login</button>
-        </div>
-
-        <p class="text-center mt-3">Don't have an account? <a routerLink="/register">Register</a></p>
-      </form>
+  <div class="login-card mt-5">
+    <h3 class="text-center mb-4">
+      Login via OTP<br />
+      <a href="javascript:;" (click)="toggleMode()" style="font-size: 14px">
+        Switch to {{ useEmail ? "Mobile" : "Email" }} Login
+      </a>
+    </h3>
+    <div class="mb-3" *ngIf="!useEmail">
+      <label for="phone" class="form-label">Mobile Number</label>
+      <input
+        type="tel"
+        class="form-control"
+        [(ngModel)]="mobile"
+        placeholder="Enter your mobile number"
+        required
+      />
     </div>
-  </main>
+    <div class="mb-3" *ngIf="useEmail">
+      <label for="phone" class="form-label">Email Address</label>
+      <input
+        type="email"
+        class="form-control"
+        [(ngModel)]="email"
+        placeholder="Enter your email address"
+        required
+      />
+    </div>
+    <div *ngIf="!otpSent" class="d-grid mb-3">
+      <button type="button" (click)="sendOtp()" class="btn btn-primary">
+        Send OTP
+      </button>
+    </div>
+    <div *ngIf="otpSent" style="margin-top: 20px">
+      <div class="mb-3">
+        <label for="otp" class="form-label">Enter OTP</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="otp"
+          placeholder="6-digit OTP"
+        />
+      </div>
+
+      <div class="d-grid">
+        <button type="submit" (click)="verifyOtp()" class="btn btn-primary">
+          Verify OTP
+        </button>
+      </div>
+    </div>
+    <div *ngIf="message" style="margin-top: 15px; color: darkblue">
+      {{ message }}
+    </div>
+    <p class="text-center mt-3">
+      Don't have an account? <a routerLink="/register">Register</a>
+    </p>
+  </div>
+</main>

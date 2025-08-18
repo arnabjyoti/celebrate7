@@ -1,0 +1,21 @@
+.nav-pills .nav-link {
+    cursor: pointer;
+    margin: 0 5px;
+    border-radius: 20px;
+  }
+  
+  .nav-link.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  
+  .sticky-stepper {
+    position: sticky;
+    top: 60px; /* height of your top bar */
+    z-index: 1020;
+    background-color: #fff;
+    padding: 15px 0;
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* optional shadow */
+  }
+  

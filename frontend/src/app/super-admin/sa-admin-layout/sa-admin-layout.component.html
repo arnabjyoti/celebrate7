@@ -1,0 +1,41 @@
+<mat-sidenav-container class="admin-container">
+  <mat-sidenav class="admin-sidenav" mode="side" opened>
+    <div cclass="sidenav-header"><img src="assets/image/brand.png" alt="" height="65px" width="235px" style="margin-top:-20px; position: absolute;z-index: 99999;"></div>
+    <mat-nav-list style="margin-top: 60px;">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon>dashboard</mat-icon>
+        <span>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/organizers" routerLinkActive="active-link">
+        <mat-icon>people</mat-icon>
+        <span>Organizers</span>
+      </a>
+      <a mat-list-item routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>event</mat-icon>
+        <span>Events</span>
+      </a>
+      <a mat-list-item routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>book_online</mat-icon>
+        <span>Bookings</span>
+      </a>
+      <a mat-list-item routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>payments</mat-icon>
+        <span>Billings</span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar>
+  <span class="toolbar-title">Welcome Super Admin</span>
+  <span class="spacer"></span>
+  <button (click)="handleLogout()" mat-button color="aliceblue">
+    <mat-icon>logout</mat-icon>
+    Logout
+  </button>
+</mat-toolbar>
+    <div class="admin-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

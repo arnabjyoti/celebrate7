@@ -1,28 +1,52 @@
-'use strict';
-
+"use strict";
+const { DataTypes } = require('sequelize');
 module.exports = (sequelize, type) => {
-    const users = sequelize.define('users', {
-        id: {
-            type: type.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-            allowNull: false
-        },
-        f_name: type.STRING,
-        m_name: type.STRING,
-        l_name: type.STRING,
-        email: type.STRING,
-        phone_no: type.STRING,
-        address: type.STRING,
-        password: type.STRING,
-        temp_password: type.STRING,
-        role: type.STRING,
-        active: type.STRING,
-        rememberToken: type.STRING,
-        createdBy: type.INTEGER,
-    }, {});
-    users.associate = function(models) {
-        // associations can be defined here
-    };
-    return users;
+  const users = sequelize.define('users', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      allowNull: false,
+      primaryKey: true,
+    },
+    mobile: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    role: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    otp: {
+      type: DataTypes.STRING(10),
+      allowNull: true,
+    },
+    otpExpiry: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    refreshToken: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    status: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+    },
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    }
+  }, {
+    tableName: 'users',
+    timestamps: true
+  });
+
+  users.associate = function (models) {
+    // associations can be defined here
+  };
+  return users;
 };

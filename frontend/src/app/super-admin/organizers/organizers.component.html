@@ -1,0 +1,202 @@
+<div class="card" *ngIf="isDefaultView">
+  <div class="card-header">
+    <h4>
+      Event Organizers
+      <button (click)="setViewMode('New')" class="btn btn-primary float-end">
+        <i class="fa fa-plus"></i> New
+      </button>
+    </h4>
+  </div>
+  <div class="card-body">
+    <!-- Filter Bar -->
+    <div class="row mb-3">
+      <div class="col-md-2">
+        <select
+          class="form-select"
+          [(ngModel)]="selectedLocation"
+          (change)="applyFilters()"
+        >
+          <option value="">All Locations</option>
+          <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select
+          class="form-select"
+          [(ngModel)]="selectedStatus"
+          (change)="applyFilters()"
+        >
+          <option value="">All Statuses</option>
+          <option *ngFor="let status of statuses" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <input type="text" [(ngModel)]="searchText" class="form-control" placeholder="Search" />
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-secondary">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-default float-end" (click)="resetFilters()">
+          <i class="fa fa-download"></i> Download
+        </button>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th style="width: 120px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let org of paginatedOrganizers">
+            <td>{{ org.name }}</td>
+            <td>{{ org.email }}</td>
+            <td>{{ org.phone }}</td>
+            <td>{{ org.location }}</td>
+            <td>{{ org.status }}</td>
+            <td class="text-center">
+              <button
+                class="btn btn-sm btn-secondary me-1"
+                (click)="editOrganizer(org)"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-secondary"
+                (click)="confirmDelete(org)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedOrganizers.length === 0">
+            <td colspan="6" class="text-center">No organizers found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <!-- Pagination -->
+    <nav *ngIf="totalPages() > 1">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="currentPage = currentPage - 1"
+            >Previous</a
+          >
+        </li>
+        <li
+          class="page-item"
+          *ngFor="let page of [].constructor(totalPages()); let i = index"
+          [class.active]="currentPage === i + 1"
+        >
+          <a class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages()">
+          <a class="page-link" (click)="currentPage = currentPage + 1">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="card" *ngIf="!isDefaultView">
+  <div class="card-header">
+    <h4>
+      New Organizer
+      <button (click)="setViewMode('Back')" class="btn btn-default float-end">
+        <i class="fa fa-arrow-left"></i> Back
+      </button>
+    </h4>
+  </div>
+  <div class="card-body">
+    <div class="modal-body">
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="selectedOrganizer.name"
+          name="name"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          [(ngModel)]="selectedOrganizer.email"
+          name="email"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Phone</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="selectedOrganizer.phone"
+          name="phone"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Location</label>
+        <select
+          class="form-select"
+          [(ngModel)]="selectedOrganizer.location"
+          name="location"
+          required
+        >
+          <option value="">Select Location</option>
+          <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select
+          class="form-select"
+          [(ngModel)]="selectedOrganizer.status"
+          name="status"
+          required
+        >
+          <option value="">Select Status</option>
+          <option *ngFor="let status of statuses" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <button
+      (click)="upsertOrganizer()"
+      type="submit"
+      class="btn btn-primary float-end"
+    >
+      Save
+    </button>
+    <button
+      (click)="setViewMode('Cancel')"
+      type="button"
+      class="btn btn-default float-end"
+      style="margin-right: 10px"
+    >
+      Cancel
+    </button>
+  </div>
+</div>
