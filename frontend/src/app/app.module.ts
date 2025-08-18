@@ -34,7 +34,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
-
+import { QuillModule } from 'ngx-quill';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
+import { AddEventComponent } from './admin/event/add-event/add-event.component';
+import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
+import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth.interceptor';
@@ -60,6 +64,10 @@ import { OrganizersComponent } from './super-admin/organizers/organizers.compone
     SaDashboardComponent,
     SaAdminLayoutComponent,
     OrganizersComponent,
+    FileUploadComponent,
+    AddEventComponent,
+    ViewEventsComponent,
+    EventDetailsComponent,
   ],
   imports: [
     FormsModule,
@@ -83,6 +91,8 @@ import { OrganizersComponent } from './super-admin/organizers/organizers.compone
       preventDuplicates: true,
     }),
     BrowserAnimationsModule,
+    QuillModule.forRoot(),
+
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [AuthService, AuthGuardService, DatePipe, { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],

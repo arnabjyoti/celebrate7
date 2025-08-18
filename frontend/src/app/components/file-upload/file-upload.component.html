@@ -1,0 +1,50 @@
+<div class="file-upload card p-4 shadow-sm">
+    <label class="form-label fw-bold">Upload Images</label>
+  
+    <!-- Drop area -->
+    <div
+      class="upload-drop-area border rounded-3 d-flex align-items-center justify-content-center mb-3"
+      (drop)="onDrop($event)"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave($event)"
+      [class.drag-over]="isDragOver"
+    >
+      <div class="text-center">
+        <i class="bi bi-cloud-arrow-up fs-1 text-primary"></i>
+        <p class="mb-0">Drag & drop images here or </p>
+        <label for="fileInput" class="btn btn-outline-primary mt-2">Browse Files</label>
+        <input
+          type="file"
+          id="fileInput"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+          multiple
+          class="d-none"
+        />
+      </div>
+    </div>
+  
+    <!-- Previews -->
+    <div *ngIf="previewUrls.length > 0" class="preview-box row">
+      <div class="col-md-3 mb-3" *ngFor="let url of previewUrls; let i = index">
+        <img [src]="url" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
+        <button class="btn btn-sm btn-danger w-100 mt-1" (click)="removeImage(i)">Remove</button>
+      </div>
+    </div>
+    
+    <!-- {{staticFiles}} -->
+    <!-- static images for edit  -->
+    <div *ngIf="staticFiles.length > 0" class="preview-box row">
+      <div class="col-md-3 mb-3" *ngFor="let url of staticFiles; let i = index">
+        <img [src]="envUrl+'/'+url.path" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
+        <button class="btn btn-sm btn-danger w-100 mt-1" (click)="removeImage(i)">Remove</button>
+      </div>
+    </div>
+
+
+
+
+
+
+  </div>
+  

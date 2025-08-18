@@ -15,6 +15,11 @@ import { OrganizersComponent } from './super-admin/organizers/organizers.compone
 
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { AddEventComponent } from './admin/event/add-event/add-event.component';
+import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
+import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
+
+
 const routes: Routes = [
   {
     path: '',
@@ -57,6 +62,10 @@ const routes: Routes = [
       // { path: 'users', component: UsersComponent },
       // { path: 'settings', component: SettingsComponent },
       // { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+       { path: 'add-event', component: AddEventComponent },
+      { path: 'edit-event/:id', component: AddEventComponent },
+      { path: 'view-event', component: ViewEventsComponent },
+      { path: 'event-details/:id', component: EventDetailsComponent },
     ],
   },
 
