@@ -1,32 +1,35 @@
 "use strict";
 
-module.exports = (sequelize, type) => {
-  const event_images = sequelize.define(
-    "event_images",
-    {
-      id: {
-        type: type.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      eventId: type.STRING,
-      title: type.TEXT,
-      filename: type.TEXT,
-      path: type.TEXT,
-      originalname: type.TEXT,
-      description: type.TEXT,
-      isDefault: type.BOOLEAN,
-      isDeleted: {
-        type: type.BOOLEAN,
-        defaultValue: false, 
-      },
-      createdBy: type.INTEGER,
+module.exports = (sequelize, DataTypes) => {
+  const EventImages = sequelize.define("event_images", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
-    {}
-  );
-  event_images.associate = function (models) {
-    // associations can be defined here
+    eventId: {
+      type: DataTypes.INTEGER, // should be INTEGER, not STRING
+      allowNull: false,
+    },
+    title: DataTypes.TEXT,
+    filename: DataTypes.TEXT,
+    path: DataTypes.TEXT,
+    originalname: DataTypes.TEXT,
+    description: DataTypes.TEXT,
+    isDefault: DataTypes.BOOLEAN,
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    createdBy: DataTypes.INTEGER,
+  });
+
+  EventImages.associate = function (models) {
+    EventImages.belongsTo(models.events, {
+      foreignKey: "eventId",
+    });
   };
-  return event_images;
+
+  return EventImages;
 };

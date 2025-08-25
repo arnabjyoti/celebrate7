@@ -274,6 +274,15 @@ module.exports = {
         offset,
         limit,
         order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: eventImageModel,
+            as: "images", // matches association in model
+            attributes: ["id", "filename", "path", "originalname", "isDefault"],
+            where: { isDeleted: false },
+            required: false, // include events even if no images
+          },
+        ],
       })
       .then((result) => {
         const totalPages = Math.ceil(result.count / limit);

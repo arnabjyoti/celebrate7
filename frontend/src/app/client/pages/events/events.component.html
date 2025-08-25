@@ -49,20 +49,23 @@
   </section>
 
   <!-- Map Section -->
-  <section class="container">
+  <!-- <section class="container">
     <div id="map"></div>
-  </section>
+  </section> -->
 
   <!-- Events List Section -->
+  <!-- <tr *ngFor="let event of dataSource; let i = index"></tr> -->
   <section class="container">
     <div class="row">
-      <div class="col-md-4 mb-4">
+      <div *ngFor="let event of events; let i = index" class="col-md-4 mb-4">
         <div class="card event-card">
-          <img src="https://images.pexels.com/photos/2747446/pexels-photo-2747446.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=200" class="card-img-top" alt="Event Flyer">
+          <img src="{{env}}/{{event.images[0].path}}" class="card-img-top" alt="Event Image">
           <div class="card-body">
-            <h5 class="card-title">Bihu Celebration</h5>
-            <p class="card-text">Date: April 14<br>Location: Guwahati, Assam<br>Type: Cultural</p>
-            <a href="#" class="btn btn-outline-primary btn-sm">View Details</a>
+            <h5 class="card-title">{{event.eventName}}</h5>
+            <p class="card-text">Date: {{event.eventDate}}
+              <br>Location: {{event.city}}, {{event.state}}, {{event.country}}
+              <br>Type: {{event.type}}</p>
+            <a href="/event-details/{{event.id}}" class="btn btn-outline-primary btn-sm">View Details</a>
           </div>
         </div>
       </div>
