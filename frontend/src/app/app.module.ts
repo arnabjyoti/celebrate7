@@ -45,6 +45,7 @@ import { AuthInterceptor } from './auth/auth.interceptor';
 import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
 import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
 import { OrganizersComponent } from './super-admin/organizers/organizers.component';
+import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,7 @@ import { OrganizersComponent } from './super-admin/organizers/organizers.compone
     AddEventComponent,
     ViewEventsComponent,
     EventDetailsComponent,
+    EventCategoriesComponent,
   ],
   imports: [
     FormsModule,

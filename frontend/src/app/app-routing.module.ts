@@ -18,7 +18,7 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { AddEventComponent } from './admin/event/add-event/add-event.component';
 import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
 import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
-
+import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
 
 const routes: Routes = [
   {
@@ -44,6 +44,12 @@ const routes: Routes = [
       {
         path: 'organizers',
         component: OrganizersComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' },
+      },
+      {
+        path: 'event-categories',
+        component: EventCategoriesComponent,
         canActivate: [RoleGuard],
         data: { expectedRole: 'sa' },
       }

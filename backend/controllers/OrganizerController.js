@@ -7,7 +7,7 @@ const Op = require("sequelize").Op;
 
 module.exports = {
   //Start: Method to add new or update organizer
-  upsert(req, res) {
+  async upsert(req, res) {
     const organizer = req.body.organizer;
     if (organizer?.id == 0) {
       return usersModel
@@ -18,8 +18,8 @@ module.exports = {
             [Op.or]: [{ email: organizer.email }, { mobile: organizer.phone }],
           },
         })
-        .then((userData) => {
-          if (userData) {
+        .then((organizerData) => {
+          if (organizerData) {
             return res.status(200).send({
               status: false,
               message: `Organizer with the same phone or email is already exist.`,
@@ -49,53 +49,37 @@ module.exports = {
           console.log(error);
           return res.status(500).send({ status: false, message: error });
         });
-    }else{
-      return res.status(200).send({
-                status: true,
-                message: "Organizer record updated successfully",
-              });
-      return usersModel
-      .findOne({
-        where: {
-          id: organizer?.id
-        },
-      })
-      .then((userData) => {
-        if (userData) {
-          organizersModel.create(organizer).then((r) => {
-            const newUser = {
-              mobile: organizer.phone,
-              email: organizer.email,
-              role: "admin",
-              otp: null,
-              otpExpiry: null,
-              refreshToken: null,
-              status: organizer.status,
-              isDeleted: false,
-            };
-            usersModel.create(newUser).then((user) => {
-              return res.status(200).send({
-                status: true,
-                message: "New organizer added successfully",
-              });
-            });
-          });
-        } else {
-          return res.status(200).send({
-            status: false,
-            message: `Organizer record not found in the database.`,
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        return res.status(500).send({ status: false, message: error });
-      });
+    } else {
+      const { id, name, email, phone, location, status } = organizer;
+      const [updated] = await organizersModel.update(
+        { name, email, phone, location, status },
+        { where: { id } }
+      );
+      if (updated) {
+        const email = organizer.email;
+        const mobile = organizer.phone;
+        const status = organizer.status;
+        const user = await usersModel.findOne({
+          where: {
+            [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
+          },
+        });
+        user.email = email;
+        user.mobile = mobile;
+        user.status = status;
+        await user.save();
+        const updatedOrganizer = await organizersModel.findByPk(id);
+        return res.json({
+          status: true,
+          message: "Organizer record updated successfully",
+          category: updatedOrganizer,
+        });
+      }
     }
   },
   //End
 
-  //Start: Method to add view organizers
+  //Start: Method to view organizers
   async view(req, res) {
     try {
       const requestObject = req.body.requestObject;

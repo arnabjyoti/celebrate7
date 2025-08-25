@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../auth/auth.service';
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent {
   otpSent = false;
   message = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService) {}
 
   toggleMode() {
     this.useEmail = !this.useEmail;
@@ -32,9 +33,17 @@ export class LoginComponent {
     }
 
     this.authService.requestOtp(this.mobile, this.email).subscribe({
-      next: () => {
-        this.otpSent = true;
-        this.message = 'OTP sent successfully';
+      next: (res) => {
+        console.log('RES==', res);
+        if (res?.status) {
+          this.otpSent = true;
+          this.message = 'OTP is=' + res.otp;
+          this.toastr.success(res.message, 'Success Message');
+        } else {
+          this.otpSent = false;
+          this.message =  '';
+          this.toastr.error(res.message, 'Error Message');
+        }
       },
       error: (err) => {
         this.otpSent = false;
@@ -50,11 +59,11 @@ export class LoginComponent {
         this.message = 'Login successful!';
         // this.router.navigate(['/dashboard']);
         const role = this.authService.getRole();
-        console.log("Role==",role);
-        
+        console.log('Role==', role);
+
         if (role === 'sa') {
           this.router.navigate(['/sa-dashboard']);
-        }else if (role === 'admin') {
+        } else if (role === 'admin') {
           this.router.navigate(['/dashboard']);
         } else if (role === 'user') {
           this.router.navigate(['/user-dashboard']);

@@ -1,26 +1,34 @@
 <mat-sidenav-container class="admin-container">
   <mat-sidenav class="admin-sidenav" mode="side" opened>
-    <div cclass="sidenav-header"><img src="assets/image/brand.png" alt="" height="65px" width="235px" style="margin-top:-20px; position: absolute;z-index: 99999;"></div>
+    <div cclass="sidenav-header"><img src="assets/image/brand.png" alt="" height="65px" width="220px" style="margin-top:-20px; position: absolute;z-index: 99999;"></div>
     <mat-nav-list style="margin-top: 60px;">
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+      <a mat-list-item routerLink="/sa-dashboard" routerLinkActive="active-link">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
       <a mat-list-item routerLink="/organizers" routerLinkActive="active-link">
         <mat-icon>people</mat-icon>
-        <span>Organizers</span>
+        <span>Manage Organizers</span>
+      </a>
+       <a mat-list-item routerLink="/event-categories" routerLinkActive="active-link">
+        <mat-icon>book_online</mat-icon>
+        <span>Event Categories</span>
       </a>
       <a mat-list-item routerLink="/events" routerLinkActive="active-link">
         <mat-icon>event</mat-icon>
-        <span>Events</span>
-      </a>
-      <a mat-list-item routerLink="/events" routerLinkActive="active-link">
-        <mat-icon>book_online</mat-icon>
-        <span>Bookings</span>
+        <span>All Events</span>
       </a>
       <a mat-list-item routerLink="/events" routerLinkActive="active-link">
         <mat-icon>payments</mat-icon>
-        <span>Billings</span>
+        <span>Sponsors & Partners</span>
+      </a>
+      <a mat-list-item routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>reports</mat-icon>
+        <span>Reports & Analytics</span>
+      </a>
+      <a mat-list-item routerLink="/events" routerLinkActive="active-link">
+        <mat-icon>settings</mat-icon>
+        <span>Settings</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
