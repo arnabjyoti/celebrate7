@@ -12,13 +12,15 @@ import { EventsComponent } from './client/pages/events/events.component';
 import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
 import {SaAdminLayoutComponent} from './super-admin/sa-admin-layout/sa-admin-layout.component';
 import { OrganizersComponent } from './super-admin/organizers/organizers.component';
+import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
+import { AllEventsComponent } from './super-admin/all-events/all-events.component';
 
 import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { AddEventComponent } from './admin/event/add-event/add-event.component';
 import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
 import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
-import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
+
 
 const routes: Routes = [
   {
@@ -50,6 +52,12 @@ const routes: Routes = [
       {
         path: 'event-categories',
         component: EventCategoriesComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' },
+      },
+      {
+        path: 'all-events',
+        component: AllEventsComponent,
         canActivate: [RoleGuard],
         data: { expectedRole: 'sa' },
       }
