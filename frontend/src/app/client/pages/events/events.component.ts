@@ -1,71 +1,68 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { ToastrService } from 'ngx-toastr';
-import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
-  styleUrls: ['./events.component.css']
+  styleUrls: ['./events.component.css'],
 })
 export class EventsComponent {
+  constructor(private http: HttpClient, private router: Router) {}
 
-  constructor(
-    // private toastr: ToastrService,
-    private http: HttpClient,
-    private router: Router
-    // private route: ActivatedRoute,
-    // private location: Location
-  ) {}
+  env = environment.BASE_URL;
+  events: any[] = [];
+  filteredEvents: any[] = [];
 
+  filters = {
+    state: '',
+    month: '',
+    type: '',
+    date: '',
+  };
 
+  months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December',
+  ];
 
-
-    perPage: number = 13;
-    currentPage: number = 1;
-    totalItems: number = 0;
-    totalPages: number = 0;
-    manageSearch : any = {
-      searchByEventName : '',
-      searchByOrganizer : '',
-      searchByCity : '',
-      searchByDate: '',
-      // search : ''
-    }
-    env = environment.BASE_URL;
-
-    events: any[] = [];
-
-    ngOnInit(): void {
-      this.fetchEvents();
-    }
-
+  ngOnInit(): void {
+    this.fetchEvents();
+  }
 
   fetchEvents(): void {
-
-    let reqBody = {
-      limit : this.perPage,
-      page: this.currentPage,
-      searchBy : 'eventName',
-      search : this.manageSearch || {}
-    }
-
-   
-
+    const reqBody = {
+      limit: 13,
+      page: 1,
+    };
 
     this.http.post(`${environment.BASE_URL}/api/getAllEvents`, reqBody).subscribe((res: any) => {
-      console.log('getAllEvents', res);
-      
       this.events = res.data || [];
-      this.totalItems = res.pagination.totalItems;
-      this.totalPages = res.pagination.totalPages;
-      this.currentPage = res.pagination.currentPage;
-      this.perPage = res.pagination.perPage;
+      this.filteredEvents = [...this.events];
     });
+  }
+
+  filterByDate(option: string): void {
+    this.filters.date = option;
+    this.applyFilters();
+  }
+
+  applyFilters(): void {
+    this.filteredEvents = this.events.filter((event) => {
+      const matchesState = !this.filters.state || event.state === this.filters.state;
+      const matchesMonth = !this.filters.month || event.month === this.filters.month;
+      const matchesType = !this.filters.type || event.type === this.filters.type;
+      return matchesState && matchesMonth && matchesType;
+    });
+  }
+
+  clearFilters(): void {
+    this.filters = { state: '', month: '', type: '', date: '' };
+    this.filteredEvents = [...this.events];
   }
 
   viewEvent(event: any): void {
     this.router.navigate([`/event-details/${event.id}`]);
   }
-
 }
