@@ -35,5 +35,7 @@ module.exports = (app) => {
 	app.post('/api/upsert-organizer', OrganizerController.upsert);
 	app.post('/api/get-organizers', OrganizerController.view);
 	app.post('/api/delete-organizer', OrganizerController.delete);
-
+	app.post('/api/get-event-categories', eventController.viewEventCategories);
+	app.post('/api/upsert-event-category', eventController.upsertEventCategory);
+	app.post('/api/delete-event-category', eventController.deleteEventCategory);
 	};

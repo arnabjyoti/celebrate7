@@ -24,7 +24,7 @@ const authenticate = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) return res.sendStatus(401);
 
-  const token = authHeader.split(' ')[1];
+  const token = authHeader.split(" ")[1];
   jwt.verify(token, config.JWT_SECRET, (err, user) => {
     if (err) return res.sendStatus(403);
     req.user = user;
@@ -35,7 +35,7 @@ const authenticate = (req, res, next) => {
 const authorizeRoles = (...allowedRoles) => {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ message: 'Access denied' });
+      return res.status(403).json({ message: "Access denied" });
     }
     next();
   };
@@ -46,20 +46,46 @@ module.exports = {
   async requestOTP(req, res) {
     const { mobile, email } = req.body;
     if (!mobile && !email)
-      return res.status(400).json({ message: "Mobile or Email required" });
+      return res
+        .status(200)
+        .json({ status: false, message: "Mobile or Email required", otp: "" });
 
     const contactFilter = mobile ? { mobile } : { email };
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
-
-
-    await usersModel.update(
-  { otp, otpExpiry },      // Fields to update
-  { where: contactFilter } // Filter to find the user(s)
-);
-
-    console.log(`OTP sent to ${mobile || email}: ${otp}`);
-    res.json({ message: "OTP sent" });
+    const user = await usersModel.findOne({ where: contactFilter });
+    if (!user) {
+      return res.status(200).json({
+        status: false,
+        message:
+          "Can not send OTP as the provided mobile number or email id is not registered with us",
+        otp: "",
+      });
+    } else {
+      if (user?.status != "Active") {
+        return res.status(200).json({
+          status: false,
+          message:
+            "Can not send OTP as your account has been deactivated. Kindly contact with admin",
+          otp: "",
+        });
+      } else if (user?.isDeleted) {
+        return res.status(200).json({
+          status: false,
+          message:
+            "Can not send OTP as your account has been deleted. Kindly contact with admin",
+          otp: "",
+        });
+      } else {
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
+        await usersModel.update({ otp, otpExpiry }, { where: contactFilter });
+        console.log(`OTP sent to ${mobile || email}: ${otp}`);
+        res.json({
+          status: true,
+          message: "OTP sent to your registerd mobile or email",
+          otp: otp,
+        });
+      }
+    }
   },
 
   async verifyOTP(req, res) {

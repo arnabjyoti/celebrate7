@@ -1,0 +1,130 @@
+<div class="card" *ngIf="isDefaultView">
+  <div class="card-header">
+    <h4>
+      Event Categories
+      <button (click)="setViewMode('New')" class="btn btn-primary float-end">
+        <i class="fa fa-plus"></i> New
+      </button>
+    </h4>
+  </div>
+  <div class="card-body">
+    
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Category Name</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+            <th>Status</th>
+            <th style="width: 120px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let category of paginatedCategories">
+            <td>{{ category.categoryName }}</td>
+            <td>{{ category.createdAt | date:'short' }}</td>
+            <td>{{ category.updatedAt | date:'short' }}</td>
+            <td>{{ category.status }}</td>
+            <td class="text-center">
+              <button
+                class="btn btn-sm btn-secondary me-1"
+                (click)="editCategory(category)"
+              >
+                <i class="fa fa-edit"></i>
+              </button>
+              <button
+                class="btn btn-sm btn-secondary"
+                (click)="confirmDelete(category)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedCategories.length === 0">
+            <td colspan="5" class="text-center">No categories found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <!-- Pagination -->
+    <nav *ngIf="totalPages() > 1">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="currentPage = currentPage - 1"
+            >Previous</a
+          >
+        </li>
+        <li
+          class="page-item"
+          *ngFor="let page of [].constructor(totalPages()); let i = index"
+          [class.active]="currentPage === i + 1"
+        >
+          <a class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages()">
+          <a class="page-link" (click)="currentPage = currentPage + 1">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="card" *ngIf="!isDefaultView">
+  <div class="card-header">
+    <h4>
+      New Event Category
+      <button (click)="setViewMode('Back')" class="btn btn-default float-end">
+        <i class="fa fa-arrow-left"></i> Back
+      </button>
+    </h4>
+  </div>
+  <div class="card-body">
+    <div class="modal-body">
+      <div class="mb-3">
+        <label class="form-label">Event Category Name</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="selectedCategory.categoryName"
+          name="name"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+        <select
+          class="form-select"
+          [(ngModel)]="selectedCategory.status"
+          name="status"
+          required
+        >
+          <option value="">Select Status</option>
+          <option *ngFor="let status of statuses" [value]="status">
+            {{ status }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <button
+      (click)="upsertEventCategory()"
+      type="submit"
+      class="btn btn-primary float-end"
+    >
+      Save
+    </button>
+    <button
+      (click)="setViewMode('Cancel')"
+      type="button"
+      class="btn btn-default float-end"
+      style="margin-right: 10px"
+    >
+      Cancel
+    </button>
+  </div>
+</div>

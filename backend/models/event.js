@@ -1,40 +1,39 @@
 "use strict";
 
-module.exports = (sequelize, type) => {
-  const events = sequelize.define(
-    "events",
-    {
-      id: {
-        type: type.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
-      eventName: type.TEXT,
-      organizer: type.TEXT, 
-      type: type.STRING,
-      eventDate: type.STRING,
-      eventTime: type.STRING,
-      country: type.STRING,
-      state: type.STRING,
-      city: type.STRING,
-      fullAddress: type.TEXT,
-
-      lat: type.TEXT,
-      lng: type.TEXT,
-
-      description: type.TEXT,
-      status: type.STRING,
-      isDeleted: {
-        type: type.BOOLEAN,
-        defaultValue: false,
-      },
-      createdBy: type.INTEGER,
+module.exports = (sequelize, DataTypes) => {
+  const Events = sequelize.define("events", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
     },
-    {}
-  );
-  events.associate = function (models) {
-    // associations can be defined here
+    eventName: DataTypes.TEXT,
+    organizer: DataTypes.TEXT,
+    type: DataTypes.STRING,
+    eventDate: DataTypes.STRING,
+    eventTime: DataTypes.STRING,
+    country: DataTypes.STRING,
+    state: DataTypes.STRING,
+    city: DataTypes.STRING,
+    fullAddress: DataTypes.TEXT,
+    lat: DataTypes.TEXT,
+    lng: DataTypes.TEXT,
+    description: DataTypes.TEXT,
+    status: DataTypes.STRING,
+    isDeleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    createdBy: DataTypes.INTEGER,
+  });
+
+  Events.associate = function (models) {
+    Events.hasMany(models.event_images, {
+      foreignKey: "eventId",
+      as: "images",
+    });
   };
-  return events;
+
+  return Events;
 };
