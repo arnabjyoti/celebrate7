@@ -7,8 +7,8 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
-    padding-right: 4px;
-    padding-left: 1px;
+    /* padding-right: 4px;
+    padding-left: 1px; */
 }
 .mat-mdc-raised-button.mat-primary {
     --mdc-protected-button-container-color: #20c997;
