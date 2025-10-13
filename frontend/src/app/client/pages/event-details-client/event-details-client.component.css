@@ -1,0 +1,111 @@
+:root {
+    --brand: #0071c2;
+    --muted: #6b6b6b;
+    --card: #ffffff;
+    --bg: #f7f8fb;
+    --radius: 8px;
+    --shadow: 0 6px 20px rgba(15, 23, 30, 0.06);
+  }
+  
+  .booking-page {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    max-width: 1200px;
+    margin: 28px auto;
+    padding: 16px;
+    color: #222;
+    background: transparent;
+  }
+  
+  /* HERO */
+  .hero {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .gallery-col { flex: 1; }
+  .booking-col { width: 360px; flex-shrink: 0; }
+  
+  /* Gallery */
+  .main-gallery {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid #e8e8e8;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .main-image { width: 100%; height: 420px; object-fit: cover; display: block; cursor: zoom-in; }
+  .thumbs { display: flex; gap: 8px; padding: 12px; background: #fff; overflow: auto; }
+  .thumbs img { width: 96px; height: 64px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid transparent; }
+  .thumbs img.active { border-color: var(--brand); outline: 2px solid rgba(0,113,194,0.08); }
+  
+  /* Booking panel */
+  .booking-panel {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px;
+    border: 1px solid #e6e6e6;
+    box-shadow: var(--shadow);
+  }
+  .title { font-size: 20px; margin: 0 0 6px; }
+  .location { color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+  .price-block { margin-bottom: 8px; }
+  .price-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .price-amount { color: var(--brand); font-weight: 700; font-size: 22px; }
+  .price-sub { font-size: 13px; color: var(--muted); }
+  .availability { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .actions-right { display: flex; gap: 8px; align-items: center; }
+  .btn-wishlist { background: transparent; border: 1px solid #ddd; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+  .btn-wishlist[aria-pressed="true"] { background: rgba(0,113,194,0.06); border-color: var(--brand); }
+  
+  /* Booking form */
+  .booking-form { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+  .booking-form label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+  .booking-form select, .booking-form input[type="number"] {
+    padding: 10px; border-radius: 6px; border: 1px solid #e1e1e1; font-size: 14px;
+  }
+  .total-row { display: flex; justify-content: space-between; align-items: center; font-weight: 700; margin-top: 8px; }
+  .total-amount { color: #111; }
+  
+  /* Buttons */
+  .btn { display: inline-block; padding: 10px 14px; border-radius: 6px; cursor: pointer; border: none; }
+  .btn.primary, .btn.primary.full { background: var(--brand); color: #fff; font-weight: 700; }
+  .btn.primary.full { width: 100%; }
+  
+  /* MAIN area */
+  .main { display: flex; gap: 20px; margin-top: 24px; }
+  .main-left { flex: 1; }
+  /* .main-right { width: 320px; } */
+  .main-right { width: 360px; flex-shrink: 0; }
+  
+  /* Cards & content */
+  .card { background: var(--card); border: 1px solid #eaeaea; border-radius: 8px; padding: 12px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  .summary-card { @extend .card; }
+  .amenities { list-style: none; padding-left: 0; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .amenities li { background: #f6f8fb; padding: 6px 8px; border-radius: 4px; font-size: 13px; }
+  
+  /* Reviews */
+  .review-list .review { border-bottom: 1px solid #eee; padding: 12px 0; }
+  .r-top { display: flex; justify-content: space-between; align-items: center; }
+  .r-rating { color: var(--brand); font-weight: 700; }
+  
+  /* Map placeholder */
+  .map-placeholder { height: 120px; background: #f4f7fb; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+  
+  /* Lightbox */
+  .lightbox {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.75); z-index: 1200;
+  }
+  .lightbox img { max-width: 92%; max-height: 86%; border-radius: 6px; }
+  
+  /* Responsive */
+  @media (max-width: 960px) {
+    .hero { flex-direction: column; }
+    .booking-col { width: 100%; }
+    .main { flex-direction: column; }
+    .main-right { width: 100%; }
+  }
+  
+
+  .map-embed { width: 100%; overflow: hidden; border-radius: 6px; }
+  .map-embed iframe { display: block; width: 100%; height: 260px; border: 0; }

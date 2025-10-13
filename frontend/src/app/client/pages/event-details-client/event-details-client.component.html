@@ -1,0 +1,183 @@
+<!-- Booking.com style Event Details (Angular template) -->
+<div class="booking-page">
+
+    <!-- HERO: Gallery (left) + Booking panel (right) -->
+    <section class="hero" role="region" aria-label="Event hero">
+      <div class="gallery-col">
+        <div class="main-gallery" aria-hidden="false">
+          <img
+            class="main-image"
+            [src]="getImagePreview(selectedFiles[0])"
+            [alt]="event.title"
+            (click)="openLightbox(lightboxIndex)"
+          />
+          <div class="thumbs" role="list">
+            <img
+              role="listitem"
+              *ngFor="let img of selectedFiles; let i = index"
+              [src]="getImagePreview(img)"
+              [alt]="event.title + ' thumbnail ' + (i+1)"
+              [class.active]="i === lightboxIndex"
+              (click)="openLightbox(i)"
+            />
+          </div>
+        </div>
+      </div>
+  
+      <aside class="booking-col" aria-label="Booking panel">
+        <div class="booking-panel">
+          <h2 class="title">{{ event.eventName }}</h2>
+          <div class="location">{{ event.city }} • {{ event.fullAddress }}</div>
+  
+          <div class="price-block">
+            <div class="price-row">
+              <div>
+                <!-- <div class="price-amount">{{ lowestPrice() | currency }}</div> -->
+                <div class="price-amount">{{ ticket_details[0]?.ticket_price | currency:'INR':'symbol' }}</div>
+                <div class="price-sub">per ticket</div>
+              </div>
+  
+              <div class="actions-right">
+                <button class="btn-wishlist" (click)="toggleWishlist()" [attr.aria-pressed]="wishlisted">
+                  <span aria-hidden="true">♥</span>
+                  <span class="sr-only">{{ wishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}</span>
+                </button>
+              </div>
+            </div>
+  
+            <div class="availability">Free cancellation • Instant confirmation</div>
+          </div>
+  
+          <form class="booking-form" (ngSubmit)="onBook()" aria-label="Booking form">
+            <label>
+              Ticket type
+              <select [(ngModel)]="selectedTier" name="tier" required>
+                <option *ngFor="let t of ticket_details" [ngValue]="t">
+                  {{ t.ticket_name }} — {{ t.ticket_price | currency:'INR':'symbol' }}
+                </option>
+              </select>
+            </label>
+  
+            <label>
+              Quantity
+              <input type="number" name="qty" [(ngModel)]="quantity" min="1" />
+            </label>
+  
+            <div class="total-row" aria-live="polite">
+              <div>Total</div>
+              <div class="total-amount">{{ ((selectedTier?.price || 0) * quantity) | currency }}</div>
+            </div>
+  
+            <button class="btn primary full" type="submit">Reserve now</button>
+          </form>
+  
+          <div class="policies">
+            <div><strong>Start:</strong> {{ event.eventDate | date:'mediumDate' }}</div>
+            <div><strong>End:</strong> {{ event.eventDate | date:'mediumDate' }}</div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  
+    <!-- MAIN: left content (overview, programme, reviews) + right panels (map, policies, nearby) -->
+    <section class="main" aria-label="Event details">
+      <div class="main-left">
+        <div class="top-info">
+          <div class="rating">{{ averageRating() | number:'1.1-1' }} <small>/5</small></div>
+          <div class="review-count">{{ event.reviews?.length || 0 }} reviews</div>
+        </div>
+  
+        <div class="summary-card">
+          <h3>Overview</h3>
+          <div class="description" [innerHTML]="content"></div>
+
+          <hr>
+  
+          <h4>What to expect</h4>
+          <ul class="amenities">
+            <li *ngFor="let a of attributePairs(event.attributes)">
+              <strong>{{ a.key }}:</strong> {{ a.value }}
+            </li>
+          </ul>
+        </div>
+  
+        <div class="section">
+          <h4>Programme</h4>
+          <ul class="programme">
+            <li *ngFor="let s of event.schedule"><strong>{{ s.time }}</strong> — {{ s.activity }}</li>
+          </ul>
+        </div>
+        <hr>
+  
+        <div class="section reviews-section" aria-label="Guest reviews">
+          <h4>Guest reviews</h4>
+          <div class="review-list">
+            <article *ngFor="let r of event.reviews" class="review">
+              <div class="r-top">
+                <strong>{{ r.user }}</strong>
+                <div class="r-rating">{{ r.rating }} / 5</div>
+              </div>
+              <p class="r-comment"> <i> {{ r.comment }}</i> </p>
+              <div class="r-date">{{ r.date | date:'mediumDate' }}</div>
+            </article>
+          </div>
+        </div>
+      </div>
+  
+      <aside class="main-right" aria-label="Right side panels">
+
+
+        <!-- ******************** -->
+        <div class="map-panel card">
+            <h4>Location</h4>
+          
+            <!-- Embedded Google Map (responsive) -->
+            <div class="map-embed">
+              <iframe
+                [src]="mapUrl"
+                width="100%"
+                height="260"
+                style="border:0; border-radius:6px;"
+                allowfullscreen
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Event location map"
+              ></iframe>
+            </div>
+          
+            <!-- Link to open in Google Maps (new tab) -->
+            <div class="map-actions" style="margin-top:8px; font-size:13px;">
+              <a [href]="mapsLink" target="_blank" rel="noopener">Open in Google Maps</a>
+            </div>
+          </div>
+          
+        <!-- ******************** -->
+
+
+
+
+        <!-- <div class="map-panel card">
+          <h4>Location</h4>
+          <div class="map-placeholder">Map coordinates: ({{ event.lat }}, {{ event.lng }})</div>
+        </div> -->
+  
+        <div class="policies-panel card">
+          <h4>Policies</h4>
+          <p>Refunds, accessibility and safety guidelines.</p>
+        </div>
+  
+        <div class="nearby-panel card" *ngIf="event.nearby?.length">
+          <h4>Nearby</h4>
+          <ul>
+            <li *ngFor="let n of event.nearby">{{ n }}</li>
+          </ul>
+        </div>
+      </aside>
+    </section>
+  
+    <!-- Lightbox -->
+    <div class="lightbox" *ngIf="lightboxOpen" (click)="closeLightbox()" role="dialog" aria-modal="true">
+      <img [src]="event.images[lightboxIndex]" [alt]="event.title + ' image ' + (lightboxIndex + 1)" />
+    </div>
+  </div>
+  

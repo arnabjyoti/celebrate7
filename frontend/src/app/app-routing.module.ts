@@ -20,6 +20,7 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { AddEventComponent } from './admin/event/add-event/add-event.component';
 import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
 import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
+import { EventDetailsClientComponent } from './client/pages/event-details-client/event-details-client.component';
 
 
 const routes: Routes = [
@@ -30,7 +31,8 @@ const routes: Routes = [
       { path: '', component: HomeComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      { path: 'events', component: EventsComponent }
+      { path: 'events', component: EventsComponent },
+      { path: 'event/:id', component: EventDetailsClientComponent },
     ]
   },
   {
