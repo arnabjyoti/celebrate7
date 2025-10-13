@@ -1,74 +1,131 @@
-<section class="container py-4">
-    <h2 class="mb-3">Find Events</h2>
-    <form class="row g-3">
-      <div class="col-md-3">
-        <label for="stateFilter" class="form-label">State</label>
-        <select class="form-select" id="stateFilter">
-          <option selected>All</option>
-          <option>Assam</option>
-          <option>Manipur</option>
-          <option>Meghalaya</option>
-          <option>Mizoram</option>
-          <option>Nagaland</option>
-          <option>Sikkim</option>
-          <option>Tripura</option>
-        </select>
-      </div>
-      <div class="col-md-3">
-        <label for="monthFilter" class="form-label">Month</label>
-        <select class="form-select" id="monthFilter">
-          <option selected>All</option>
-          <option>January</option>
-          <option>February</option>
-          <option>March</option>
-          <option>April</option>
-          <option>May</option>
-          <option>June</option>
-          <option>July</option>
-          <option>August</option>
-          <option>September</option>
-          <option>October</option>
-          <option>November</option>
-          <option>December</option>
-        </select>
-      </div>
-      <div class="col-md-3">
-        <label for="typeFilter" class="form-label">Type of Event</label>
-        <select class="form-select" id="typeFilter">
-          <option selected>All</option>
-          <option>Festival</option>
-          <option>Charity</option>
-          <option>Cultural</option>
-          <option>Online</option>
-        </select>
-      </div>
-      <div class="col-md-3 d-grid align-self-end">
-        <button type="submit" class="btn btn-primary mt-2">Search</button>
-      </div>
-    </form>
-  </section>
+<div class="container-fluid pt-4" style="background: rgb(242, 245, 249);">
+  <div class="row">
+    <!-- LEFT FILTER SIDEBAR -->
+    <div class="col-md-3 col-lg-2 mb-4">
+      <div class="filter-sidebar shadow-sm rounded-3 p-3 bg-white">
+        <h5 class="fw-semibold mb-3">
+          <i class="fas fa-filter me-2 text-danger"></i>Filters
+        </h5>
 
-  <!-- Map Section -->
-  <!-- <section class="container">
-    <div id="map"></div>
-  </section> -->
+        <!-- Date Filter -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary mb-2">Date</label>
+          <div class="d-flex flex-wrap gap-2">
+            <button type="button" class="btn btn-outline-danger btn-sm">Today</button>
+            <button type="button" class="btn btn-outline-danger btn-sm">Tomorrow</button>
+            <button type="button" class="btn btn-outline-danger btn-sm">This Weekend</button>
+            <div class="form-check mt-2">
+              <input class="form-check-input" type="checkbox" id="dateRange">
+              <label class="form-check-label small text-muted" for="dateRange">Date Range</label>
+            </div>
+          </div>
+        </div>
 
-  <!-- Events List Section -->
-  <!-- <tr *ngFor="let event of dataSource; let i = index"></tr> -->
-  <section class="container">
-    <div class="row">
-      <div *ngFor="let event of events; let i = index" class="col-md-4 mb-4">
-        <div class="card event-card">
-          <img src="{{env}}/{{event.images[0].path}}" class="card-img-top" alt="Event Image">
-          <div class="card-body">
-            <h5 class="card-title">{{event.eventName}}</h5>
-            <p class="card-text">Date: {{event.eventDate}}
-              <br>Location: {{event.city}}, {{event.state}}, {{event.country}}
-              <br>Type: {{event.type}}</p>
-            <a href="/event/{{event.id}}" class="btn btn-outline-primary btn-sm">View Details</a>
+        <!-- Language Filter -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary mb-2">Language</label>
+          <select class="form-select form-select-sm">
+            <option value="">All</option>
+            <option>Hindi</option>
+            <option>Marathi</option>
+            <option>English</option>
+          </select>
+        </div>
+
+        <!-- Categories Filter -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary mb-2">Categories</label>
+          <select class="form-select form-select-sm">
+            <option value="">All</option>
+            <option>Drama</option>
+            <option>Comedy</option>
+            <option>Musical</option>
+          </select>
+        </div>
+
+        <!-- Genres Filter -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary mb-2">Genres</label>
+          <select class="form-select form-select-sm">
+            <option value="">All</option>
+            <option>Romantic</option>
+            <option>Historical</option>
+            <option>Family</option>
+          </select>
+        </div>
+
+        <!-- More Filters -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary mb-2">More Filters</label>
+          <select class="form-select form-select-sm">
+            <option value="">All</option>
+            <option>Online</option>
+            <option>Festival</option>
+            <option>Charity</option>
+          </select>
+        </div>
+
+        <!-- Price Filter -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-secondary mb-2">Price</label>
+          <select class="form-select form-select-sm">
+            <option value="">All</option>
+            <option>₹0 - ₹100</option>
+            <option>₹101 - ₹500</option>
+            <option>₹501+</option>
+          </select>
+        </div>
+
+        <button class="btn btn-outline-secondary w-100 mt-2">
+          <i class="fas fa-undo me-1"></i> Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== RIGHT EVENTS GRID ========== -->
+    <div class="col-md-9 col-lg-10">
+      <h3 class="mb-4">Events</h3>
+      <div class="row">
+        <div
+          *ngFor="let event of filteredEvents"
+          class="col-md-4 col-lg-3 mb-4"
+        >
+          <div class="card custom-card shadow-sm border-0">
+            <div class="image-container">
+              <img
+                [src]="env + '/' + event.images[0].path"
+                class="card-img-top"
+                alt="{{ event.eventName }}"
+              />
+              <button class="favorite-btn">
+                <i class="far fa-heart"></i>
+              </button>
+            </div>
+            <div class="card-body">
+              <h5 class="card-title mb-1">{{ event.eventName }}</h5>
+              <p class="card-text text-muted small mb-2">
+                <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+                {{ event.city }}, {{ event.state }}
+              </p>
+              <div class="d-flex align-items-center mb-2">
+                <div class="rating-box">
+                  <strong>9.6</strong>
+                </div>
+                <span class="ml-2 text-secondary small">
+                  Exceptional <br />
+                  <span class="text-muted">{{ event.reviews || 88 }} reviews</span>
+                </span>
+              </div>
+              <a
+                [routerLink]="['/event', event.id]"
+                class="btn btn-outline-primary btn-sm w-100"
+              >
+                View Details
+              </a>
+            </div>
           </div>
         </div>
       </div>
-      <!-- Repeat for more events -->
     </div>
-  </section>
+  </div>
+</div>
