@@ -1,8 +1,19 @@
-
-  <!-- HERO / Carousel -->
+<!-- HERO / Carousel -->
+<div style="padding-left: 80px; padding-right: 80px">
   <section class="hero" *ngIf="featured.length">
-    <div class="slides" [style.transform]="'translateX(-' + (currentSlide * 100) + '%)'">
-      <section class="slide" *ngFor="let f of featured" [style.backgroundImage]="'linear-gradient(180deg, rgba(2,6,23,0.18), rgba(2,6,23,0.12)), url(' + f.bg + ')'">
+    <div
+      class="slides"
+      [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
+    >
+      <section
+        class="slide"
+        *ngFor="let f of featured"
+        [style.backgroundImage]="
+          'linear-gradient(180deg, rgba(2,6,23,0.18), rgba(2,6,23,0.12)), url(' +
+          f.bg +
+          ')'
+        "
+      >
         <div class="info">
           <h1>{{ f.title }}</h1>
           <p>{{ f.tagline }}</p>
@@ -11,7 +22,7 @@
             <button class="btn ghost">Watch Trailer</button>
           </div>
         </div>
-        <div style="flex:1"></div>
+        <div style="flex: 1"></div>
       </section>
     </div>
 
@@ -24,11 +35,24 @@
   <!-- Filters -->
   <div class="filters-row">
     <div class="filters">
-      <button class="chip" [class.active]="activeGenre===null" (click)="setGenre(null)">All</button>
-      <button class="chip" *ngFor="let g of genres" [class.active]="activeGenre===g" (click)="setGenre(g)">{{ g }}</button>
+      <button
+        class="chip"
+        [class.active]="activeGenre === null"
+        (click)="setGenre(null)"
+      >
+        All
+      </button>
+      <button
+        class="chip"
+        *ngFor="let g of genres"
+        [class.active]="activeGenre === g"
+        (click)="setGenre(g)"
+      >
+        {{ g }}
+      </button>
     </div>
 
-    <div class="right-controls" style="float: right;">
+    <div class="right-controls" style="float: right">
       <div class="badge">City: Guwahati</div>
       <button class="btn ghost" (click)="resetFilters()">Reset</button>
     </div>
@@ -39,23 +63,35 @@
     <h2>Now Showing</h2>
     <div class="grid" *ngIf="filtered.length; else noResults">
       <article class="card" *ngFor="let m of filtered">
-        <div class="poster" [style.backgroundImage]="'url(' + m.poster + ')'"></div>
+        <div
+          class="poster"
+          [style.backgroundImage]="'url(' + m.poster + ')'"
+        ></div>
         <div class="meta">
           <div class="title-row">
             <div>
               <div class="title">{{ m.title }}</div>
               <div class="sub">{{ m.genre }} • {{ m.runtime }}</div>
             </div>
-            <div style="text-align:right">
+            <div style="text-align: right">
               <div class="rating">{{ m.rating }}</div>
-              <div class="imdb">{{m.city}}</div>
+              <div class="imdb">{{ m.city }}</div>
             </div>
           </div>
 
-          <div style="flex:1"></div>
+          <div style="flex: 1"></div>
           <div class="card-footer">
-            <div class="lang">{{m.organizer}}</div>
-            <div><button class="btn" (click)="openBooking(m.id)">Book</button></div>
+            <div class="lang">{{ m.organizer }}</div>
+            <div>
+              <a
+                [routerLink]="['/event', m.id]"
+                class="btn btn-outline-primary btn-sm w-100"
+              >
+                View
+              </a>
+              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
+              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
+            </div>
           </div>
         </div>
       </article>
@@ -66,38 +102,42 @@
     </ng-template>
   </section>
 
-
-<!-- Booking modal -->
-<div class="modal-backdrop" *ngIf="showModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <strong>Book — {{ selectedEvent?.title }}</strong>
-        <div class="modal-sub">{{ selectedEvent?.genre }} • {{ selectedEvent?.runtime }}</div>
-      </div>
-      <button class="close-btn" (click)="closeModal()">&times;</button>
-    </div>
-
-    <div class="modal-body">
-      <div class="form-row">
+  <!-- Booking modal -->
+  <div class="modal-backdrop" *ngIf="showModal">
+    <div class="modal">
+      <div class="modal-header">
         <div>
-          <label>Choose Date</label>
-          <select [(ngModel)]="selectedDate">
-            <option *ngFor="let d of dateOptions" [value]="d">{{ d }}</option>
-          </select>
+          <strong>Book — {{ selectedEvent?.title }}</strong>
+          <div class="modal-sub">
+            {{ selectedEvent?.genre }} • {{ selectedEvent?.runtime }}
+          </div>
         </div>
-
-        <div>
-          <label>Qty</label>
-          <input type="number" [(ngModel)]="qty" min="1" max="10" />
-        </div>
-
-        <div class="actions">
-          <button class="btn" (click)="confirmBooking()">Confirm Booking</button>
-        </div>
+        <button class="close-btn" (click)="closeModal()">&times;</button>
       </div>
 
-      <div class="booking-msg" *ngIf="bookingMsg">{{ bookingMsg }}</div>
+      <div class="modal-body">
+        <div class="form-row">
+          <div>
+            <label>Choose Date</label>
+            <select [(ngModel)]="selectedDate">
+              <option *ngFor="let d of dateOptions" [value]="d">{{ d }}</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Qty</label>
+            <input type="number" [(ngModel)]="qty" min="1" max="10" />
+          </div>
+
+          <div class="actions">
+            <button class="btn" (click)="confirmBooking()">
+              Confirm Booking
+            </button>
+          </div>
+        </div>
+
+        <div class="booking-msg" *ngIf="bookingMsg">{{ bookingMsg }}</div>
+      </div>
     </div>
   </div>
 </div>
