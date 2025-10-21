@@ -21,6 +21,37 @@
           </div>
         </div>
 
+        <div class="mb-4">
+          <label class="form-label fw-bold">State</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.state"
+            (change)="applyFilters()"
+          >
+            <option value="">All</option>
+            <option>Assam</option>
+            <option>Manipur</option>
+            <option>Meghalaya</option>
+            <option>Mizoram</option>
+            <option>Nagaland</option>
+            <option>Sikkim</option>
+            <option>Tripura</option>
+          </select>
+        </div>
+
+        <!-- Month Filter -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">Month</label>
+          <select
+            class="form-select"
+            [(ngModel)]="filters.month"
+            (change)="applyFilters()"
+          >
+            <option value="">All</option>
+            <option *ngFor="let m of months">{{ m }}</option>
+          </select>
+        </div>
+
         <!-- Language Filter -->
         <div class="mb-4">
           <label class="form-label fw-semibold text-secondary mb-2">Language</label>
