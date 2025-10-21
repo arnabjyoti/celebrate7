@@ -1,6 +1,7 @@
 "use strict";
 const usersModel = require("../models").users;
 const eventModel = require("../models").events;
+const eventCategoriesModel = require("../models").eventcategories;
 const ticketModel = require("../models").tickets;
 const eventImageModel = require("../models").event_images;
 const request = require("request");
@@ -8,6 +9,144 @@ const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
 
 module.exports = {
+  //Start: Method to view event categories
+  async viewEventCategories(req, res) {
+    try {
+      const requestObject = req.body.requestObject;
+      const page = requestObject?.currentPage;
+      const limit = requestObject?.pageSize;
+      const search = requestObject?.searchText;
+      const status = requestObject?.status;
+
+      const offset = (page - 1) * limit;
+      let whereClause = { isDeleted: false };
+
+      // Search in name/email/phone
+      if (search) {
+        whereClause[Op.or] = [
+          { name: { [Op.like]: `%${search}%` } },
+          { email: { [Op.like]: `%${search}%` } },
+          { phone: { [Op.like]: `%${search}%` } },
+        ];
+      }
+
+      if (status) {
+        whereClause.status = status;
+      }
+
+      // Fetch paginated data
+      const { count, rows } = await eventCategoriesModel.findAndCountAll({
+        where: whereClause,
+        offset: parseInt(offset),
+        limit: parseInt(limit),
+        order: [["id", "DESC"]], // latest first
+      });
+
+      res.status(200).json({
+        status: true,
+        message: "Success",
+        totalRecords: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: parseInt(page),
+        data: rows,
+      });
+    } catch (error) {
+      console.error("Error fetching event categories:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to fetch event categories",
+      });
+    }
+  },
+  //End
+
+  async upsertEventCategory(req, res) {
+    try {
+      const eventCategoriesData = req.body.category;
+      const { id, categoryName, status } = eventCategoriesData;
+      if (!eventCategoriesData) {
+        return res.status(400).send({
+          status: false,
+          message: "No event categories data provided",
+        });
+      } else {
+        if (eventCategoriesData?.id == 0) {
+          return eventCategoriesModel
+            .findOne({
+              where: {
+                categoryName,
+                isDeleted: false,
+              },
+            })
+            .then(async (category) => {
+              if (category) {
+                return res.status(200).send({
+                  status: false,
+                  message: `Category with the same name is already exist.`,
+                });
+              } else {
+                const newCategory = await eventCategoriesModel.create(
+                  eventCategoriesData
+                );
+                return res.status(200).send({
+                  status: true,
+                  message: "Event category created successfully",
+                  category: newCategory,
+                });
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+              return res.status(500).send({ status: false, message: error });
+            });
+        } else {
+          const [updated] = await eventCategoriesModel.update(
+            { categoryName, status },
+            { where: { id } }
+          );
+          if (updated) {
+            const updatedCategory = await eventCategoriesModel.findByPk(id);
+            return res.json({
+              status: true,
+              message: "Event category updated successfully",
+              category: updatedCategory,
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error saving event category:", error);
+      return res.status(500).send({
+        status: false,
+        message: "Failed to save event category",
+        error: error.message,
+      });
+    }
+  },
+  //Start: Method to delete organizer
+  async deleteEventCategory(req, res) {
+    const data = req.body.category;
+    try {
+      const id = data.id;
+      const eventCategory = await eventCategoriesModel.findByPk(id);
+      if (!eventCategory) {
+        return res
+          .status(404)
+          .json({ status: false, message: "Event category not found" });
+      }
+      eventCategory.isDeleted = true;
+      await eventCategory.save();
+      return res.status(200).send({
+        status: true,
+        message: "Event category deleted successfully",
+      });
+    } catch (error) {
+      console.error("Error updating organizer:", error);
+      return res.status(500).send({ status: false, message: error });
+    }
+  },
+  //End
+
   async saveEvent(req, res) {
     try {
       const eventData = req.body.data; // assuming eventData is an object like { eventName: "Test", date: "...", etc. }
@@ -227,35 +366,36 @@ module.exports = {
 
   async activeEvent(req, res) {
     const eventId = req.body.eventId;
-  
+
     try {
       // 1. Get current value of isActive
       const event = await eventModel.findByPk(eventId);
-  
+
       if (!event) {
-        return res.status(404).json({ success: false, message: 'Event not found' });
+        return res
+          .status(404)
+          .json({ success: false, message: "Event not found" });
       }
-  
+
       // 2. Toggle isActive
-      const newStatus = event.status === 'active'  ? 'draft' : 'active';
-  
+      const newStatus = event.status === "active" ? "draft" : "active";
+
       // 3. Update the value
       await event.update({ status: newStatus });
-  
+
       // 4. Respond
       res.status(200).json({
         success: true,
-        message: `Event is now ${newStatus ? 'active' : 'inactive'}`,
+        message: `Event is now ${newStatus ? "active" : "inactive"}`,
         isActive: newStatus,
       });
     } catch (error) {
-      console.error('Error toggling event status:', error);
+      console.error("Error toggling event status:", error);
       res.status(500).json({
         success: false,
-        message: 'Internal server error',
+        message: "Internal server error",
         error,
       });
     }
-  }
-  
+  },
 };

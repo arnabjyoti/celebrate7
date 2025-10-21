@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
       <a class="navbar-brand" href="#">Celebrate7</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -21,4 +21,28 @@
         </ul>
       </div>
     </div>
-  </nav>
+  </nav> -->
+
+  <header style="padding-left: 80px;padding-right: 80px;">
+      <a class="brand" href="#">
+        <div class="logo"><img src="assets/image/celebrate7.png" alt="" height="65px" width="70px" sstyle="margin-top:-20px; position: absolute;z-index: 99999;"></div>
+        <div>
+          <div class="rainbow">Celebrate7</div>
+          <div style="font-size:12px;color:#6b7280;">Event, Shows & more</div>
+        </div>
+      </a>
+
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="search-bar" role="search" aria-label="Search movies">
+          <input id="searchInput" type="search" placeholder="Search events, shows, venues..." />
+          <button id="searchBtn">Search</button>
+        </div>
+
+        <nav>
+          <a href="javascript:;" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="/">Home</a>
+          <a href="javascript:;" routerLinkActive="active" routerLink="/events">Find Events</a>
+          <a href="javascript:;" routerLinkActive="active" routerLink="/contactUs">Contact Us</a>
+          <a href="javascript:;" routerLinkActive="active" routerLink="/login">Login</a>
+        </nav>
+      </div>
+    </header>

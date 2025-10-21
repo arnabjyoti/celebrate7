@@ -1,35 +1,39 @@
 <mat-sidenav-container class="admin-container">
   <mat-sidenav class="admin-sidenav" mode="side" opened>
-    <div class="sidenav-header">Admin Panel</div>
-    <mat-nav-list>
+    <div cclass="sidenav-header"><img src="assets/image/brand.png" alt="" height="65px" width="220px" style="margin-top:-20px; position: absolute;z-index: 99999;"></div>
+    <mat-nav-list style="margin-top: 60px;">
       <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
-      <a mat-list-item routerLink="/users" routerLinkActive="active-link">
-        <mat-icon>people</mat-icon>
-        <span>Users</span>
+      <a mat-list-item routerLink="/view-event" routerLinkActive="active-link">
+        <mat-icon>event</mat-icon>
+        <span>My Events</span>
       </a>
       <a mat-list-item routerLink="/add-event" routerLinkActive="active-link">
         <mat-icon>add</mat-icon>
-        <span>Add Events</span>
+        <span>Create Event</span>
       </a>
-      <a mat-list-item routerLink="/view-event" routerLinkActive="active-link">
-        <mat-icon>event</mat-icon>
-        <span>View Events</span>
+      <a mat-list-item routerLink="javascript:;" routerLinkActive="active-link">
+        <mat-icon>confirmation_number</mat-icon>
+        <span>Ticketing</span>
       </a>
-      <a mat-list-item routerLink="/settings" routerLinkActive="active-link">
-        <mat-icon>settings</mat-icon>
-        <span>Settings</span>
+      <a mat-list-item routerLink="javascript:;" routerLinkActive="active-link">
+        <mat-icon>people</mat-icon>
+        <span>Volunteers/Staff</span>
+      </a>
+      <a mat-list-item routerLink="javascript:;" routerLinkActive="active-link">
+        <mat-icon>reports</mat-icon>
+        <span>Reports (Event-wise)</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <mat-toolbar class="custom-toolbar">
-      <span class="toolbar-title">Welcome to Celebrate7 Admin Dashboard</span>
+      <span class="toolbar-title">Welcome Admin</span>
       <span class="spacer"></span>
-      <button mat-button color="accent">
+      <button (click)="handleLogout()" mat-button color="aliceblue">
         <mat-icon>logout</mat-icon>
         Logout
       </button>
