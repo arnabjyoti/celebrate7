@@ -92,3 +92,13 @@
   align-items: center;
   justify-content: center;
 }
+
+
+
+.invisible-date-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}

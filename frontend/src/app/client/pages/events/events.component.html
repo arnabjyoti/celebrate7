@@ -1,7 +1,7 @@
 <div class="container-fluid pt-4" style="background: rgb(242, 245, 249);">
-  <div class="row">
+  <div class="row p-0 m-0">
     <!-- LEFT FILTER SIDEBAR -->
-    <div class="col-md-3 col-lg-2 mb-4">
+    <div class="col-md-3 col-lg-3 mb-4">
       <div class="filter-sidebar shadow-sm rounded-3 p-3 bg-white">
         <h5 class="fw-semibold mb-3">
           <i class="fas fa-filter me-2 text-danger"></i>Filters
@@ -11,123 +11,124 @@
         <div class="mb-4">
           <label class="form-label fw-semibold text-secondary mb-2">Date</label>
           <div class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-outline-danger btn-sm">Today</button>
-            <button type="button" class="btn btn-outline-danger btn-sm">Tomorrow</button>
-            <button type="button" class="btn btn-outline-danger btn-sm">This Weekend</button>
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="filterByDate('today')">Today</button>
+            <button type="button" class="btn btn-outline-danger btn-sm"
+              (click)="filterByDate('tomorrow')">Tomorrow</button>
+            <button type="button" class="btn btn-outline-danger btn-sm" (click)="filterByDate('weekend')">This
+              Weekend</button>
             <div class="form-check mt-2">
-              <input class="form-check-input" type="checkbox" id="dateRange">
-              <label class="form-check-label small text-muted" for="dateRange">Date Range</label>
+              <input class="form-check-input" type="checkbox" id="dateRange" [(ngModel)]="filters.dateRange"
+                (change)="applyFilters()" />
+              <label class="form-check-label" for="dateRange">
+                Date Range
+              </label>
             </div>
+
+            <div *ngIf="filters.dateRange" >
+
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                <!-- From Date -->
+                <div class="position-relative">
+                  <button class="btn btn-outline-primary btn-sm" (click)="fromPicker.showPicker()" type="button">
+                    <i class="far fa-calendar-alt me-2"></i>
+                    {{ filters.fromDate ? ('From: ' + (filters.fromDate | date:'mediumDate')) : 'Select From Date' }}
+                  </button>
+
+                  <!-- Hidden Input -->
+                  <input type="date" #fromPicker id="fromPicker" class="invisible-date-input"
+                    [(ngModel)]="filters.fromDate" [min]="today" (change)="onDateChange()" />
+                </div>
+
+                <!-- To Date -->
+                <div class="position-relative">
+                  <button class="btn btn-outline-primary btn-sm" (click)="toPicker.showPicker()" type="button">
+                    <i class="far fa-calendar-alt me-2"></i>
+                    {{ filters.toDate ? ('To: ' + (filters.toDate | date:'mediumDate')) : 'Select To Date' }}
+                  </button>
+
+                  <!-- Hidden Input -->
+                  <input type="date" #toPicker id="toPicker" class="invisible-date-input" [(ngModel)]="filters.toDate"
+                    [min]="filters.fromDate || today" (change)="onDateChange()" />
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="mt-3 d-flex justify-content-end gap-2">
+                <button class="btn btn-sm btn-secondary" (click)="clearDates()" type="button">
+                  Clear
+                </button>
+
+                <button class="btn btn-sm btn-primary" [disabled]="!isDateRangeValid" (click)="searchByDateRange()"
+                  type="button">
+                  Search
+                </button>
+              </div>
+
+              <!-- Error Message -->
+              <div *ngIf="dateError" class="text-danger small mt-2">
+                {{ dateError }}
+              </div>
+            </div>
+
+
+
           </div>
         </div>
 
+        <!-- State -->
         <div class="mb-4">
-          <label class="form-label fw-bold">State</label>
-          <select
-            class="form-select"
-            [(ngModel)]="filters.state"
-            (change)="applyFilters()"
-          >
+          <label class="form-label fw-bold">Region/State</label>
+          <select class="form-select" [(ngModel)]="filters.state" (change)="applyFilters()">
             <option value="">All</option>
-            <option>Assam</option>
-            <option>Manipur</option>
-            <option>Meghalaya</option>
-            <option>Mizoram</option>
-            <option>Nagaland</option>
-            <option>Sikkim</option>
-            <option>Tripura</option>
+            <option value="Assam">Assam</option>
+            <option value="Manipur">Manipur</option>
+            <option value="Meghalaya">Meghalaya</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Nagaland">Nagaland</option>
+            <option value="Sikkim">Sikkim</option>
+            <option value="Tripura">Tripura</option>
           </select>
         </div>
 
-        <!-- Month Filter -->
+        <!-- Month -->
         <div class="mb-4">
           <label class="form-label fw-bold">Month</label>
-          <select
-            class="form-select"
-            [(ngModel)]="filters.month"
-            (change)="applyFilters()"
-          >
+          <select class="form-select" [(ngModel)]="filters.month" (change)="applyFilters()">
             <option value="">All</option>
             <option *ngFor="let m of months">{{ m }}</option>
           </select>
         </div>
 
-        <!-- Language Filter -->
+        <!-- Category -->
         <div class="mb-4">
-          <label class="form-label fw-semibold text-secondary mb-2">Language</label>
-          <select class="form-select form-select-sm">
+          <label class="form-label fw-semibold text-secondary mb-2">Type</label>
+          <select class="form-select form-select-sm" [(ngModel)]="filters.category" (change)="applyFilters()">
             <option value="">All</option>
-            <option>Hindi</option>
-            <option>Marathi</option>
-            <option>English</option>
-          </select>
-        </div>
-
-        <!-- Categories Filter -->
-        <div class="mb-4">
-          <label class="form-label fw-semibold text-secondary mb-2">Categories</label>
-          <select class="form-select form-select-sm">
-            <option value="">All</option>
-            <option>Drama</option>
-            <option>Comedy</option>
-            <option>Musical</option>
-          </select>
-        </div>
-
-        <!-- Genres Filter -->
-        <div class="mb-4">
-          <label class="form-label fw-semibold text-secondary mb-2">Genres</label>
-          <select class="form-select form-select-sm">
-            <option value="">All</option>
-            <option>Romantic</option>
-            <option>Historical</option>
-            <option>Family</option>
-          </select>
-        </div>
-
-        <!-- More Filters -->
-        <div class="mb-4">
-          <label class="form-label fw-semibold text-secondary mb-2">More Filters</label>
-          <select class="form-select form-select-sm">
-            <option value="">All</option>
-            <option>Online</option>
-            <option>Festival</option>
+            <option>Cultural</option>
+            <option>Sports</option>
             <option>Charity</option>
+            <option>Event</option>
+            <option>Party</option>
           </select>
         </div>
 
-        <!-- Price Filter -->
-        <div class="mb-4">
-          <label class="form-label fw-semibold text-secondary mb-2">Price</label>
-          <select class="form-select form-select-sm">
-            <option value="">All</option>
-            <option>₹0 - ₹100</option>
-            <option>₹101 - ₹500</option>
-            <option>₹501+</option>
-          </select>
-        </div>
-
-        <button class="btn btn-outline-secondary w-100 mt-2">
+        <button class="btn btn-outline-secondary w-100 mt-2" (click)="clearFilters()">
           <i class="fas fa-undo me-1"></i> Clear Filters
         </button>
       </div>
+
+
     </div>
 
     <!-- ========== RIGHT EVENTS GRID ========== -->
-    <div class="col-md-9 col-lg-10">
+    <div class="col-md-9 col-lg-9">
       <h3 class="mb-4">Events</h3>
       <div class="row">
-        <div
-          *ngFor="let event of filteredEvents"
-          class="col-md-4 col-lg-3 mb-4"
-        >
+        <div *ngFor="let event of filteredEvents" class="col-md-4 col-lg-3 mb-4">
           <div class="card custom-card shadow-sm border-0">
             <div class="image-container">
-              <img
-                [src]="env + '/' + event.images[0].path"
-                class="card-img-top"
-                alt="{{ event.eventName }}"
-              />
+              <img [src]="env + '/' + event.images[0].path" class="card-img-top" alt="{{ event.eventName }}" />
               <button class="favorite-btn">
                 <i class="far fa-heart"></i>
               </button>
@@ -138,6 +139,10 @@
                 <i class="fas fa-map-marker-alt me-1 text-danger"></i>
                 {{ event.city }}, {{ event.state }}
               </p>
+              <p class="card-text text-muted small mb-2">
+                <i class="fas fa-calendar-alt me-1 text-success"></i>
+                From {{ event.eventFromDate }}, To {{ event.eventToDate }}
+              </p>
               <div class="d-flex align-items-center mb-2">
                 <div class="rating-box">
                   <strong>9.6</strong>
@@ -147,10 +152,7 @@
                   <span class="text-muted">{{ event.reviews || 88 }} reviews</span>
                 </span>
               </div>
-              <a
-                [routerLink]="['/event', event.id]"
-                class="btn btn-outline-primary btn-sm w-100"
-              >
+              <a [routerLink]="['/event', event.id]" class="btn btn-outline-primary btn-sm w-100">
                 View Details
               </a>
             </div>
