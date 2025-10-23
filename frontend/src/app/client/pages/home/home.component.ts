@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FeaturedItem, Event } from './home.model';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -7,12 +8,18 @@ import { environment } from 'src/environments/environment';
 const featuredItems = [
   {
     id: 'f1',
+    title: 'Hornbill Festival',
+    tagline: 'A modern space odyssey',
+    bg: 'http://localhost:8600/uploads/images/slider/bannerImage1.png',
+  },
+ {
+    id: 'f2',
     title: 'A Sky of Stars',
     tagline: 'A modern space odyssey',
     bg: 'http://localhost:8600/uploads/images/1755407420031-360_F_517195733_OmTgPE2tN0uJjOMKxJRaaJRg2RL3CwG2.jpg',
   },
   {
-    id: 'f2',
+    id: 'f3',
     title: 'Echoes of Earth',
     tagline: 'An emotional drama',
     bg: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',
@@ -48,7 +55,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   env = environment.BASE_URL;
   constructor(
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -61,6 +69,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   loadData(): void {
+    this.spinner.show('nowShowingSectionSpinner');
     this.featured = featuredItems;
     this.startCarousel();
     // this.subs.add(
@@ -95,6 +104,8 @@ export class HomeComponent implements OnInit, OnDestroy {
         let data: any = res.data || [];
         if (data?.length > 0) {
           this.structureEventObjects(data);
+        }else{
+this.spinner.hide('nowShowingSectionSpinner');
         }
       });
   }
@@ -137,6 +148,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         return false;
       return true;
     });
+    this.spinner.hide('nowShowingSectionSpinner');
   }
 
   onSearchEnter() {

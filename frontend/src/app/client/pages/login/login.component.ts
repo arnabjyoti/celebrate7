@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../../auth/auth.service';
 @Component({
@@ -8,18 +9,17 @@ import { AuthService } from '../../../auth/auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  useEmail = false;
+  useEmail = true;
   mobile = '';
   email = '';
   otp = '';
   otpSent = false;
-  message = '';
+  // message = '';
 
-  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService) {}
+  constructor(private authService: AuthService, private router: Router, private toastr: ToastrService, private spinner: NgxSpinnerService) {}
 
   toggleMode() {
     this.useEmail = !this.useEmail;
-    this.message = '';
     this.otpSent = false;
     this.mobile = '';
     this.email = '';
@@ -28,26 +28,26 @@ export class LoginComponent {
 
   sendOtp() {
     if (!this.mobile && !this.email) {
-      this.message = 'Please enter mobile or email.';
+      this.toastr.warning('Please enter your registered email id','Warning Message');
       return;
     }
-
+    this.spinner.show();
     this.authService.requestOtp(this.mobile, this.email).subscribe({
       next: (res) => {
         console.log('RES==', res);
         if (res?.status) {
           this.otpSent = true;
-          this.message = 'OTP is=' + res.otp;
           this.toastr.success(res.message, 'Success Message');
         } else {
           this.otpSent = false;
-          this.message =  '';
           this.toastr.error(res.message, 'Error Message');
         }
+        this.spinner.hide();
       },
       error: (err) => {
         this.otpSent = false;
-        this.message = 'Failed to send OTP';
+        this.toastr.error('Failed to send OTP','Error Message');
+        this.spinner.hide();
       },
     });
   }
@@ -56,11 +56,9 @@ export class LoginComponent {
     this.authService.verifyOtp(this.mobile, this.email, this.otp).subscribe({
       next: (res) => {
         this.authService.storeTokens(res.accessToken, res.refreshToken);
-        this.message = 'Login successful!';
+        this.toastr.success('Login successful!', 'Success Message');
         // this.router.navigate(['/dashboard']);
         const role = this.authService.getRole();
-        console.log('Role==', role);
-
         if (role === 'sa') {
           this.router.navigate(['/sa-dashboard']);
         } else if (role === 'admin') {
@@ -72,7 +70,7 @@ export class LoginComponent {
         }
       },
       error: () => {
-        this.message = 'Invalid or expired OTP';
+        this.toastr.error('Invalid or expired OTP','Error Message');
       },
     });
   }

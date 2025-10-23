@@ -124,3 +124,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     /* small utilities */
     .rating{background:#fef3c7;padding:6px 8px;border-radius:8px;font-weight:600}
     .badge{font-size:12px;padding:4px 8px;border-radius:6px;background:#eff6ff;color:#1e3a8a}
+
+    a:hover {
+  text-decoration: none;
+}

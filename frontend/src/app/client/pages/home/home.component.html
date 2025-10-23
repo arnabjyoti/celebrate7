@@ -61,8 +61,8 @@
   <!-- Events grid -->
   <section>
     <h2>Now Showing</h2>
-    <div class="grid" *ngIf="filtered.length; else noResults">
-      <article class="card" *ngFor="let m of filtered">
+    <div class="grid" *ngIf="filtered.length; else noResults">      
+      <article class="card event-card" *ngFor="let m of filtered">
         <div
           class="poster"
           [style.backgroundImage]="'url(' + m.poster + ')'"
@@ -141,3 +141,12 @@
     </div>
   </div>
 </div>
+
+<ngx-spinner
+        bdColor="rgba(255,255,255,0.8)"
+        size="medium"
+        color="#5b3fd4"
+        type="ball-spin-clockwise"
+        [fullScreen]="false"
+        name="nowShowingSectionSpinner"
+      ></ngx-spinner>

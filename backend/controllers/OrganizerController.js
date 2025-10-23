@@ -6,6 +6,62 @@ var request = require("request");
 const Op = require("sequelize").Op;
 
 module.exports = {
+   //Start: Method to register organizer
+  async organizerRegistration(req, res) {
+    const requestObject = req.body.requestObject;
+      return usersModel
+        .findOne({
+          where: {
+            isDeleted: false,
+            [Op.or]: [{ email: requestObject.email }],
+          },
+        })
+        .then((o) => {
+          if (o) {
+            return res.status(200).send({
+              status: false,
+              message: `Organizer with the same email is already exist.`,
+            });
+          } else {
+            const newOrganizer = {
+              organizer_name: requestObject.organizerName,
+              contact_name: requestObject.contactName,
+              type_of_organization: requestObject.typeOfOrganizer,
+              email: requestObject.email,
+              phone: requestObject.mobileNumber,
+              country: requestObject.country,
+              state: requestObject.state,
+              city: requestObject.city,
+              status: 'Active',
+              isDeleted: false,
+            }
+            organizersModel.create(newOrganizer).then((r) => {
+              const newUser = {
+                mobile: requestObject.mobileNumber,
+                email: requestObject.email,
+                role: "admin",
+                otp: null,
+                otpExpiry: null,
+                refreshToken: null,
+                status: 'Active',
+                isDeleted: false,
+              };
+              usersModel.create(newUser).then((user) => {
+                return res.status(200).send({
+                  status: true,
+                  message: "Success! Thank you for registering with us",
+                });
+              });
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(500).send({ status: false, message: error });
+        });
+  },
+  //End
+
   //Start: Method to add new or update organizer
   async upsert(req, res) {
     const organizer = req.body.organizer;

@@ -8,8 +8,16 @@ module.exports = (sequelize, type) => {
       allowNull: false,
       primaryKey: true,
     },
-    name: {
+    organizer_name: {
       type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    contact_name: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    type_of_organization: {
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
     email: {
@@ -20,7 +28,15 @@ module.exports = (sequelize, type) => {
       type: DataTypes.STRING(15),
       allowNull: true,
     },
-    location: {
+    country: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    state: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    city: {
       type: DataTypes.STRING(100),
       allowNull: true,
     },

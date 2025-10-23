@@ -123,3 +123,15 @@ mat-toolbar {
 .spacer {
   flex: 1 1 auto;
 }
+
+.rainbow {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: rgb(212, 175, 55); 
+  text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3);
+  /* #D4AF37; */
+  /* background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); */
+  -webkit-background-clip: text; /* for Safari/Chrome */
+  background-clip: text;
+  color: transparent;               /* show the gradient through text */
+}

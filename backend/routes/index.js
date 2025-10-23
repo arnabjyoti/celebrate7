@@ -32,6 +32,7 @@ module.exports = (app) => {
 
 
 	// Organizer API's
+	app.post('/api/organizer-registration', OrganizerController.organizerRegistration);
 	app.post('/api/upsert-organizer', OrganizerController.upsert);
 	app.post('/api/get-organizers', OrganizerController.view);
 	app.post('/api/delete-organizer', OrganizerController.delete);
