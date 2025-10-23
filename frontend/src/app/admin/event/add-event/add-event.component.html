@@ -69,13 +69,25 @@
             </div>
 
             <div class="col-md-4 pb-3">
-              <label for="eventDate">Date:</label>
+              <label for="eventDate">From Date:</label>
               <input
                 class="form-control"
                 type="date"
                 id="eventDate"
                 name="eventDate"
-                [(ngModel)]="event.eventDate"
+                [(ngModel)]="event.eventFromDate"
+                required
+              />
+            </div>
+
+            <div class="col-md-4 pb-3">
+              <label for="eventDate">To Date:</label>
+              <input
+                class="form-control"
+                type="date"
+                id="eventDate"
+                name="eventDate"
+                [(ngModel)]="event.eventToDate"
                 required
               />
             </div>
