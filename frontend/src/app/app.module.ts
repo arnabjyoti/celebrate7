@@ -48,6 +48,8 @@ import { OrganizersComponent } from './super-admin/organizers/organizers.compone
 import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
 import { AllEventsComponent } from './super-admin/all-events/all-events.component';
 import { EventDetailsClientComponent } from './client/pages/event-details-client/event-details-client.component';
+import { MapViewComponent } from './map-view/map-view.component';
+import { LocationDetailComponent } from './location-detail/location-detail.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +76,8 @@ import { EventDetailsClientComponent } from './client/pages/event-details-client
     EventCategoriesComponent,
     AllEventsComponent,
     EventDetailsClientComponent,
+    MapViewComponent,
+    LocationDetailComponent,
   ],
   imports: [
     FormsModule,

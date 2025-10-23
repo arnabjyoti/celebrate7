@@ -1,0 +1,13 @@
+<div class="map-wrapper">
+    <div id="map" class="map"></div>
+  
+    <aside class="location-list" aria-label="Locations list">
+      <h3>Locations</h3>
+      <ul>
+        <li *ngFor="let loc of locations">
+          <button (click)="onMarkerClickNavigate(loc.id)">{{ loc.title }}</button>
+        </li>
+      </ul>
+    </aside>
+  </div>
+  
