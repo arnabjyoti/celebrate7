@@ -1,12 +1,18 @@
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
+import {AppService} from '../../app.service';
+import { AuthService } from '../../auth/auth.service';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
 
+  constructor(private appService: AppService, private authService: AuthService,){}
+  ngOnInit(): void {
+    let payload=this.authService.getDecodedToken();
+    console.log("Payload=",payload);
+  }
 // Define the columns to show in the Material table
   displayedColumns: string[] = ['event', 'date', 'tickets', 'status'];
 

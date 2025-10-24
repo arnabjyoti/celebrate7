@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~leaflet/dist/leaflet.css";
 @import url('../node_modules/bootstrap/dist/css/bootstrap.min.css');
 @import url('../node_modules/ngx-toastr/toastr.css');
 @import url('../node_modules/@fortawesome/fontawesome-free/css/solid.min.css');
@@ -124,3 +125,19 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     /* small utilities */
     .rating{background:#fef3c7;padding:6px 8px;border-radius:8px;font-weight:600}
     .badge{font-size:12px;padding:4px 8px;border-radius:6px;background:#eff6ff;color:#1e3a8a}
+
+    a:hover {
+  text-decoration: none;
+}
+
+.rainbow {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: rgb(212, 175, 55); 
+  text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3);
+  /* #D4AF37; */
+  /* background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet); */
+  -webkit-background-clip: text; /* for Safari/Chrome */
+  background-clip: text;
+  color: transparent;               /* show the gradient through text */
+}

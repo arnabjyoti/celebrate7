@@ -44,7 +44,8 @@ mat-nav-list a:hover {
 }
 
 mat-toolbar {
-  background-color: #3f51b5;
+  background-color: #1a1a2e;
+   /* #3f51b5; */
   color: white;
   position: sticky;
   top: 0;
@@ -123,3 +124,4 @@ mat-toolbar {
 .spacer {
   flex: 1 1 auto;
 }
+

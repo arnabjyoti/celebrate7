@@ -40,14 +40,10 @@
             </div>
             <div class="col-md-12 pb-3">
               <label for="organizer">Organizer:</label>
-              <input
-                class="form-control"
-                type="text"
-                id="organizer"
-                name="organizer"
-                [(ngModel)]="event.organizer"
-                required
-              />
+              <select [(ngModel)]="event.organizer" class="form-control">
+                <option value="">--Select--</option>
+                <option *ngFor="let organizer of organizers" value="{{organizer.id}}">{{organizer.organizer_name}}</option>
+              </select>
             </div>
 
             <div class="col-md-4 pb-3">
@@ -59,23 +55,37 @@
                 class="form-control"
                 [(ngModel)]="event.type"
               >
-                <option value="Festival">Festival</option>
+              <option value="">--Select--</option>
+              <option *ngFor="let category of eventCategories" value="{{category?.id}}">{{category?.categoryName}}</option>
+                <!-- <option value="Festival">Festival</option>
                 <option value="Sports">Sports</option>
                 <option value="Party">Party</option>
                 <option value="Charity">Charity</option>
                 <option value="Cultural">Cultural</option>
-                <option value="Event">Event</option>
+                <option value="Event">Event</option> -->
               </select>
             </div>
 
             <div class="col-md-4 pb-3">
-              <label for="eventDate">Date:</label>
+              <label for="eventDate">From Date:</label>
               <input
                 class="form-control"
                 type="date"
                 id="eventDate"
                 name="eventDate"
-                [(ngModel)]="event.eventDate"
+                [(ngModel)]="event.eventFromDate"
+                required
+              />
+            </div>
+
+            <div class="col-md-4 pb-3">
+              <label for="eventDate">To Date:</label>
+              <input
+                class="form-control"
+                type="date"
+                id="eventDate"
+                name="eventDate"
+                [(ngModel)]="event.eventToDate"
                 required
               />
             </div>

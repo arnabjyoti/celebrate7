@@ -33,6 +33,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatCardModule } from '@angular/material/card';
 
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { QuillModule } from 'ngx-quill';
 import { FileUploadComponent } from './components/file-upload/file-upload.component';
@@ -48,6 +53,9 @@ import { OrganizersComponent } from './super-admin/organizers/organizers.compone
 import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
 import { AllEventsComponent } from './super-admin/all-events/all-events.component';
 import { EventDetailsClientComponent } from './client/pages/event-details-client/event-details-client.component';
+import { MapViewComponent } from './map-view/map-view.component';
+import { LocationDetailComponent } from './location-detail/location-detail.component';
+import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 
 @NgModule({
   declarations: [
@@ -74,9 +82,16 @@ import { EventDetailsClientComponent } from './client/pages/event-details-client
     EventCategoriesComponent,
     AllEventsComponent,
     EventDetailsClientComponent,
+    MapViewComponent,
+    LocationDetailComponent,
+    AdminProfileComponent,
   ],
   imports: [
     FormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
     ReactiveFormsModule,
     BrowserModule,
     HttpClientModule,

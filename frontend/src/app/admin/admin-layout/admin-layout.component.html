@@ -1,20 +1,32 @@
 <mat-sidenav-container class="admin-container">
   <mat-sidenav class="admin-sidenav" mode="side" opened>
-    <div cclass="sidenav-header"><img src="assets/image/brand.png" alt="" height="65px" width="220px" style="margin-top:-20px; position: absolute;z-index: 99999;"></div>
-    <mat-nav-list style="margin-top: 60px;">
+    <!-- <div cclass="sidenav-header"><img src="assets/image/celebrate7.png" alt="" height="65px" width="80px" style="margin-top:-20px; position: absolute;z-index: 99999;">
+    </div> -->
+    <a class="brand" href="#" style="gap:0px !important;">
+        <div cclass="logo"><img src="assets/image/celebrate7_transparent.png" alt="" height="65px" width="70px" style="margin:0px;padding: 0px;"></div>
+        <div style="margin:0px;padding: 0px;">
+          <div class="rainbow">Celebrate7</div>
+          <div style="font-size:12px;color:#fc946f;">Event, Shows & more</div>
+        </div>
+      </a>
+    <mat-nav-list style="margin-top: 20px;">
       <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
         <mat-icon>dashboard</mat-icon>
         <span>Dashboard</span>
       </a>
-      <a mat-list-item routerLink="/view-event" routerLinkActive="active-link">
-        <mat-icon>event</mat-icon>
-        <span>My Events</span>
+      <a mat-list-item routerLink="/my-profile" routerLinkActive="active-link">
+        <mat-icon>people</mat-icon>
+        <span>Profile</span>
       </a>
       <a mat-list-item routerLink="/add-event" routerLinkActive="active-link">
         <mat-icon>add</mat-icon>
         <span>Create Event</span>
       </a>
-      <a mat-list-item routerLink="javascript:;" routerLinkActive="active-link">
+      <a mat-list-item routerLink="/view-event" routerLinkActive="active-link">
+        <mat-icon>event</mat-icon>
+        <span>My Events</span>
+      </a>      
+      <!-- <a mat-list-item routerLink="javascript:;" routerLinkActive="active-link">
         <mat-icon>confirmation_number</mat-icon>
         <span>Ticketing</span>
       </a>
@@ -25,7 +37,7 @@
       <a mat-list-item routerLink="javascript:;" routerLinkActive="active-link">
         <mat-icon>reports</mat-icon>
         <span>Reports (Event-wise)</span>
-      </a>
+      </a> -->
     </mat-nav-list>
   </mat-sidenav>
 

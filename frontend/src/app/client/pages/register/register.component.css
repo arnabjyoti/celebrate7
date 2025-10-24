@@ -1,8 +1,12 @@
 .register-card {
-      max-width: 550px;
+      max-width: 200px;
       margin: auto;
       background: #ffffff;
       border-radius: 15px;
       box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-      padding: 30px;
+      /* padding: 30px; */
     }
+
+.advertisement-card{
+  max-width: 200px;
+}

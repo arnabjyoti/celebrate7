@@ -10,7 +10,7 @@ import { RegisterComponent } from './client/pages/register/register.component';
 import { EventsComponent } from './client/pages/events/events.component';
 
 import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
-import {SaAdminLayoutComponent} from './super-admin/sa-admin-layout/sa-admin-layout.component';
+import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
 import { OrganizersComponent } from './super-admin/organizers/organizers.component';
 import { EventCategoriesComponent } from './super-admin/event-categories/event-categories.component';
 import { AllEventsComponent } from './super-admin/all-events/all-events.component';
@@ -21,7 +21,10 @@ import { AddEventComponent } from './admin/event/add-event/add-event.component';
 import { ViewEventsComponent } from './admin/event/view-events/view-events.component';
 import { EventDetailsComponent } from './admin/event/event-details/event-details.component';
 import { EventDetailsClientComponent } from './client/pages/event-details-client/event-details-client.component';
-
+import { MapViewComponent } from './map-view/map-view.component';
+import { LocationDetailComponent } from './location-detail/location-detail.component';
+// import { MapTestComponent } from './map-test/map-test.component';
+import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 
 const routes: Routes = [
   {
@@ -33,7 +36,8 @@ const routes: Routes = [
       { path: 'register', component: RegisterComponent },
       { path: 'events', component: EventsComponent },
       { path: 'event/:id', component: EventDetailsClientComponent },
-    ]
+      // { path: 'test', component: MapTestComponent },
+    ],
   },
   {
     path: '',
@@ -62,8 +66,8 @@ const routes: Routes = [
         component: AllEventsComponent,
         canActivate: [RoleGuard],
         data: { expectedRole: 'sa' },
-      }
-    ]
+      },
+    ],
   },
   {
     path: '',
@@ -73,17 +77,27 @@ const routes: Routes = [
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [RoleGuard],
-        data: { expectedRole: 'admin' }
+        data: { expectedRole: 'admin' },
+      },
+      {
+        path: 'my-profile',
+        component: AdminProfileComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' },
       },
       // { path: 'users', component: UsersComponent },
       // { path: 'settings', component: SettingsComponent },
       // { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-       { path: 'add-event', component: AddEventComponent },
+      { path: 'add-event', component: AddEventComponent },
       { path: 'edit-event/:id', component: AddEventComponent },
       { path: 'view-event', component: ViewEventsComponent },
       { path: 'event-details/:id', component: EventDetailsComponent },
     ],
   },
+
+  { path: 'map', component: MapViewComponent },
+  { path: 'locations/:id', component: LocationDetailComponent },
+  { path: '', redirectTo: 'map', pathMatch: 'full' },
 
   { path: '**', redirectTo: 'home' },
 ];

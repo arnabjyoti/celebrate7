@@ -31,10 +31,9 @@
           <h2 class="title">{{ event.eventName }}</h2>
           <div class="location">{{ event.city }} • {{ event.fullAddress }}</div>
 
-          <div class="price-block">
+          <!-- <div class="price-block">
             <div class="price-row">
               <div>
-                <!-- <div class="price-amount">{{ lowestPrice() | currency }}</div> -->
                 <div class="price-amount">
                   {{
                     ticket_details[0]?.ticket_price
@@ -61,9 +60,9 @@
             <div class="availability">
               Free cancellation • Instant confirmation
             </div>
-          </div>
+          </div> -->
 
-          <form
+          <!-- <form
             class="booking-form"
             (ngSubmit)="onBook()"
             aria-label="Booking form"
@@ -88,22 +87,52 @@
               <div class="total-amount">
                 {{ticket_details[0]?.ticket_price*quantity
                     | currency : "INR" : "symbol"}}
-                <!-- {{ (selectedTier?.price || 0) * quantity | currency }} -->
+
               </div>
             </div>
 
-            <!-- <button class="btn primary full" type="submit">Reserve now</button> -->
-          </form>
+
+          </form> -->
+
+
 
           <div class="policies pt-3 location">
             <div>
               <strong>Start:</strong>
-              {{ event.eventDate | date : "mediumDate" }}
+              {{ event.eventToDate | date : "mediumDate" }}
             </div>
             <div>
-              <strong>End:</strong> {{ event.eventDate | date : "mediumDate" }}
+              <strong>End:</strong> {{ event.eventToDate | date : "mediumDate" }}
             </div>
           </div>
+
+
+          <div>
+            <strong>Location on map:</strong>
+  
+            <!-- Embedded Google Map (responsive) -->
+            <div class="map-embed">
+              <iframe
+                [src]="mapUrl"
+                width="100%"
+                height="220"
+                style="border: 0; border-radius: 6px"
+                allowfullscreen
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Event location map"
+              ></iframe>
+            </div>
+  
+            <!-- Link to open in Google Maps (new tab) -->
+            <div class="map-actions" style="margin-top: 2px; font-size: 13px">
+              <a [href]="mapsLink" target="_blank" rel="noopener"
+                >Open in Google Maps</a
+              >
+            </div>
+          </div>
+
+          
         </div>
       </aside>
     </section>
@@ -165,10 +194,8 @@
 
       <aside class="main-right" aria-label="Right side panels">
         <!-- ******************** -->
-        <div class="map-panel card custom-card shadow-sm bg-white border-0">
+        <!-- <div class="map-panel card custom-card shadow-sm bg-white border-0">
           <h4>Location</h4>
-
-          <!-- Embedded Google Map (responsive) -->
           <div class="map-embed">
             <iframe
               [src]="mapUrl"
@@ -182,13 +209,12 @@
             ></iframe>
           </div>
 
-          <!-- Link to open in Google Maps (new tab) -->
           <div class="map-actions" style="margin-top: 8px; font-size: 13px">
             <a [href]="mapsLink" target="_blank" rel="noopener"
               >Open in Google Maps</a
             >
           </div>
-        </div>
+        </div> -->
 
         <!-- ******************** -->
 

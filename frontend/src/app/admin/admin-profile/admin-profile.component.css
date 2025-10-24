@@ -1,0 +1,44 @@
+.profile-view-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 25px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+label {
+  font-weight: 600;
+  color: #444;
+  min-width: 160px;
+}
+
+span {
+  color: #222;
+  font-weight: 500;
+  text-align: right;
+  flex: 1;
+}

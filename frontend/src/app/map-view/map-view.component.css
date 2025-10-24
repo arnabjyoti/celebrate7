@@ -1,0 +1,58 @@
+:host {
+    display: block;
+    width: 100%;
+  }
+  
+  .map-wrapper {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  
+  /* Map takes remaining width */
+  #map,
+  .map {
+    flex: 1 1 auto;
+    width: 100%;
+    /* Make the map tall enough - adjust according to your header height */
+    height: calc(100vh - 120px); /* try 500px if you prefer a fixed height */
+    min-height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+  
+  /* Right side list */
+  .location-list {
+    width: 260px;
+    background: #fff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    height: calc(100vh - 120px);
+    overflow: auto;
+  }
+  
+  /* Leaflet specific */
+  .leaflet-container {
+    background: #fff; /* ensures no transparent gaps appear */
+  }
+  
+  /* Button styles */
+  .location-list button {
+    display: block;
+    width: 100%;
+    padding: 8px 10px;
+    margin: 6px 0;
+    text-align: left;
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+  
+
+  .cursor-pointer{
+    cursor: pointer;
+  }

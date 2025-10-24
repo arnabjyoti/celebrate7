@@ -1,10 +1,20 @@
-<main class="container d-flex align-items-center justify-content-center mt-5">
-  <div class="login-card mt-5">
+<div class="container">
+  <div class="row" style="padding: 5px">
+    <div class="col-md-8">
+      <img
+        class="img-fluid"
+        src="assets/image/login_page.png"
+        style="height: 400px;opacity: 0.9;box-shadow: 12px 12px 18px 4px rgba(40, 41, 43, 0.7);"
+        alt="Celebrate7"
+      />
+    </div>
+    <div class="col-md-4">
+      <div class="llogin-card mmt-5">
     <h3 class="text-center mb-4">
       Login via OTP<br />
-      <a href="javascript:;" (click)="toggleMode()" style="font-size: 14px">
+      <!-- <a href="javascript:;" (click)="toggleMode()" style="font-size: 14px">
         Switch to {{ useEmail ? "Mobile" : "Email" }} Login
-      </a>
+      </a> -->
     </h3>
     <div class="mb-3" *ngIf="!useEmail">
       <label for="phone" class="form-label">Mobile Number</label>
@@ -22,7 +32,7 @@
         type="email"
         class="form-control"
         [(ngModel)]="email"
-        placeholder="Enter your email address"
+        placeholder="Enter registered email address"
         required
       />
     </div>
@@ -48,11 +58,22 @@
         </button>
       </div>
     </div>
-    <div *ngIf="message" style="margin-top: 15px; color: darkblue">
+    <!-- <div *ngIf="message" style="margin-top: 15px; color: darkblue">
       {{ message }}
-    </div>
+    </div> -->
     <p class="text-center mt-3">
       Don't have an account? <a routerLink="/register">Register</a>
     </p>
   </div>
-</main>
+    </div>
+  </div>
+</div>
+
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-spin-clockwise"  style="background-color: aliceblue;">
+  <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>Sending OTP...Please Wait</p>
+</ngx-spinner>
+

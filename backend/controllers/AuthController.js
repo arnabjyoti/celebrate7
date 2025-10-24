@@ -7,9 +7,19 @@ const jwt = require("jsonwebtoken");
 const env = "development";
 console.log("env: ", env);
 const config = require("../config/config.json")[env];
+const nodemailer = require("nodemailer");
+
+// Create a transporter
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "mithuzaman2020@gmail.com",
+    pass: "smlx bsxs hksp ognj",
+  },
+});
 
 const generateAccessToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, config.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role, mobile:user.mobile, email:user.email }, config.JWT_SECRET, {
     expiresIn: "15m",
   });
 };
@@ -45,10 +55,12 @@ module.exports = {
   // Request OTP
   async requestOTP(req, res) {
     const { mobile, email } = req.body;
+    console.log("mobile=", mobile);
+    console.log("emai=", email);
     if (!mobile && !email)
       return res
         .status(200)
-        .json({ status: false, message: "Mobile or Email required", otp: "" });
+        .json({ status: false, message: "Email required", otp: "" });
 
     const contactFilter = mobile ? { mobile } : { email };
     const user = await usersModel.findOne({ where: contactFilter });
@@ -56,7 +68,7 @@ module.exports = {
       return res.status(200).json({
         status: false,
         message:
-          "Can not send OTP as the provided mobile number or email id is not registered with us",
+          "Can not send OTP as the provided email id is not registered with us",
         otp: "",
       });
     } else {
@@ -79,10 +91,61 @@ module.exports = {
         const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
         await usersModel.update({ otp, otpExpiry }, { where: contactFilter });
         console.log(`OTP sent to ${mobile || email}: ${otp}`);
-        res.json({
-          status: true,
-          message: "OTP sent to your registerd mobile or email",
-          otp: otp,
+        
+        // Email Template
+        const htmlTemplate = `
+            <!DOCTYPE html>
+            <html>
+            <body style="font-family: Arial, sans-serif; background-color:#f5f6ff; padding:30px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td align="center">
+                  <table width="480" cellpadding="0" cellspacing="0" border="0" style="background:#fff; border-radius:8px; overflow:hidden;">
+                    <tr><td align="center" style="padding:30px 20px 10px;">
+                      <h2 style="color:#5b3fd4; margin:0;">Celebrate7</h2>
+                    </td></tr>
+                    <tr><td align="center" style="padding:10px 30px;">
+                      <h3 style="color:#5b3fd4; font-size:22px;">2FA code</h3>
+                      <p style="color:#333;">Here is your login verification code:</p>
+                      <div style="background-color:#e6e1fb; border-radius:6px; padding:10px 20px; display:inline-block;">
+                        <p style="font-size:24px; font-weight:bold; color:#5b3fd4; letter-spacing:2px; margin:0;">${otp}</p>
+                      </div>
+                      <p style="color:#555; font-size:14px; margin-top:20px;">Please make sure you never share this code with anyone.</p>
+                      <p style="color:#333; font-size:13px;"><strong>Note:</strong> The code will expire in 5 minutes.</p>
+                    </td></tr>
+                    <tr><td align="center" style="padding:25px; background-color:#f5f6ff;">
+                      <p style="font-size:13px; color:#777;">© 2025 Celebrate7. All rights reserved.</p>
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </body>
+            </html>
+            `;
+        // Email options
+        const mailOptions = {
+          from: '"Celebrate7" <mithuzaman2020@gmail.com>',
+          to: email,
+          subject: "Celebrate7 - Your login verification code",
+          text: "2FA code",
+          html: htmlTemplate,
+        };
+        // Send email
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            console.log("❌ Error:", error);
+            res.json({
+              status: false,
+              message: "Something went wrong ! Please try again",
+              otp: otp,
+            });
+          } else {
+            console.log("✅ Email sent: " + info.response);
+            res.json({
+              status: true,
+              message: "OTP sent to your registerd email id",
+              otp: otp,
+            });
+          }
         });
       }
     }
@@ -104,7 +167,6 @@ module.exports = {
     user.otpExpiry = null;
     user.refreshToken = refreshToken;
     await user.save();
-
     res.json({ accessToken, refreshToken });
   },
 
