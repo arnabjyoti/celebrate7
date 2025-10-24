@@ -1,4 +1,4 @@
-<div class="container-fluid pt-4" style="background: rgb(242, 245, 249);">
+<div class="container-fluid pt-4" style="background: rgb(242, 245, 249)">
   <div class="row p-0 m-0">
     <!-- LEFT FILTER SIDEBAR -->
     <div class="col-md-3 col-lg-3 mb-4">
@@ -11,56 +11,115 @@
         <div class="mb-4">
           <label class="form-label fw-semibold text-secondary mb-2">Date</label>
           <div class="d-flex flex-wrap gap-2">
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="filterByDate('today')">Today</button>
-            <button type="button" class="btn btn-outline-danger btn-sm"
-              (click)="filterByDate('tomorrow')">Tomorrow</button>
-            <button type="button" class="btn btn-outline-danger btn-sm" (click)="filterByDate('weekend')">This
-              Weekend</button>
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              (click)="filterByDate('today')"
+            >
+              Today
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              (click)="filterByDate('tomorrow')"
+            >
+              Tomorrow
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-danger btn-sm"
+              (click)="filterByDate('weekend')"
+            >
+              This Weekend
+            </button>
             <div class="form-check mt-2">
-              <input class="form-check-input" type="checkbox" id="dateRange" [(ngModel)]="filters.dateRange"
-                (change)="applyFilters()" />
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="dateRange"
+                [(ngModel)]="filters.dateRange"
+                (change)="applyFilters()"
+              />
               <label class="form-check-label" for="dateRange">
                 Date Range
               </label>
             </div>
 
-            <div *ngIf="filters.dateRange" >
-
-              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-
+            <div *ngIf="filters.dateRange">
+              <div
+                class="d-flex justify-content-between align-items-center flex-wrap gap-2"
+              >
                 <!-- From Date -->
                 <div class="position-relative">
-                  <button class="btn btn-outline-primary btn-sm" (click)="fromPicker.showPicker()" type="button">
+                  <button
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="fromPicker.showPicker()"
+                    type="button"
+                  >
                     <i class="far fa-calendar-alt me-2"></i>
-                    {{ filters.fromDate ? ('From: ' + (filters.fromDate | date:'mediumDate')) : 'Select From Date' }}
+                    {{
+                      filters.fromDate
+                        ? "From: " + (filters.fromDate | date : "mediumDate")
+                        : "Select From Date"
+                    }}
                   </button>
 
                   <!-- Hidden Input -->
-                  <input type="date" #fromPicker id="fromPicker" class="invisible-date-input"
-                    [(ngModel)]="filters.fromDate" [min]="today" (change)="onDateChange()" />
+                  <input
+                    type="date"
+                    #fromPicker
+                    id="fromPicker"
+                    class="invisible-date-input"
+                    [(ngModel)]="filters.fromDate"
+                    [min]="today"
+                    (change)="onDateChange()"
+                  />
                 </div>
 
                 <!-- To Date -->
                 <div class="position-relative">
-                  <button class="btn btn-outline-primary btn-sm" (click)="toPicker.showPicker()" type="button">
+                  <button
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="toPicker.showPicker()"
+                    type="button"
+                  >
                     <i class="far fa-calendar-alt me-2"></i>
-                    {{ filters.toDate ? ('To: ' + (filters.toDate | date:'mediumDate')) : 'Select To Date' }}
+                    {{
+                      filters.toDate
+                        ? "To: " + (filters.toDate | date : "mediumDate")
+                        : "Select To Date"
+                    }}
                   </button>
 
                   <!-- Hidden Input -->
-                  <input type="date" #toPicker id="toPicker" class="invisible-date-input" [(ngModel)]="filters.toDate"
-                    [min]="filters.fromDate || today" (change)="onDateChange()" />
+                  <input
+                    type="date"
+                    #toPicker
+                    id="toPicker"
+                    class="invisible-date-input"
+                    [(ngModel)]="filters.toDate"
+                    [min]="filters.fromDate || today"
+                    (change)="onDateChange()"
+                  />
                 </div>
               </div>
 
               <!-- Action Buttons -->
               <div class="mt-3 d-flex justify-content-end gap-2">
-                <button class="btn btn-sm btn-secondary" (click)="clearDates()" type="button">
+                <button
+                  class="btn btn-sm btn-secondary"
+                  (click)="clearDates()"
+                  type="button"
+                >
                   Clear
                 </button>
 
-                <button class="btn btn-sm btn-primary" [disabled]="!isDateRangeValid" (click)="searchByDateRange()"
-                  type="button">
+                <button
+                  class="btn btn-sm btn-primary"
+                  [disabled]="!isDateRangeValid"
+                  (click)="searchByDateRange()"
+                  type="button"
+                >
                   Search
                 </button>
               </div>
@@ -70,16 +129,17 @@
                 {{ dateError }}
               </div>
             </div>
-
-
-
           </div>
         </div>
 
         <!-- State -->
         <div class="mb-4">
           <label class="form-label fw-bold">Region/State</label>
-          <select class="form-select" [(ngModel)]="filters.state" (change)="applyFilters()">
+          <select
+            class="form-select"
+            [(ngModel)]="filters.state"
+            (change)="applyFilters()"
+          >
             <option value="">All</option>
             <option value="Assam">Assam</option>
             <option value="Manipur">Manipur</option>
@@ -94,7 +154,11 @@
         <!-- Month -->
         <div class="mb-4">
           <label class="form-label fw-bold">Month</label>
-          <select class="form-select" [(ngModel)]="filters.month" (change)="applyFilters()">
+          <select
+            class="form-select"
+            [(ngModel)]="filters.month"
+            (change)="applyFilters()"
+          >
             <option value="">All</option>
             <option *ngFor="let m of months">{{ m }}</option>
           </select>
@@ -103,7 +167,11 @@
         <!-- Category -->
         <div class="mb-4">
           <label class="form-label fw-semibold text-secondary mb-2">Type</label>
-          <select class="form-select form-select-sm" [(ngModel)]="filters.category" (change)="applyFilters()">
+          <select
+            class="form-select form-select-sm"
+            [(ngModel)]="filters.category"
+            (change)="applyFilters()"
+          >
             <option value="">All</option>
             <option>Cultural</option>
             <option>Sports</option>
@@ -113,22 +181,55 @@
           </select>
         </div>
 
-        <button class="btn btn-outline-secondary w-100 mt-2" (click)="clearFilters()">
+        <button
+          class="btn btn-outline-secondary w-100 mt-2"
+          (click)="clearFilters()"
+        >
           <i class="fas fa-undo me-1"></i> Clear Filters
         </button>
       </div>
-
-
     </div>
 
     <!-- ========== RIGHT EVENTS GRID ========== -->
     <div class="col-md-9 col-lg-9">
-      <h3 class="mb-4">Events</h3>
-      <div class="row">
-        <div *ngFor="let event of filteredEvents" class="col-md-4 col-lg-3 mb-4">
+      <!-- <h3 class="mb-4">Events</h3> -->
+      <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-white">
+        <div>Events</div>
+        <div>
+          View as :
+          <button
+            class="btn-view"
+            [class.active]="viewAs === 'grid'"
+            (click)="setView('grid')"
+          >
+            Grid
+          </button>
+          |
+          <button
+            class="btn-view"
+            [class.active]="viewAs === 'map'"
+            (click)="setView('map')"
+          >
+            Map
+          </button>
+        </div>
+      </div>
+      <div *ngIf="viewAs === 'map'">
+        <app-map-view [locations]="locations"></app-map-view>
+      </div>
+
+      <div class="row" *ngIf="viewAs === 'grid'">
+        <div
+          *ngFor="let event of filteredEvents"
+          class="col-md-4 col-lg-3 mb-4"
+        >
           <div class="card custom-card shadow-sm border-0">
             <div class="image-container">
-              <img [src]="env + '/' + event.images[0].path" class="card-img-top" alt="{{ event.eventName }}" />
+              <img
+                [src]="env + '/' + event.images[0].path"
+                class="card-img-top"
+                alt="{{ event.eventName }}"
+              />
               <button class="favorite-btn">
                 <i class="far fa-heart"></i>
               </button>
@@ -149,10 +250,15 @@
                 </div>
                 <span class="ml-2 text-secondary small">
                   Exceptional <br />
-                  <span class="text-muted">{{ event.reviews || 88 }} reviews</span>
+                  <span class="text-muted"
+                    >{{ event.reviews || 88 }} reviews</span
+                  >
                 </span>
               </div>
-              <a [routerLink]="['/event', event.id]" class="btn btn-outline-primary btn-sm w-100">
+              <a
+                [routerLink]="['/event', event.id]"
+                class="btn btn-outline-primary btn-sm w-100"
+              >
                 View Details
               </a>
             </div>

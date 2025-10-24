@@ -102,3 +102,23 @@
   width: 0;
   height: 0;
 }
+
+
+.btn-view{
+  /* background: #003580; */
+  color: rgb(8, 8, 8);
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+.btn-view:hover{
+  background: #2f76d9;
+  color: white;
+}
+
+.btn-view.active{
+  background: #003580;
+  color: white;
+}

@@ -1,0 +1,18 @@
+<div class="map-wrapper">
+    <div id="map" class="map"></div>
+  
+    <aside class="location-list" aria-label="Locations list">
+      <h4>Events</h4>
+      <hr>
+      <div>
+        <div *ngFor="let loc of locations">
+          <div class="cursor-pointer" (click)="onMarkerClickNavigate(loc.id)">
+            <strong>{{ loc.title }}</strong>
+            <p class="text-muted small"> <i class="fas fa-calendar-alt me-1"></i> {{ loc.description ?? '' }}</p>
+          </div>
+          <!-- <button (click)="onMarkerClickNavigate(loc.id)">{{ loc.title }}</button> -->
+        </div>
+      </div>
+    </aside>
+  </div>
+  

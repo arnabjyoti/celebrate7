@@ -3,6 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
+interface LocationPoint {
+  id: string | number;
+  title: string;
+  description?: string;
+  lat: number;
+  lng: number;
+}
+
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
@@ -11,9 +19,14 @@ import { environment } from 'src/environments/environment';
 export class EventsComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
+
+   locations: LocationPoint[] = [];
+
   env = environment.BASE_URL;
   events: any[] = [];
   filteredEvents: any[] = [];
+
+  viewAs: string = 'grid';
 
   filters = {
   dateRange: false,
@@ -57,6 +70,21 @@ dateError: string = '';
       next: (res: any) => {
         console.log('✅ Response received:', res);
         this.events = res.data || [];
+        console.log('Events:', this.events);
+        this.locations = this.events.map((event: any) => ({
+          id: event.id,
+          title: event.eventName,
+          // {{ event.eventDate | date : "mediumDate" }}
+          description: `${new Date(event.eventFromDate).toLocaleDateString('en-US', {
+            month: 'short', day: 'numeric', year: '2-digit'
+          })} `,
+          lat: event.lat,
+          lng: event.lng
+        }))
+
+        console.log('Locations:', this.locations);
+        
+        
         this.filteredEvents = [...this.events];
       },
       error: (err) => console.error('❌ Error fetching events:', err),
@@ -134,5 +162,10 @@ dateError: string = '';
       this.filters.date = ''; // clear single-date filter
       this.applyFilters();
     }
+  }
+
+  setView(mode: 'grid' | 'map') {
+    this.viewAs = mode;
+    console.log('Switched view to:', mode);
   }
 }
