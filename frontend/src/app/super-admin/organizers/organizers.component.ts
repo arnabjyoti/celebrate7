@@ -2,13 +2,20 @@ import { Component } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { OrganizersService } from './organizers.service';
+import * as data from 'countrycitystatejson';
 
 interface Organizer {
   id: number;
+  organizer_name: string;
+  contact_name: string;
+  type_of_organization: string;
   name: string;
   email: string;
   phone: string;
   location: string;
+  country: string;
+  state: string;
+  city: string;
   status: string;
   isDeleted: boolean;
 }
@@ -18,6 +25,10 @@ interface Organizer {
   styleUrls: ['./organizers.component.css'],
 })
 export class OrganizersComponent {
+   AllData: any = null;
+  Countries: any = [];
+  States: any = [];
+  Cities: any = [];
   organizers: Organizer[] = [];
   filteredOrganizers: Organizer[] = [];
 
@@ -118,10 +129,16 @@ export class OrganizersComponent {
   itemsPerPage = 5;
   selectedOrganizer: Organizer = {
     id: 0,
+    organizer_name: '',
+    contact_name:'',
+    type_of_organization:'',
     name: '',
     email: '',
     phone: '',
-    location: '',
+    location:'',
+    country: '',
+    state: '',
+    city: '',
     status: '',
     isDeleted: false,
   };
@@ -132,6 +149,8 @@ export class OrganizersComponent {
 
   ngOnInit() {
     this.getOrganizers();
+    this.AllData = data.getAll();
+    this.Countries = data.getCountries();
   }
 
   getOrganizers() {
@@ -178,10 +197,16 @@ export class OrganizersComponent {
   resetSelectedOrganizer() {
     this.selectedOrganizer = {
       id: 0,
+      organizer_name:'',
+      contact_name:'',
+      type_of_organization:'',
       name: '',
       email: '',
       phone: '',
-      location: '',
+      location:'',
+      country: '',
+      state: '',
+      city: '',
       status: '',
       isDeleted: false,
     };
@@ -276,7 +301,7 @@ export class OrganizersComponent {
   confirmDelete(item: any) {
     Swal.fire({
       title: 'Are you sure?',
-      text: `You will not be able to recover "${item.name}"!`,
+      text: `You will not be able to recover "${item.organizer_name}"!`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -294,7 +319,7 @@ export class OrganizersComponent {
       next: (response: any) => {
         if (response.status) {
           this.getOrganizers();
-          Swal.fire('Deleted!', `"${org.name}" has been deleted.`, 'success');
+          Swal.fire('Deleted!', `"${org.organizer_name}" has been deleted.`, 'success');
         } else {
           this.toastr.error(response.message, 'Error Message');
         }
@@ -307,6 +332,27 @@ export class OrganizersComponent {
 
   editOrganizer(org: Organizer) {
     this.selectedOrganizer=org;
+    this.onChangeCountry();
+    this.onChangeState();
     this.isDefaultView = false;
+    console.log("this.selectedOrganizer==",this.selectedOrganizer);
   }
+
+  onChangeCountry = () => {
+    if (this.selectedOrganizer.country) {
+      this.States = data.getStatesByShort(this.selectedOrganizer.country);
+    } else {
+      this.States = [];
+    }
+  };
+
+  onChangeState = () => {
+    if (this.selectedOrganizer.state) {
+      let country: any = this.AllData[`${this.selectedOrganizer.country}`];
+      this.Cities = country.states[`${this.selectedOrganizer.state}`];
+    } else {
+      this.Cities = [];
+    }
+  };
+
 }

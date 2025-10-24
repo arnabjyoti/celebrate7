@@ -52,20 +52,28 @@
       <table class="table table-bordered table-striped">
         <thead class="table-light">
           <tr>
-            <th>Name</th>
+            <th>Organizer Name</th>
+            <th>Contact Person</th>
+            <th>Organization Type</th>
             <th>Email</th>
             <th>Phone</th>
-            <th>Location</th>
+            <th>Country</th>
+            <th>State/Region</th>
+            <th>City</th>
             <th>Status</th>
             <th style="width: 120px">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let org of paginatedOrganizers">
-            <td>{{ org.name }}</td>
+            <td>{{ org.organizer_name }}</td>
+            <td>{{ org.contact_name }}</td>
+            <td>{{ org.type_of_organization }}</td>
             <td>{{ org.email }}</td>
             <td>{{ org.phone }}</td>
-            <td>{{ org.location }}</td>
+            <td>{{ org.country }}</td>
+            <td>{{ org.state }}</td>
+            <td>{{ org.city }}</td>
             <td>{{ org.status }}</td>
             <td class="text-center">
               <button
@@ -125,15 +133,36 @@
   <div class="card-body">
     <div class="modal-body">
       <div class="mb-3">
-        <label class="form-label">Name</label>
+        <label class="form-label">Organizer Name</label>
         <input
           type="text"
           class="form-control"
-          [(ngModel)]="selectedOrganizer.name"
-          name="name"
+          [(ngModel)]="selectedOrganizer.organizer_name"
           required
         />
       </div>
+      <div class="mb-3">
+        <label class="form-label">Contact Person</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="selectedOrganizer.contact_name"
+          required
+        />
+      </div>
+      <div class="mb-3">
+              <label for="name" class="form-label"
+                >Organization Type</label
+              >
+              <select [(ngModel)]="selectedOrganizer.type_of_organization" class="form-control">
+                <option value="">--Select--</option>
+                <option value="Individual">Individual</option>
+                <option value="Company">Company</option>
+                <option value="Firm">Firm</option>
+                <option value="NGO">NGO</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
       <div class="mb-3">
         <label class="form-label">Email</label>
         <input
@@ -155,15 +184,39 @@
         />
       </div>
       <div class="mb-3">
-        <label class="form-label">Location</label>
+        <label class="form-label">Country</label>
+        <select
+        (change)="onChangeCountry()"
+          class="form-select"
+          [(ngModel)]="selectedOrganizer.country"
+          required
+        >
+          <option value="">Select Country</option>
+          <option *ngFor="let country of Countries" [value]="country.shortName">{{country?.name}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">State/Region</label>
+        <select
+        (change)="onChangeState()"
+          class="form-select"
+          [(ngModel)]="selectedOrganizer.state"
+          required
+        >
+          <option value="">Select State/Region</option>
+          <option *ngFor="let state of States" [value]="state">{{state}}</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">City</label>
         <select
           class="form-select"
-          [(ngModel)]="selectedOrganizer.location"
+          [(ngModel)]="selectedOrganizer.city"
           name="location"
           required
         >
-          <option value="">Select Location</option>
-          <option *ngFor="let loc of locations" [value]="loc">{{ loc }}</option>
+          <option value="">Select City</option>
+          <option *ngFor="let city of Cities" [value]="city.name">{{city.name}}</option>
         </select>
       </div>
       <div class="mb-3">

@@ -51,7 +51,7 @@ export class RegisterComponent implements OnInit {
       let country: any = this.AllData[`${this.selectedCountry}`];
       this.Cities = country.states[`${this.selectedState}`];
     } else {
-      this.States = [];
+      this.Cities = [];
     }
   };
 
