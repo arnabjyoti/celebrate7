@@ -60,6 +60,32 @@ module.exports = {
   },
   //End
 
+  //Start: Method to view event categories
+  async getEventCategories(req, res) {
+    try {
+      const requestObject = req.body;
+      const rows = await eventCategoriesModel.findAll({
+        where: {
+          isDeleted: false,
+          status: "Active",
+        },
+      });
+      res.status(200).json({
+        status: true,
+        message: "Success",
+        data: rows,
+      });
+    } catch (error) {
+      console.error("Error fetching event categories:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to fetch event categories",
+        data: [],
+      });
+    }
+  },
+  //End
+
   async upsertEventCategory(req, res) {
     try {
       const eventCategoriesData = req.body.category;
@@ -234,89 +260,94 @@ module.exports = {
   },
 
   async getAllEvents(req, res) {
-  try {
-    const page = parseInt(req.body.page) || 1;
-    const limit = parseInt(req.body.limit) || 50;
-    const offset = (page - 1) * limit;
+    try {
+      const page = parseInt(req.body.page) || 1;
+      const limit = parseInt(req.body.limit) || 50;
+      const offset = (page - 1) * limit;
 
-    const search = req.body.filters || {};
-    console.log("search ===>>>> ", search);
-    console.log("searchByEventName ===>>>> ", search.searchByEventName);
-    console.log("searchByOrganizer ===>>>> ", search.searchByOrganizer);
-    console.log("searchByCity ===>>>> ", search.state);
-    console.log("searchByDate ===>>>> ", search.fromDate);
+      const search = req.body.filters || {};
+      console.log("search ===>>>> ", search);
+      console.log("searchByEventName ===>>>> ", search.searchByEventName);
+      console.log("searchByOrganizer ===>>>> ", search.searchByOrganizer);
+      console.log("searchByCity ===>>>> ", search.state);
+      console.log("searchByDate ===>>>> ", search.fromDate);
 
-    const orConditions = [];
+      const orConditions = [];
 
-    // Search by state
-    if (search.state) {
-      orConditions.push({
-        state: { [Op.like]: `%${search.state}%` },
+      // Search by state
+      if (search.state) {
+        orConditions.push({
+          state: { [Op.like]: `%${search.state}%` },
+        });
+      }
+
+      // Search by Date (matching eventFromDate or eventToDate)
+      if (search.fromDate && search.toDate) {
+        console.log(
+          "✅ Date range filter applied:",
+          search.fromDate,
+          "to",
+          search.toDate
+        );
+
+        orConditions.push({
+          [Op.or]: [
+            {
+              eventFromDate: {
+                [Op.between]: [search.fromDate, search.toDate],
+              },
+            },
+            {
+              eventToDate: {
+                [Op.between]: [search.fromDate, search.toDate],
+              },
+            },
+          ],
+        });
+      }
+
+      const whereClause =
+        orConditions.length > 0
+          ? { [Op.and]: [{ isDeleted: false }, { [Op.or]: orConditions }] }
+          : { isDeleted: false };
+
+      const result = await eventModel.findAndCountAll({
+        where: whereClause,
+        offset,
+        limit,
+        order: [["createdAt", "DESC"]],
+        include: [
+          {
+            model: eventImageModel,
+            as: "images",
+            attributes: ["id", "filename", "path", "originalname", "isDefault"],
+            where: { isDeleted: false },
+            required: false,
+          },
+        ],
+      });
+
+      const totalPages = Math.ceil(result.count / limit);
+
+      return res.status(200).json({
+        success: true,
+        data: result.rows,
+        pagination: {
+          totalItems: result.count,
+          totalPages,
+          currentPage: page,
+          perPage: limit,
+        },
+      });
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      return res.status(400).json({
+        success: false,
+        message: "Error fetching events",
+        error,
       });
     }
-
-    // Search by Date (matching eventFromDate or eventToDate)
-    if (search.fromDate && search.toDate) {
-  console.log("✅ Date range filter applied:", search.fromDate, "to", search.toDate);
-
-  orConditions.push({
-    [Op.or]: [
-      {
-        eventFromDate: {
-          [Op.between]: [search.fromDate, search.toDate],
-        },
-      },
-      {
-        eventToDate: {
-          [Op.between]: [search.fromDate, search.toDate],
-        },
-      },
-    ],
-  });
-}
-
-    const whereClause =
-      orConditions.length > 0
-        ? { [Op.and]: [{ isDeleted: false }, { [Op.or]: orConditions }] }
-        : { isDeleted: false };
-
-    const result = await eventModel.findAndCountAll({
-      where: whereClause,
-      offset,
-      limit,
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: eventImageModel,
-          as: "images",
-          attributes: ["id", "filename", "path", "originalname", "isDefault"],
-          where: { isDeleted: false },
-          required: false,
-        },
-      ],
-    });
-
-    const totalPages = Math.ceil(result.count / limit);
-
-    return res.status(200).json({
-      success: true,
-      data: result.rows,
-      pagination: {
-        totalItems: result.count,
-        totalPages,
-        currentPage: page,
-        perPage: limit,
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return res.status(400).json({
-      success: false,
-      message: "Error fetching events",
-      error,
-    });
-  }
-},
+  },
 
   async getEventDetails(req, res) {
     console.log("req.params.id", req.query.id);

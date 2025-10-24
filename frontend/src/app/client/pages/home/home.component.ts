@@ -112,8 +112,7 @@ this.spinner.hide('nowShowingSectionSpinner');
 
   structureEventObjects(data: any) {
     this.events = [];
-    data.map((item: any) => {
-      console.log('event===', item);
+    data.map((item: any) => {      
       let obj: any = {
         id: item?.id,
         title: item?.eventName,
@@ -126,6 +125,7 @@ this.spinner.hide('nowShowingSectionSpinner');
       };
       this.events.push(obj);
     });
+    console.log('this.events===', this.events);
     this.genres = Array.from(new Set(this.events.map((x) => x.genre)));
     this.applyFilters();
   }

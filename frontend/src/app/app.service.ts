@@ -9,6 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class AppService {
   public headers: any;
+  private tokenKey = 'accessToken';
   constructor(
 	private toastr: ToastrService,  
 	private http: HttpClient) {
@@ -23,46 +24,5 @@ export class AppService {
     headers.append('X-Requested-With', 'Test key');
     headers.append('Access-Control-Allow-Origin', '*');
     return callback && callback(headers);
-  }
-
-  getData(req:any, callback:any) {
-	const ENDPOINT = `${environment.BASE_URL}/api/department`;
-	const requestOptions = {
-		headers: this.headers,
-		method: 'get'
-	};
-	this.http.get(ENDPOINT, requestOptions).subscribe(
-		(response) => {
-			console.log('Success');
-			return callback && callback(response);
-		},
-		(error) => {
-			return callback && callback(error);
-		},
-		() => {
-			console.log('Observable is now completed.');
-		}
-	);
-}
-
-  //Start: Method to pull all the projects
-	getProjectById(projectId: any, callback: any) {
-		const ENDPOINT = `${environment.BASE_URL}/api/department`;
-		const requestOptions = {
-			headers: this.headers,
-			method: 'get'
-		};
-		this.http.get(ENDPOINT, requestOptions).subscribe(
-			(response) => {
-				console.log('Success');
-				return callback && callback(response);
-			},
-			(error) => {
-				return callback && callback(error);
-			},
-			() => {
-				console.log('Observable is now completed.');
-			}
-		);
   }
 }

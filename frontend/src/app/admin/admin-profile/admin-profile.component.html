@@ -1,0 +1,40 @@
+<div class="profile-view-container">
+  <h2>My Profile</h2>
+
+  <div class="profile-card">
+    <div class="profile-row">
+      <label>Organization Name:</label>
+      <span>{{ user.organizationName || '-' }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label>Name:</label>
+      <span>{{ user.name || '-' }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label>Email:</label>
+      <span>{{ user.email || '-' }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label>Phone:</label>
+      <span>{{ user.phone || '-' }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label>Country:</label>
+      <span>{{ user.country || '-' }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label>State:</label>
+      <span>{{ user.state || '-' }}</span>
+    </div>
+
+    <div class="profile-row">
+      <label>City:</label>
+      <span>{{ user.city || '-' }}</span>
+    </div>
+  </div>
+</div>

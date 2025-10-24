@@ -24,6 +24,7 @@ import { EventDetailsClientComponent } from './client/pages/event-details-client
 import { MapViewComponent } from './map-view/map-view.component';
 import { LocationDetailComponent } from './location-detail/location-detail.component';
 // import { MapTestComponent } from './map-test/map-test.component';
+import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 
 const routes: Routes = [
   {
@@ -75,6 +76,12 @@ const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' },
+      },
+      {
+        path: 'my-profile',
+        component: AdminProfileComponent,
         canActivate: [RoleGuard],
         data: { expectedRole: 'admin' },
       },

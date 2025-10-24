@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
@@ -14,9 +15,13 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   constructor(
     private toastr: ToastrService,
     private http: HttpClient,
+    private authService: AuthService,
     private route: ActivatedRoute,
     private location: Location
-  ) {}
+  ) {
+    this.getOrganizerByEmail();
+    this.getEventCategories();
+  }
 
   routeName: string = '';
   eventId: any;
@@ -128,6 +133,39 @@ export class AddEventComponent implements OnInit, AfterViewInit {
         this.updateAddressFromCoords(lat, lng);
       }
     });
+  }
+
+  organizers: any = [];
+  getOrganizerByEmail() {
+    this.organizers = [];
+    let requestObject = {
+      role: this.authService.getRole(),
+      email: this.authService.getEmail(),
+    };
+    this.http
+      .post(`${environment.BASE_URL}/api/getOrganizerByEmail`, requestObject)
+      .subscribe((res: any) => {
+        if (res.status && res.data.length >= 1) {
+          this.organizers = res.data || [];
+        } else {
+          this.organizers = [];
+        }
+      });
+  }
+
+  eventCategories: any = [];
+  getEventCategories() {
+    this.eventCategories = [];
+    let requestObject = {};
+    this.http
+      .post(`${environment.BASE_URL}/api/getEventCategories`, requestObject)
+      .subscribe((res: any) => {
+        if (res.status && res.data.length >= 1) {
+          this.eventCategories = res.data || [];
+        } else {
+          this.eventCategories = [];
+        }
+      });
   }
 
   updateAddressFromCoords(lat: number, lng: number) {

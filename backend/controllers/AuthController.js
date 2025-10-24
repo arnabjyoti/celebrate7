@@ -19,7 +19,7 @@ const transporter = nodemailer.createTransport({
 });
 
 const generateAccessToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, config.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role, mobile:user.mobile, email:user.email }, config.JWT_SECRET, {
     expiresIn: "15m",
   });
 };

@@ -67,6 +67,16 @@ export class AuthService {
     return decoded?.role || null;
   }
 
+  getEmail(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.email || null;
+  }
+
+  getMobile(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.mobile || null;
+  }
+
   getRefreshToken() {
     return localStorage.getItem('refreshToken');
   }
