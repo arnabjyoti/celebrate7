@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AuthService } from '../../../auth/auth.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -16,7 +17,7 @@ export class ViewEventsComponent implements OnInit {
   dataSource:any = [];
 
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private authService:AuthService) {}
 
   ngOnInit(): void {
     this.fetchEvents();
@@ -57,12 +58,13 @@ export class ViewEventsComponent implements OnInit {
     let reqBody = {
       limit : this.perPage,
       page: this.currentPage,
+      email: this.authService.getEmail(),
       searchBy : 'eventName',
       search : this.manageSearch || {}
     }
 
 
-    this.http.post(`${environment.BASE_URL}/api/getAllEvents`, reqBody).subscribe((res: any) => {
+    this.http.post(`${environment.BASE_URL}/api/getEventsByOrganizer`, reqBody).subscribe((res: any) => {
       console.log('getAllEvents', res);
       
       this.dataSource = res.data || [];

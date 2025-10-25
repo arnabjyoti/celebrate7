@@ -2,12 +2,14 @@
 const usersModel = require("../models").users;
 const eventModel = require("../models").events;
 const eventCategoriesModel = require("../models").eventcategories;
+const organizersModel = require("../models").organizers;
 const ticketModel = require("../models").tickets;
 const eventImageModel = require("../models").event_images;
 const request = require("request");
 const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
-
+const asyncLib = require("async");
+const { Stats } = require("fs");
 module.exports = {
   //Start: Method to view event categories
   async viewEventCategories(req, res) {
@@ -348,6 +350,126 @@ module.exports = {
       });
     }
   },
+
+  async getEventsByOrganizer(req, res) {
+  try {
+    const email = req.body.email || "";
+    const page = parseInt(req.body.page) || 1;
+    const limit = parseInt(req.body.limit) || 50;
+    const offset = (page - 1) * limit;
+
+    asyncLib.waterfall(
+      [
+        // Step 1
+        function (callback) {
+          (async ()=>{
+            let response = { status: true, data: null, message: "No organizer found" };
+            if(email){
+              const organizer = await organizersModel.findOne({
+                where: {            
+                  email: email,
+                  isDeleted: false,
+                  status: 'Active'
+                },
+              });
+              response = {status:true, data: organizer, message:'Organizer found'};
+            }
+            callback(null, response);
+          })();
+        },
+
+        // Step 2
+        function (organizer, callback) {
+          (async () => {
+            try {
+              let response = { status: false, data: [], pagination: null, message: "No event found" };
+              if (organizer?.status && organizer?.data?.id) {
+                const search = req.body.filters || {};
+                const orConditions = [];
+
+                if (search.state) {
+                  orConditions.push({ state: { [Op.like]: `%${search.state}%` } });
+                }
+
+                if (search.fromDate && search.toDate) {
+                  orConditions.push({
+                    [Op.or]: [
+                      { eventFromDate: { [Op.between]: [search.fromDate, search.toDate] } },
+                      { eventToDate: { [Op.between]: [search.fromDate, search.toDate] } },
+                    ],
+                  });
+                }
+
+                const whereClause =
+                  orConditions.length > 0
+                    ? { [Op.and]: [{ isDeleted: false, organizer: organizer?.data?.id }, { [Op.or]: orConditions }] }
+                    : { isDeleted: false, organizer: organizer?.data?.id };
+
+                const events = await eventModel.findAndCountAll({
+                  where: whereClause,
+                  offset,
+                  limit,
+                  order: [["createdAt", "DESC"]],
+                  include: [
+                    {
+                      model: eventImageModel,
+                      as: "images",
+                      attributes: ["id", "filename", "path", "originalname", "isDefault"],
+                      where: { isDeleted: false },
+                      required: false,
+                    },
+                  ],
+                });
+
+                const totalPages = Math.ceil(events.count / limit);
+                response = {
+                  status: true,
+                  data: events.rows,
+                  pagination: {
+                    totalItems: events.count,
+                    totalPages,
+                    currentPage: page,
+                    perPage: limit,
+                  },
+                  message: "Events found",
+                };
+              }
+
+              callback(null, response);
+            } catch (err) {
+              callback(err);
+            }
+          })();
+        },
+      ],
+      function (err, result) {
+        if (err) {
+          console.error("Error===>", err);
+          return res.status(400).json({
+            success: false,
+            message: "Error fetching events",
+            data: err,
+          });
+        } else {
+          return res.status(200).json({
+            status: result.status,
+            data: result.data,
+            pagination: result.pagination,
+            message: result.message,
+          });
+        }
+      }
+    );
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    return res.status(400).json({
+      success: false,
+      message: "Error fetching events",
+      error,
+    });
+  }
+},
+
 
   async getEventDetails(req, res) {
     console.log("req.params.id", req.query.id);

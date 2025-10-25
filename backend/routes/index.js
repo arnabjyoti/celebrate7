@@ -25,6 +25,7 @@ module.exports = (app) => {
 	app.post('/api/saveEvent', eventController.saveEvent);
 	app.post('/api/saveTicket', eventController.saveTicket);
 	app.post('/api/getAllEvents', eventController.getAllEvents);
+	app.post('/api/getEventsByOrganizer', eventController.getEventsByOrganizer);
 	app.post('/api/saveEventImg',upload.single('image'), eventController.saveEventImg);
 	app.get('/api/getEventDetails', eventController.getEventDetails);
 	app.post('/api/updateEvent', eventController.updateEvent);

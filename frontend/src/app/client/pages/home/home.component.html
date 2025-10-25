@@ -64,9 +64,13 @@
     <div class="grid" *ngIf="filtered.length; else noResults">      
       <article class="card event-card" *ngFor="let m of filtered">
         <div
-          class="poster"
-          [style.backgroundImage]="'url(' + m.poster + ')'"
-        ></div>
+          class="image-container">
+        <img
+                [src]="m.poster"
+                class="card-img-top"
+                alt="{{ m.title }}"
+              />
+      </div>
         <div class="meta">
           <div class="title-row">
             <div>
