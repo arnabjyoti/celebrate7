@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
+import * as data from 'countrycitystatejson';
 
 interface LocationPoint {
   id: string | number;
@@ -19,6 +20,13 @@ interface LocationPoint {
 export class EventsComponent {
   constructor(private http: HttpClient, private router: Router) {}
 
+  AllData: any = null;
+  Countries: any = [];
+  selectedCountry: any = '';
+  States: any = [];
+  selectedState: any = '';
+  Cities: any = [];
+  selectedCity: any = '';
 
    locations: LocationPoint[] = [];
 
@@ -33,12 +41,15 @@ export class EventsComponent {
   fromDate: '',
   toDate: '',
   date: '',
+  country: '',
   state: '',
+  city: '',
   month: '',
   language: '',
   category: '',
   genre: '',
   more: '',
+  activeDateButton: '',
 };
 
   months: string[] = [
@@ -54,7 +65,13 @@ dateError: string = '';
   ngOnInit(): void {
     this.fetchEvents();
     const now = new Date();
-  this.today = now.toISOString().split('T')[0];
+    this.today = now.toISOString().split('T')[0];
+
+    this.AllData = data.getAll();
+    this.Countries = data.getCountries();
+    console.log('AllData==', this.AllData);
+
+    this.getEventCategories();
   }
 
   fetchEvents(): void {
@@ -91,11 +108,15 @@ dateError: string = '';
     });
   }
 
-  filterByDate(option: string): void {
-    this.filters.date = option;
-    this.filters.dateRange = false; // turn off range mode if clicked
-    this.applyFilters();
-  }
+  
+
+filterByDate(option: string): void {
+  this.filters.activeDateButton = option;  // set active button
+  this.filters.date = option;       // update filter
+  this.filters.dateRange = false;   // optional: turn off date range
+  this.applyFilters();
+}
+
 
   toggleDateRange(): void {
     if (!this.filters.dateRange) {
@@ -116,12 +137,15 @@ dateError: string = '';
       dateRange: false,
       fromDate: '',
       toDate: '',
+      country: '',
       state: '',
+      city: '',
       month: '',
       language: '',
       category: '',
       genre: '',
       more: '',
+      activeDateButton:'',
     };
     this.dateError = '';
     this.isDateRangeValid = false;
@@ -168,4 +192,62 @@ dateError: string = '';
     this.viewAs = mode;
     console.log('Switched view to:', mode);
   }
+
+
+
+  //country state city fatch
+
+  onChangeCountry = () => {
+    if (this.filters.country) {
+      // find country object by full name
+      const selectedCountry = this.Countries.find(
+        (c:any) => c.name.toLowerCase() === this.filters.country.toLowerCase()
+      );
+
+      // get states using shortName (like "IN")
+      this.States = selectedCountry
+        ? data.getStatesByShort(selectedCountry.shortName)
+        : [];
+
+      this.filters.state = '';
+      this.Cities = [];
+    } else {
+      this.States = [];
+      this.Cities = [];
+    }
+  };
+
+  onChangeState = () => {
+    if (this.filters.state && this.filters.country) {
+      const selectedCountry = this.Countries.find(
+        (c:any) => c.name.toLowerCase() === this.filters.country.toLowerCase()
+      );
+
+      this.Cities = selectedCountry
+        ? data.getCities(selectedCountry.shortName, this.filters.state)
+        : [];
+    } else {
+      this.Cities = [];
+    }
+  };
+
+
+  // types/ categories
+  eventCategories: any = [];
+  getEventCategories() {
+    this.eventCategories = [];
+    let requestObject = {};
+    this.http
+      .post(`${environment.BASE_URL}/api/getEventCategories`, requestObject)
+      .subscribe((res: any) => {
+        if (res.status && res.data.length >= 1) {
+          this.eventCategories = res.data || [];
+        } else {
+          this.eventCategories = [];
+        }
+      });
+  }
+
+
+  
 }

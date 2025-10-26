@@ -122,3 +122,35 @@
   background: #003580;
   color: white;
 }
+
+.btn-date {
+  border: #000;
+  color: #fff;
+  background-color: #000;
+}
+
+.btn-date.active {
+  background-color: #dc3545;
+  color: white;
+}
+
+
+.text-ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* max 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* take full height of the grid column */
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* fill remaining height */
+}

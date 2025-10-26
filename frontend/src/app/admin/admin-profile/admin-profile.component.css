@@ -1,44 +1,105 @@
-.profile-view-container {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 25px;
-  background: #fff;
+/* Container */
+.profile-container {
+  /* max-width: 750px; */
+  margin: 0 auto; /* removed top/bottom gap */
+  background: #ffffff;
   border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
   font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  padding: 0;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #333;
-}
-
-.profile-card {
+/* Header */
+.profile-header {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
+  color: #fff;
+  gap: 20px;
 }
 
-.profile-row {
+.profile-avatar img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  object-fit: cover;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.profile-role {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Action Buttons in header */
+.profile-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.profile-actions .btn {
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 8px 18px;
+}
+
+/* Details Section */
+.profile-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding: 25px 30px;
+  background: #f8f9fa;
+}
+
+.detail-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  border: 1px solid #eee;
+  background: #fff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
 }
 
-label {
+.detail-row:hover {
+  background: #e9ecef;
+}
+
+.detail-row .label {
   font-weight: 600;
-  color: #444;
-  min-width: 160px;
+  color: #495057;
 }
 
-span {
-  color: #222;
+.detail-row .value {
+  color: #212529;
   font-weight: 500;
-  text-align: right;
-  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .profile-details {
+    grid-template-columns: 1fr;
+  }
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  .profile-actions {
+    justify-content: center;
+    margin-top: 10px;
+  }
 }
