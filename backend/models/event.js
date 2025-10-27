@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
     eventName: DataTypes.TEXT,
-    organizer: DataTypes.TEXT,
-    type: DataTypes.STRING,
+    organizer: DataTypes.INTEGER,
+    type: DataTypes.INTEGER,
     eventFromDate: DataTypes.STRING,
     eventToDate: DataTypes.STRING,
     eventTime: DataTypes.STRING,
@@ -33,6 +33,16 @@ module.exports = (sequelize, DataTypes) => {
     Events.hasMany(models.event_images, {
       foreignKey: "eventId",
       as: "images",
+    });
+
+    Events.belongsTo(models.organizers, {
+      foreignKey: "organizer", // event.organizer → organizers.id
+      as: "organizerDetails",
+    });
+
+    Events.belongsTo(models.eventcategories, {
+      foreignKey: "type", // event.type → eventcategories.id
+      as: "categoryDetails",
     });
   };
 

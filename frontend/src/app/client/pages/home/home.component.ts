@@ -105,7 +105,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         if (data?.length > 0) {
           this.structureEventObjects(data);
         }else{
-this.spinner.hide('nowShowingSectionSpinner');
+          this.spinner.hide('nowShowingSectionSpinner');
         }
       });
   }
@@ -116,16 +116,15 @@ this.spinner.hide('nowShowingSectionSpinner');
       let obj: any = {
         id: item?.id,
         title: item?.eventName,
-        genre: item?.type,
+        genre: item?.categoryDetails?.categoryName,
         rating: '7.9',
         runtime: item?.eventTime,
         city: item?.city,
-        organizer: item?.organizer,
+        organizer: item?.organizerDetails?.organizer_name,
         poster: this.env + '/' +item?.images[0].path
       };
       this.events.push(obj);
     });
-    console.log('this.events===', this.events);
     this.genres = Array.from(new Set(this.events.map((x) => x.genre)));
     this.applyFilters();
   }

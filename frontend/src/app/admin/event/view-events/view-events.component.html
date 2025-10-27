@@ -52,7 +52,7 @@
       <thead class="table-primary">
         <tr>
           <th scope="col" class="text-center">#</th>
-          <th scope="col">Event Name</th>
+          <th scope="col"><strong>Event Name</strong></th>
           <th scope="col">Time</th>
           <th scope="col">From</th>
           <th scope="col">To</th>
@@ -71,7 +71,7 @@
           <td>{{ event.eventFromDate }}</td>
           <td>{{ event.eventToDate }}</td>
           <td>{{ event.fullAddress }}</td>
-          <td>{{ event.createdAt }}</td>
+          <td>{{ event.createdAt | date: 'yyyy-MM-dd'}}</td>
           <td>
             <span
               class="badge rounded-pill"

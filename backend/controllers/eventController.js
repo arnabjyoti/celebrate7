@@ -310,8 +310,8 @@ module.exports = {
 
       const whereClause =
         orConditions.length > 0
-          ? { [Op.and]: [{ isDeleted: false }, { [Op.or]: orConditions }] }
-          : { isDeleted: false };
+          ? { [Op.and]: [{ isDeleted: false, status:'active' }, { [Op.or]: orConditions }] }
+          : { isDeleted: false, status:'active' };
 
       const result = await eventModel.findAndCountAll({
         where: whereClause,
@@ -320,12 +320,22 @@ module.exports = {
         order: [["createdAt", "DESC"]],
         include: [
           {
+          model: organizersModel,
+          as: "organizerDetails",
+          attributes: ["id", "organizer_name", "email", "phone", "country", "state", "city"],
+          },
+          {
+          model: eventCategoriesModel,
+          as: "categoryDetails",
+          attributes: ["id", "categoryName", "status"],
+          },
+          {
             model: eventImageModel,
             as: "images",
             attributes: ["id", "filename", "path", "originalname", "isDefault"],
             where: { isDeleted: false },
             required: false,
-          },
+          }
         ],
       });
 
@@ -351,7 +361,7 @@ module.exports = {
     }
   },
 
-  async getEventsByOrganizer(req, res) {
+  getEventsByOrganizer(req, res) {
   try {
     const email = req.body.email || "";
     const page = parseInt(req.body.page) || 1;

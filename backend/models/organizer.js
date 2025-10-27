@@ -55,6 +55,10 @@ module.exports = (sequelize, type) => {
 
   organizers.associate = function (models) {
     // associations can be defined here
+    organizers.hasMany(models.events, {
+      foreignKey: "organizer",
+      as: "events",
+    });
   };
   return organizers;
 };
