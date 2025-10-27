@@ -94,7 +94,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   // events:any = [];
   fetchEvents(): void {
     const reqBody = {
-      limit: 13,
+      requestType:'Public',
+      limit: 15,
       page: 1,
     };
 

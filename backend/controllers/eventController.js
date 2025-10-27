@@ -264,16 +264,13 @@ module.exports = {
   async getAllEvents(req, res) {
     try {
       const page = parseInt(req.body.page) || 1;
+      const requestType = req.body.requestType;
       const limit = parseInt(req.body.limit) || 50;
       const offset = (page - 1) * limit;
 
       const search = req.body.filters || {};
-      console.log("search ===>>>> ", search);
-      console.log("searchByEventName ===>>>> ", search.searchByEventName);
-      console.log("searchByOrganizer ===>>>> ", search.searchByOrganizer);
-      console.log("searchByCity ===>>>> ", search.state);
-      console.log("searchByDate ===>>>> ", search.fromDate);
-
+      
+      let andConditions = [];
       const orConditions = [];
 
       // Search by state
@@ -308,10 +305,13 @@ module.exports = {
         });
       }
 
-      const whereClause =
-        orConditions.length > 0
-          ? { [Op.and]: [{ isDeleted: false, status:'active' }, { [Op.or]: orConditions }] }
-          : { isDeleted: false, status:'active' };
+      
+      if(requestType && requestType=='Public'){
+         andConditions = { isDeleted: false, status:'active' };
+      }else{
+        andConditions = { isDeleted: false};
+      }
+      const whereClause = orConditions.length > 0 ? { [Op.and]: [andConditions, { [Op.or]: orConditions }] } : andConditions;
 
       const result = await eventModel.findAndCountAll({
         where: whereClause,

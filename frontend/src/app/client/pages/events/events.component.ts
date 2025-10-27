@@ -59,7 +59,8 @@ dateError: string = '';
 
   fetchEvents(): void {
     const reqBody = {
-      limit: 13,
+      requestType: 'Public',
+      limit: 15,
       page: 1,
       filters: this.filters,
     };

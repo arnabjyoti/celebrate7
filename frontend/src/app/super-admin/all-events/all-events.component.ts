@@ -54,8 +54,8 @@ export class AllEventsComponent implements OnInit {
   }
 
   fetchEvents(): void {
-
     let reqBody = {
+      requestType: 'SuperAdmin',
       limit : this.perPage,
       page: this.currentPage,
       searchBy : 'eventName',

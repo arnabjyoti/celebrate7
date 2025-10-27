@@ -66,12 +66,12 @@
         <tr *ngFor="let event of dataSource; let i = index">
           <!-- <th scope="row" class="text-center">{{ i + 1 }}</th> -->
           <th scope="row" class="text-center">{{ (currentPage - 1) * perPage + i + 1 }}</th>
-          <td>{{ event.eventName }}</td>
-          <td>{{ event.eventTime }}</td>
-          <td>{{ event.eventFromDate }}</td>
-          <td>{{ event.eventToDate }}</td>
-          <td>{{ event.fullAddress }}</td>
-          <td>{{ event.createdAt | date: 'yyyy-MM-dd'}}</td>
+          <td>{{ event?.eventName }}</td>
+          <td>{{ event?.eventTime }}</td>
+          <td>{{ event?.eventFromDate }}</td>
+          <td>{{ event?.eventToDate }}</td>
+          <td>{{ event?.fullAddress }}</td>
+          <td>{{ event?.createdAt | date: 'yyyy-MM-dd'}}</td>
           <td>
             <span
               class="badge rounded-pill"

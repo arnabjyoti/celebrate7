@@ -11,6 +11,10 @@ export class OrganizersService {
     return this.http.post(`${environment.BASE_URL}/api/upsert-organizer`, { organizer });
   }
 
+  organizerRegistration(requestObject?: any): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/organizer-registration`, { requestObject });
+  }
+  
   getOrganizers(requestObject?: any): Observable<any> {
     return this.http.post(`${environment.BASE_URL}/api/get-organizers`, { requestObject });
   }
