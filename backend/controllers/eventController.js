@@ -358,17 +358,18 @@ module.exports = {
       end.setDate(end.getDate() + 2);
       break;
 
-    case 'weekend':
-      const day = today.getDay(); // 0 = Sunday, 6 = Saturday
+    case 'thisweek':
+      const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
 
-      // Calculate next Saturday
+      // Start of this week (Monday)
       start = new Date(today);
-      start.setDate(today.getDate() + ((6 - day + 7) % 7));
+      const daysSinceMonday = (dayOfWeek + 6) % 7; // converts Sunday=6, Monday=0, etc.
+      start.setDate(today.getDate() - daysSinceMonday);
       start.setHours(0, 0, 0, 0);
 
-      // End of Sunday
+      // End of this week (next Monday)
       end = new Date(start);
-      end.setDate(start.getDate() + 2); // till end of Sunday
+      end.setDate(start.getDate() + 7);
       end.setHours(0, 0, 0, 0);
       break;
 
