@@ -1,40 +1,45 @@
-<div class="profile-view-container">
-  <h2>My Profile</h2>
-
-  <div class="profile-card">
-    <div class="profile-row">
-      <label>Organization Name:</label>
-      <span>{{ user.organizationName || '-' }}</span>
+<div class="profile-container">
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <img src="https://img.freepik.com/free-vector/user-circles-set_78370-4704.jpg" alt="Profile Picture" />
+      <!-- <img [src]="user.avatarUrl || 'assets/default-avatar.png'" alt="Profile Picture" /> -->
     </div>
-
-    <div class="profile-row">
-      <label>Name:</label>
-      <span>{{ user.name || '-' }}</span>
+    <div class="profile-info">
+      <h2>{{ user.name || 'User Name' }}</h2>
+      <p class="profile-role">{{ user.organizationName || 'Organization' }}</p>
     </div>
+    <!-- <div class="profile-actions">
+      <button class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
+      <button class="btn btn-outline-secondary" (click)="changePassword()">Change Password</button>
+    </div> -->
+  </div>
 
-    <div class="profile-row">
-      <label>Email:</label>
-      <span>{{ user.email || '-' }}</span>
+  <!-- Profile Details -->
+  <div class="profile-details">
+    <div class="detail-row">
+      <span class="label">Email</span>
+      <span class="value">{{ user.email || '-' }}</span>
     </div>
-
-    <div class="profile-row">
-      <label>Phone:</label>
-      <span>{{ user.phone || '-' }}</span>
+    <div class="detail-row">
+      <span class="label">Phone</span>
+      <span class="value">{{ user.phone || '-' }}</span>
     </div>
-
-    <div class="profile-row">
-      <label>Country:</label>
-      <span>{{ user.country || '-' }}</span>
+    <div class="detail-row">
+      <span class="label">Country</span>
+      <span class="value">{{ user.country || '-' }}</span>
     </div>
-
-    <div class="profile-row">
-      <label>State:</label>
-      <span>{{ user.state || '-' }}</span>
+    <div class="detail-row">
+      <span class="label">State</span>
+      <span class="value">{{ user.state || '-' }}</span>
     </div>
-
-    <div class="profile-row">
-      <label>City:</label>
-      <span>{{ user.city || '-' }}</span>
+    <div class="detail-row">
+      <span class="label">City</span>
+      <span class="value">{{ user.city || '-' }}</span>
+    </div>
+    <div class="detail-row">
+      <span class="label">Joined On</span>
+      <!-- <span class="value">{{ user.joinedDate | date:'mediumDate' || '-' }}</span> -->
     </div>
   </div>
 </div>
