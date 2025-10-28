@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FeaturedItem, Event } from './home.model';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { HomeService } from './home.service';
 import { Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -12,7 +13,7 @@ const featuredItems = [
     tagline: 'A modern space odyssey',
     bg: 'http://localhost:8600/uploads/images/slider/bannerImage1.png',
   },
- {
+  {
     id: 'f2',
     title: 'A Sky of Stars',
     tagline: 'A modern space odyssey',
@@ -34,30 +35,19 @@ const featuredItems = [
 export class HomeComponent implements OnInit, OnDestroy {
   featured: FeaturedItem[] = [];
   events: Event[] = [];
-  filtered: Event[] = [];
-  genres: string[] = [];
-  activeGenre: string | null = null;
-  searchQuery = '';
 
   // carousel state
   currentSlide = 0;
   carouselInterval: any;
 
   subs = new Subscription();
-
-  // modal state
-  showModal = false;
-  selectedEvent?: Event;
-  dateOptions: string[] = [];
-  selectedDate?: string;
-  qty = 1;
-  bookingMsg = '';
   env = environment.BASE_URL;
   constructor(
     private http: HttpClient,
     private router: Router,
-    private spinner: NgxSpinnerService
-  ) { }
+    private spinner: NgxSpinnerService,
+    private homeService: HomeService
+  ) {}
 
   ngOnInit(): void {
     this.loadData();
@@ -68,100 +58,15 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  categories: string[] = [];
   loadData(): void {
     this.spinner.show('nowShowingSectionSpinner');
     this.featured = featuredItems;
     this.startCarousel();
-    // this.subs.add(
-    //   this.eventService.getFeatured().subscribe({
-    //     next: f => { this.featured = f; this.startCarousel(); },
-    //     error: (e) => console.error(e)
-    //   })
-    // );
-    // this.subs.add(
-    //   this.eventService.getEvents().subscribe({
-    //     next: m => {
-    //       this.events = m;
-    //       this.genres = Array.from(new Set(m.map(x => x.genre)));
-    //       this.applyFilters();
-    //     },
-    //     error: (e) => console.error(e)
-    //   })
-    // );
     this.fetchEvents();
   }
 
-  // events:any = [];
-  fetchEvents(): void {
-    const reqBody = {
-      requestType:'Public',
-      limit: 15,
-      page: 1,
-    };
-
-    this.http
-      .post(`${environment.BASE_URL}/api/getAllEvents`, reqBody)
-      .subscribe((res: any) => {
-        let data: any = res.data || [];
-        if (data?.length > 0) {
-          this.structureEventObjects(data);
-        }else{
-          this.spinner.hide('nowShowingSectionSpinner');
-        }
-      });
-  }
-
-  structureEventObjects(data: any) {
-    this.events = [];
-    data.map((item: any) => {      
-      let obj: any = {
-        id: item?.id,
-        title: item?.eventName,
-        genre: item?.categoryDetails?.categoryName,
-        rating: '7.9',
-        runtime: item?.eventTime,
-        city: item?.city,
-        organizer: item?.organizerDetails?.organizer_name,
-        poster: this.env + '/' +item?.images[0].path
-      };
-      this.events.push(obj);
-    });
-    this.genres = Array.from(new Set(this.events.map((x) => x.genre)));
-    this.applyFilters();
-  }
-  // --- filtering/search
-  setGenre(g: string | null) {
-    this.activeGenre = g;
-    this.applyFilters();
-  }
-
-  applyFilters() {
-    const q = (this.searchQuery || '').trim().toLowerCase();
-    this.filtered = this.events.filter((m) => {
-      if (this.activeGenre && m.genre !== this.activeGenre) return false;
-      if (
-        q &&
-        !(
-          m.title.toLowerCase().includes(q) || m.genre.toLowerCase().includes(q)
-        )
-      )
-        return false;
-      return true;
-    });
-    this.spinner.hide('nowShowingSectionSpinner');
-  }
-
-  onSearchEnter() {
-    this.applyFilters();
-  }
-
-  resetFilters() {
-    this.activeGenre = null;
-    this.searchQuery = '';
-    this.applyFilters();
-  }
-
-  // --- carousel
+  // ================== Carousel Code ======================
   startCarousel() {
     clearInterval(this.carouselInterval);
     this.carouselInterval = setInterval(() => this.nextSlide(), 6000);
@@ -177,45 +82,63 @@ export class HomeComponent implements OnInit, OnDestroy {
       Math.max(1, this.featured.length);
   }
 
-  // --- booking modal
-  openBooking(eventId: string) {
-    this.selectedEvent =
-      this.events.find((m) => m.id === eventId) ||
-      (this.featured.find((f) => f.id === eventId) as any);
-    if (!this.selectedEvent) return;
-    this.dateOptions = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() + i);
-      this.dateOptions.push(d.toISOString().slice(0, 10));
-    }
-    this.selectedDate = this.dateOptions[0];
-    this.qty = 1;
-    this.bookingMsg = '';
-    this.showModal = true;
-  }
+  // ================== Carousel Code End ======================
 
-  closeModal() {
-    this.showModal = false;
-  }
-
-  confirmBooking() {
-    if (!this.selectedEvent || !this.selectedDate) return;
-    const payload = {
-      eventId: this.selectedEvent.id,
-      date: this.selectedDate,
-      qty: this.qty,
+  fetchEvents(): void {
+    const reqBody = {
+      requestType: 'Public',
+      limit: 15,
+      page: 1,
     };
-    // this.subs.add(
-    //   this.eventService.createBooking(payload).subscribe({
-    //     next: () => {
-    //       this.bookingMsg = `Booking confirmed — ${this.qty} ticket(s) on ${this.selectedDate}`;
-    //     },
-    //     error: (err) => {
-    //       console.error(err);
-    //       this.bookingMsg = 'Booking failed. Please try again.';
-    //     },
-    //   })
-    // );
+
+    this.http
+      .post(`${environment.BASE_URL}/api/getAllEvents`, reqBody)
+      .subscribe((res: any) => {
+        let data: any = res.data || [];
+        if (data?.length > 0) {
+          this.structureEventObjects(data);
+        } else {
+          this.spinner.hide('nowShowingSectionSpinner');
+        }
+      });
+  }
+
+  structureEventObjects(data: any) {
+    this.events = [];
+    data.map((item: any) => {
+      let obj: any = {
+        id: item?.id,
+        title: item?.eventName,
+        genre: item?.categoryDetails?.categoryName,
+        rating: '7.9',
+        runtime: item?.eventTime,
+        city: item?.city,
+        organizer: item?.organizerDetails?.organizer_name,
+        poster: this.env + '/' + item?.images[0].path,
+      };
+      this.events.push(obj);
+    });
+
+    this.categories = Array.from(new Set(this.events.map((c: any) => c.genre)));
+    this.groupByCategory();
+  }
+  
+  groupedChannels: Record<string, Event[]> = {};
+  groupByCategory() {
+    this.groupedChannels = this.categories.reduce((acc, cat) => {
+      acc[cat] = this.events.filter((c) => c.genre === cat);
+      return acc;
+    }, {} as Record<string, Event[]>);
+    this.spinner.hide('nowShowingSectionSpinner');
+  }
+
+  scrollLeft(cat: string, index:any) {    
+    const container = document.querySelector(`#slider${index}`) as HTMLElement;
+    if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
+  }
+
+  scrollRight(cat: string, index:any) {
+    const container = document.querySelector(`#slider${index}`) as HTMLElement;
+    if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
   }
 }

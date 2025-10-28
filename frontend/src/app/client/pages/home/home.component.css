@@ -75,3 +75,89 @@ body {
   width: 100%;
   object-fit: cover;
 }
+
+/* ============================================== */
+
+:host {
+display: block;
+font-family: Inter, system-ui, sans-serif;
+color: #111;
+background: #f8fafc;
+}
+
+
+.jtv-header {
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 12px;
+background: #0f172a;
+color: white;
+}
+.brand { font-weight: 700; font-size: 22px; }
+
+
+.category-section { margin: 30px 0; padding: 0 20px; position: relative; }
+.cat-title { color:rgb(78, 75, 75); font-size: 32px; font-weight: 600; margin-bottom: 12px; }
+
+
+.slider-container {
+position: relative;
+}
+
+
+.card-slider {
+overflow-x: hidden;
+scroll-behavior: smooth;
+white-space: nowrap;
+}
+
+
+.slider-wrapper {
+display: inline-flex;
+gap: 12px;
+width: max-content;
+}
+
+
+.channel-card {
+background: white;
+border-radius: 10px;
+padding: 8px;
+/* width: 140px; */
+box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+cursor: pointer;
+transition: transform 0.2s;
+flex: 0 0 auto;
+}
+/* .channel-card:hover { transform: scale(1.05); } */
+/* .channel-card img { width: 100%; height: 90px; object-fit: contain; border-radius: 6px; } */
+.card-meta { text-align: center; font-size: 13px; margin-top: 6px; }
+
+
+.nav-btn {
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+background: rgba(15, 23, 42, 0.7);
+color: white;
+border: none;
+width: 50px;
+height: 50px;
+border-radius: 50%;
+font-size: 28px;
+cursor: pointer;
+z-index: 5;
+}
+.nav-btn:hover { background: rgba(15, 23, 42, 0.9); }
+.nav-btn.left { left: 0; }
+.nav-btn.right { right: 0; }
+
+
+.jtv-footer { text-align:center; padding: 16px; color:#6b7280; }
+
+
+@media (max-width: 600px) {
+.channel-card { width: 120px; }
+.nav-btn { width: 28px; height: 28px; font-size: 18px; }
+}

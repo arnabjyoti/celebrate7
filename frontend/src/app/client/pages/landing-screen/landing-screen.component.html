@@ -1,26 +1,112 @@
-<main class="jtv-main">
-  <section *ngFor="let cat of categories" class="category-section">
-    <h2 class="cat-title">{{ cat }}</h2>
+<!-- HERO / Carousel -->
+<div style="padding-left: 80px; padding-right: 80px">
+  <section class="hero" *ngIf="featured.length">
+    <div
+      class="slides"
+      [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
+    >
+      <section
+        class="slide"
+        *ngFor="let f of featured"
+        [style.backgroundImage]="
+          'linear-gradient(180deg, rgba(2,6,23,0.18), rgba(2,6,23,0.12)), url(' +
+          f.bg +
+          ')'
+        "
+      >
+        <div class="info">
+          <h1>{{ f.title }}</h1>
+          <p>{{ f.tagline }}</p>
+          <div>
+            <button class="btn">Book Now</button>
+            <button class="btn ghost">Watch Trailer</button>
+          </div>
+        </div>
+        <div style="flex: 1"></div>
+      </section>
+    </div>
 
-    <div class="slider-container">
-      <button class="nav-btn left" (click)="scrollLeft(cat)">‹</button>
+    <div class="carousel-controls">
+      <button (click)="prevSlide()">◀</button>
+      <button (click)="nextSlide()">▶</button>
+    </div>
+  </section>
 
-      <div class="card-slider" [id]="'slider-' + cat">
-        <div class="slider-wrapper">
-          <div
-            *ngFor="let ch of groupedChannels[cat]"
-            class="channel-card"
-            (click)="openChannel(ch)"
-          >
-            <img [src]="ch.logo" [alt]="ch.name" loading="lazy" />
-            <div class="card-meta">
-              <strong>{{ ch.name }}</strong>
+  <!-- Filters -->
+  <div class="filters-row">
+    <div class="filters">
+      <button
+        class="chip"
+        [class.active]="activeGenre === null"
+        (click)="setGenre(null)"
+      >
+        All
+      </button>
+      <button
+        class="chip"
+        *ngFor="let g of genres"
+        [class.active]="activeGenre === g"
+        (click)="setGenre(g)"
+      >
+        {{ g }}
+      </button>
+    </div>
+
+    <div class="right-controls" style="float: right">
+      <div class="badge">City: Guwahati</div>
+      <button class="btn ghost" (click)="resetFilters()">Reset</button>
+    </div>
+  </div>
+
+  <!-- Events grid -->
+  <section>
+    <h2>Now Showing</h2>
+    <div class="grid" *ngIf="filtered.length; else noResults">
+      <article class="card event-card" *ngFor="let m of filtered">
+        <div class="image-container">
+          <img [src]="m.poster" class="card-img-top" alt="{{ m.title }}" />
+        </div>
+        <div class="meta">
+          <div class="title-row">
+            <div>
+              <div class="title">{{ m.title }}</div>
+              <div class="sub">{{ m.genre }} • {{ m.runtime }}</div>
+            </div>
+            <div style="text-align: right">
+              <div class="rating">{{ m.rating }}</div>
+              <div class="imdb">{{ m.city }}</div>
+            </div>
+          </div>
+
+          <div style="flex: 1"></div>
+          <div class="card-footer">
+            <div class="lang">{{ m.organizer }}</div>
+            <div>
+              <a
+                [routerLink]="['/event', m.id]"
+                class="btn btn-outline-primary btn-sm w-100"
+              >
+                View
+              </a>
+              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
+              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
             </div>
           </div>
         </div>
-      </div>
-
-      <button class="nav-btn right" (click)="scrollRight(cat)">›</button>
+      </article>
     </div>
+
+    <ng-template #noResults>
+      <div class="no-results">No results found</div>
+    </ng-template>
   </section>
-</main>
+</div>
+
+<ngx-spinner
+  bdColor="rgba(255,255,255,0.8)"
+  size="medium"
+  color="#5b3fd4"
+  type="ball-spin-clockwise"
+  [fullScreen]="false"
+  name="nowShowingSectionSpinner"
+></ngx-spinner>
