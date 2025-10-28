@@ -1,0 +1,188 @@
+.contact-page {
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+
+  /* 🌈 Hero Section */
+  .hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+      url('https://images.unsplash.com/photo-1527529482837-4698179dc6ce?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170')
+        center/cover no-repeat;
+    color: #fff;
+    text-align: center;
+    padding: 100px 20px;
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      padding: 0 1rem;
+
+      .title {
+        font-size: 3rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+
+      .subtitle {
+        font-size: 1.2rem;
+        margin-top: 10px;
+        opacity: 0.9;
+      }
+    }
+  }
+
+  /* 💬 Contact Section */
+  .contact-section {
+    background: linear-gradient(135deg, #f9f9f9 0%, #fff 100%);
+    padding: 80px 20px;
+
+    .contact-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: space-between;
+
+      .info-card,
+      .form-card {
+        flex: 1 1 45%;
+        min-width: 320px;
+      }
+
+      .info-box,
+      .form-box {
+        border-radius: 18px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+
+        mat-icon {
+          margin-right: 10px;
+          color: #3f51b5;
+        }
+      }
+
+      .divider {
+        margin: 25px 0;
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 12px;
+
+        button {
+          background-color: #f1f1f1;
+          border-radius: 50%;
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: scale(1.1);
+          }
+
+          &.fb:hover {
+            background-color: #1877f2;
+            color: #fff;
+          }
+
+          &.ig:hover {
+            background: radial-gradient(
+              circle at 30% 107%,
+              #fdf497 0%,
+              #fdf497 5%,
+              #fd5949 45%,
+              #d6249f 60%,
+              #285aeb 90%
+            );
+            color: #fff;
+          }
+
+          &.yt:hover {
+            background-color: #ff0000;
+            color: #fff;
+          }
+        }
+      }
+
+      .form-text {
+        font-size: 0.95rem;
+        color: #666;
+        margin-bottom: 20px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+
+        .full-width {
+          grid-column: 1 / -1;
+        }
+      }
+
+      .submit-btn {
+        text-align: right;
+        margin-top: 20px;
+
+        button {
+          border-radius: 25px;
+          padding: 10px 25px;
+          font-weight: 600;
+          background: linear-gradient(90deg, #3f51b5, #2196f3);
+        }
+      }
+    }
+  }
+
+  /* 🗺️ Map */
+  .map iframe {
+    width: 100%;
+    display: block;
+    filter: grayscale(20%) contrast(95%);
+  }
+
+  @media (max-width: 768px) {
+    .contact-section .contact-container {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero .title {
+      font-size: 2rem;
+    }
+
+    .hero .subtitle {
+      font-size: 1rem;
+    }
+
+    .form-grid {
+      grid-template-columns: 1fr !important;
+    }
+  }
+}

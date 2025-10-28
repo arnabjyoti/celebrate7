@@ -25,6 +25,7 @@ import { MapViewComponent } from './map-view/map-view.component';
 import { LocationDetailComponent } from './location-detail/location-detail.component';
 // import { MapTestComponent } from './map-test/map-test.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
+import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,7 @@ const routes: Routes = [
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'events', component: EventsComponent },
+      { path: 'contactUs', component: ContactUsComponent },
       { path: 'event/:id', component: EventDetailsClientComponent },
       // { path: 'test', component: MapTestComponent },
     ],
