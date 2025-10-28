@@ -40,4 +40,7 @@ module.exports = (app) => {
 	app.post('/api/get-event-categories', eventController.viewEventCategories);
 	app.post('/api/upsert-event-category', eventController.upsertEventCategory);
 	app.post('/api/delete-event-category', eventController.deleteEventCategory);
+
+
+	app.get('/api/getCounts', eventController.getCounts);
 	};
