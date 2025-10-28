@@ -50,7 +50,7 @@ export class EventCategoriesComponent {
   getEventCategories() {
     let requestObject: any = {
       currentPage: 1,
-      pageSize: 10,
+      pageSize: 100,
       searchText: '',
       status: '',
     };

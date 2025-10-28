@@ -10,6 +10,8 @@ const nodemailer = require("nodemailer");
 const { Op } = require("sequelize");
 const asyncLib = require("async");
 const { Stats } = require("fs");
+var Sequelize = require("sequelize");
+
 module.exports = {
   //Start: Method to view event categories
   async viewEventCategories(req, res) {
@@ -182,7 +184,7 @@ module.exports = {
       if (!eventData) {
         return res.status(400).send({ message: "No event data provided" });
       }
-      eventData.createdBy = "user1";
+      eventData.createdBy = eventData?.organizer;
       console.log("eventData", eventData);
       // Save to DB
       const createdEvent = await eventModel.create(eventData);
@@ -207,7 +209,7 @@ module.exports = {
       if (!eventData) {
         return res.status(400).send({ message: "No event data provided" });
       }
-      eventData.createdBy = "user1";
+      eventData.createdBy = eventData?.organizer;
       console.log("ticket", eventData);
       // Save to DB
       const createdEvent = await ticketModel.create(eventData);
@@ -269,50 +271,160 @@ module.exports = {
       const offset = (page - 1) * limit;
 
       const search = req.body.filters || {};
-      
-      let andConditions = [];
-      const orConditions = [];
 
-      // Search by state
-      if (search.state) {
-        orConditions.push({
-          state: { [Op.like]: `%${search.state}%` },
-        });
+      const orConditions = [];
+      const whereClause = { isDeleted: false };
+      // Country filter
+      if (search.country) {
+        whereClause.country = { [Op.like]: `%${search.country}%` };
       }
 
-      // Search by Date (matching eventFromDate or eventToDate)
+      // State filter ONLY if country is selected
+      if (search.country && search.state) {
+        whereClause.state = { [Op.like]: `%${search.state}%` };
+      }
+
+      // City filter ONLY if country and state are selected
+      if (search.country && search.state && search.city) {
+        whereClause.city = Sequelize.where(
+          Sequelize.fn("LOWER", Sequelize.col("city")),
+          { [Op.like]: `%${search.city.toLowerCase()}%` }
+        );
+      }
+
+      // Date range filter
       if (search.fromDate && search.toDate) {
+        whereClause[Op.or] = [
+          { eventFromDate: { [Op.between]: [search.fromDate, search.toDate] } },
+          { eventToDate: { [Op.between]: [search.fromDate, search.toDate] } },
+        ];
         console.log(
           "✅ Date range filter applied:",
           search.fromDate,
           "to",
           search.toDate
         );
+      }
 
-        orConditions.push({
+      console.log("Final WHERE clause:", JSON.stringify(whereClause, null, 2));
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // ignore time, just date
+
+      if (search.month) {
+        // Month filter (e.g., 'July')
+        const monthIndex = new Date(`${search.month} 1, 2000`).getMonth(); // 0-based month
+        whereClause[Op.and] = whereClause[Op.and] || [];
+
+        whereClause[Op.and].push(
+          Sequelize.where(
+            Sequelize.fn("MONTH", Sequelize.col("eventFromDate")),
+            monthIndex + 1 // MySQL MONTH() returns 1-12
+          )
+        );
+      }
+
+      if (search.fromDate && !search.toDate) {
+        // FromDate only (events starting from this date)
+        const from = new Date(search.fromDate);
+        if (from < today) from.setTime(today.getTime()); // no past dates
+        whereClause[Op.and] = whereClause[Op.and] || [];
+        whereClause[Op.and].push({ eventFromDate: { [Op.gte]: from } });
+      }
+
+      if (search.fromDate && search.toDate) {
+        // From-to range
+        const from = new Date(search.fromDate);
+        const to = new Date(search.toDate);
+        if (from < today) from.setTime(today.getTime()); // no past dates
+        whereClause[Op.and] = whereClause[Op.and] || [];
+        whereClause[Op.and].push({
           [Op.or]: [
-            {
-              eventFromDate: {
-                [Op.between]: [search.fromDate, search.toDate],
-              },
-            },
-            {
-              eventToDate: {
-                [Op.between]: [search.fromDate, search.toDate],
-              },
-            },
+            { eventFromDate: { [Op.between]: [from, to] } },
+            { eventToDate: { [Op.between]: [from, to] } },
           ],
         });
       }
 
-      
-      if(requestType && requestType=='Public'){
-         andConditions = { isDeleted: false, status:'active' };
-      }else{
-        andConditions = { isDeleted: false};
-      }
-      const whereClause = orConditions.length > 0 ? { [Op.and]: [andConditions, { [Op.or]: orConditions }] } : andConditions;
+      // today, tomorrow, this weekend search
+      today.setHours(0, 0, 0, 0); // start of today
 
+      if (search.date) {
+        let start = new Date(today);
+        let end = new Date(today);
+
+        switch (search.date.toLowerCase()) {
+          case "today":
+            end.setDate(end.getDate() + 1);
+            break;
+
+          case "tomorrow":
+            start.setDate(start.getDate() + 1);
+            end.setDate(end.getDate() + 2);
+            break;
+
+          case "thisweek":
+            const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+
+            // Start of this week (Monday)
+            start = new Date(today);
+            const daysSinceMonday = (dayOfWeek + 6) % 7; // converts Sunday=6, Monday=0, etc.
+            start.setDate(today.getDate() - daysSinceMonday);
+            start.setHours(0, 0, 0, 0);
+
+            // End of this week (next Monday)
+            end = new Date(start);
+            end.setDate(start.getDate() + 7);
+            end.setHours(0, 0, 0, 0);
+            break;
+
+          default:
+            return; // unknown filter, do nothing
+        }
+
+        // Now add single date filter
+        whereClause[Op.and] = whereClause[Op.and] || [];
+        whereClause[Op.and].push({
+          eventFromDate: { [Op.gte]: start, [Op.lt]: end },
+        });
+      }
+
+      console.log("today==========", today);
+
+      // category/type search
+
+      if (search.category) {
+        // Convert to number if your DB stores categoryId as integer
+        const categoryId = parseInt(search.category);
+        if (!isNaN(categoryId)) {
+          whereClause.type = categoryId;
+        }
+      }
+
+      // After handling all date filters (fromDate/toDate, today/tomorrow/thisweekend)
+      today.setHours(0, 0, 0, 0); // start of today
+
+      // Apply default "today onward" filter if no date filters provided
+      if (!search.date && !search.fromDate && !search.toDate) {
+        whereClause[Op.and] = whereClause[Op.and] || [];
+        whereClause[Op.and].push({
+          eventToDate: { [Op.gte]: today }, // events ending today or later
+        });
+      }
+
+      if (requestType && requestType == "Public") {
+         whereClause[Op.and].push({
+          isDeleted: false, // events ending today or later
+        },{
+          status: "active"
+        });
+      } else {
+        whereClause[Op.and].push({
+          isDeleted: false, // events ending today or later
+        });
+      }
+
+      // Query events
       const result = await eventModel.findAndCountAll({
         where: whereClause,
         offset,
@@ -320,14 +432,22 @@ module.exports = {
         order: [["createdAt", "DESC"]],
         include: [
           {
-          model: organizersModel,
-          as: "organizerDetails",
-          attributes: ["id", "organizer_name", "email", "phone", "country", "state", "city"],
+            model: organizersModel,
+            as: "organizerDetails",
+            attributes: [
+              "id",
+              "organizer_name",
+              "email",
+              "phone",
+              "country",
+              "state",
+              "city",
+            ],
           },
           {
-          model: eventCategoriesModel,
-          as: "categoryDetails",
-          attributes: ["id", "categoryName", "status"],
+            model: eventCategoriesModel,
+            as: "categoryDetails",
+            attributes: ["id", "categoryName", "status"],
           },
           {
             model: eventImageModel,
@@ -335,9 +455,15 @@ module.exports = {
             attributes: ["id", "filename", "path", "originalname", "isDefault"],
             where: { isDeleted: false },
             required: false,
-          }
+          },
         ],
       });
+
+      // Log matched city/event
+      console.log(
+        "Matched city/event names:",
+        result.rows.map((r) => `${r.city} - ${r.eventName}`)
+      );
 
       const totalPages = Math.ceil(result.count / limit);
 
@@ -362,124 +488,160 @@ module.exports = {
   },
 
   getEventsByOrganizer(req, res) {
-  try {
-    const email = req.body.email || "";
-    const page = parseInt(req.body.page) || 1;
-    const limit = parseInt(req.body.limit) || 50;
-    const offset = (page - 1) * limit;
+    try {
+      const email = req.body.email || "";
+      const page = parseInt(req.body.page) || 1;
+      const limit = parseInt(req.body.limit) || 50;
+      const offset = (page - 1) * limit;
 
-    asyncLib.waterfall(
-      [
-        // Step 1
-        function (callback) {
-          (async ()=>{
-            let response = { status: true, data: null, message: "No organizer found" };
-            if(email){
-              const organizer = await organizersModel.findOne({
-                where: {            
-                  email: email,
-                  isDeleted: false,
-                  status: 'Active'
-                },
-              });
-              response = {status:true, data: organizer, message:'Organizer found'};
-            }
-            callback(null, response);
-          })();
-        },
-
-        // Step 2
-        function (organizer, callback) {
-          (async () => {
-            try {
-              let response = { status: false, data: [], pagination: null, message: "No event found" };
-              if (organizer?.status && organizer?.data?.id) {
-                const search = req.body.filters || {};
-                const orConditions = [];
-
-                if (search.state) {
-                  orConditions.push({ state: { [Op.like]: `%${search.state}%` } });
-                }
-
-                if (search.fromDate && search.toDate) {
-                  orConditions.push({
-                    [Op.or]: [
-                      { eventFromDate: { [Op.between]: [search.fromDate, search.toDate] } },
-                      { eventToDate: { [Op.between]: [search.fromDate, search.toDate] } },
-                    ],
-                  });
-                }
-
-                const whereClause =
-                  orConditions.length > 0
-                    ? { [Op.and]: [{ isDeleted: false, organizer: organizer?.data?.id }, { [Op.or]: orConditions }] }
-                    : { isDeleted: false, organizer: organizer?.data?.id };
-
-                const events = await eventModel.findAndCountAll({
-                  where: whereClause,
-                  offset,
-                  limit,
-                  order: [["createdAt", "DESC"]],
-                  include: [
-                    {
-                      model: eventImageModel,
-                      as: "images",
-                      attributes: ["id", "filename", "path", "originalname", "isDefault"],
-                      where: { isDeleted: false },
-                      required: false,
-                    },
-                  ],
+      asyncLib.waterfall(
+        [
+          // Step 1
+          function (callback) {
+            (async () => {
+              let response = {
+                status: true,
+                data: null,
+                message: "No organizer found",
+              };
+              if (email) {
+                const organizer = await organizersModel.findOne({
+                  where: {
+                    email: email,
+                    isDeleted: false,
+                    status: "Active",
+                  },
                 });
-
-                const totalPages = Math.ceil(events.count / limit);
                 response = {
                   status: true,
-                  data: events.rows,
-                  pagination: {
-                    totalItems: events.count,
-                    totalPages,
-                    currentPage: page,
-                    perPage: limit,
-                  },
-                  message: "Events found",
+                  data: organizer,
+                  message: "Organizer found",
                 };
               }
-
               callback(null, response);
-            } catch (err) {
-              callback(err);
-            }
-          })();
-        },
-      ],
-      function (err, result) {
-        if (err) {
-          console.error("Error===>", err);
-          return res.status(400).json({
-            success: false,
-            message: "Error fetching events",
-            data: err,
-          });
-        } else {
-          return res.status(200).json({
-            status: result.status,
-            data: result.data,
-            pagination: result.pagination,
-            message: result.message,
-          });
-        }
-      }
-    );
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return res.status(400).json({
-      success: false,
-      message: "Error fetching events",
-      error,
-    });
-  }
-},
+            })();
+          },
 
+          // Step 2
+          function (organizer, callback) {
+            (async () => {
+              try {
+                let response = {
+                  status: false,
+                  data: [],
+                  pagination: null,
+                  message: "No event found",
+                };
+                if (organizer?.status && organizer?.data?.id) {
+                  const search = req.body.filters || {};
+                  const orConditions = [];
+
+                  if (search.state) {
+                    orConditions.push({
+                      state: { [Op.like]: `%${search.state}%` },
+                    });
+                  }
+
+                  if (search.fromDate && search.toDate) {
+                    orConditions.push({
+                      [Op.or]: [
+                        {
+                          eventFromDate: {
+                            [Op.between]: [search.fromDate, search.toDate],
+                          },
+                        },
+                        {
+                          eventToDate: {
+                            [Op.between]: [search.fromDate, search.toDate],
+                          },
+                        },
+                      ],
+                    });
+                  }
+
+                  const whereClause =
+                    orConditions.length > 0
+                      ? {
+                          [Op.and]: [
+                            {
+                              isDeleted: false,
+                              organizer: organizer?.data?.id,
+                            },
+                            { [Op.or]: orConditions },
+                          ],
+                        }
+                      : { isDeleted: false, organizer: organizer?.data?.id };
+
+                  const events = await eventModel.findAndCountAll({
+                    where: whereClause,
+                    offset,
+                    limit,
+                    order: [["createdAt", "DESC"]],
+                    include: [
+                      {
+                        model: eventImageModel,
+                        as: "images",
+                        attributes: [
+                          "id",
+                          "filename",
+                          "path",
+                          "originalname",
+                          "isDefault",
+                        ],
+                        where: { isDeleted: false },
+                        required: false,
+                      },
+                    ],
+                  });
+
+                  const totalPages = Math.ceil(events.count / limit);
+                  response = {
+                    status: true,
+                    data: events.rows,
+                    pagination: {
+                      totalItems: events.count,
+                      totalPages,
+                      currentPage: page,
+                      perPage: limit,
+                    },
+                    message: "Events found",
+                  };
+                }
+
+                callback(null, response);
+              } catch (err) {
+                callback(err);
+              }
+            })();
+          },
+        ],
+        function (err, result) {
+          if (err) {
+            console.error("Error===>", err);
+            return res.status(400).json({
+              success: false,
+              message: "Error fetching events",
+              data: err,
+            });
+          } else {
+            return res.status(200).json({
+              status: result.status,
+              data: result.data,
+              pagination: result.pagination,
+              message: result.message,
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      return res.status(400).json({
+        success: false,
+        message: "Error fetching events",
+        error,
+      });
+    }
+  },
 
   async getEventDetails(req, res) {
     console.log("req.params.id", req.query.id);

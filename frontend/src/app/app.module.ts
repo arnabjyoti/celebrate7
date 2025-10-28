@@ -56,6 +56,8 @@ import { EventDetailsClientComponent } from './client/pages/event-details-client
 import { MapViewComponent } from './map-view/map-view.component';
 import { LocationDetailComponent } from './location-detail/location-detail.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
+import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
+import { LandingScreenComponent } from './client/pages/landing-screen/landing-screen.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +87,8 @@ import { AdminProfileComponent } from './admin/admin-profile/admin-profile.compo
     MapViewComponent,
     LocationDetailComponent,
     AdminProfileComponent,
+    ContactUsComponent,
+    LandingScreenComponent,
   ],
   imports: [
     FormsModule,

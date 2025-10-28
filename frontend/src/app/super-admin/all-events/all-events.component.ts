@@ -83,11 +83,11 @@ export class AllEventsComponent implements OnInit {
   }
 
   viewEvent(event: any): void {
-    this.router.navigate([`/event-details/${event.id}`]);
+    this.router.navigate([`/event-details-view/${event.id}`]);
   }
   editEvent(event: any): void {
     // console.log('Edit Event:', event);
-    this.router.navigate([`/edit-event/${event.id}`]);
+    this.router.navigate([`/modify-event/${event.id}`]);
   }
 
   deleteEvent(event: any): void {
