@@ -76,7 +76,7 @@ dateError: string = '';
 
   fetchEvents(): void {
     const reqBody = {
-      limit: 13,
+      limit: 16,
       page: 1,
       filters: this.filters,
     };
