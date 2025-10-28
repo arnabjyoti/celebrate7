@@ -1,0 +1,26 @@
+<main class="jtv-main">
+  <section *ngFor="let cat of categories" class="category-section">
+    <h2 class="cat-title">{{ cat }}</h2>
+
+    <div class="slider-container">
+      <button class="nav-btn left" (click)="scrollLeft(cat)">‹</button>
+
+      <div class="card-slider" [id]="'slider-' + cat">
+        <div class="slider-wrapper">
+          <div
+            *ngFor="let ch of groupedChannels[cat]"
+            class="channel-card"
+            (click)="openChannel(ch)"
+          >
+            <img [src]="ch.logo" [alt]="ch.name" loading="lazy" />
+            <div class="card-meta">
+              <strong>{{ ch.name }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="nav-btn right" (click)="scrollRight(cat)">›</button>
+    </div>
+  </section>
+</main>
