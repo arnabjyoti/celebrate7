@@ -734,4 +734,49 @@ module.exports = {
       });
     }
   },
+
+
+
+  async getCounts (req, res) {
+    try {
+      const totalEvents = await eventModel.count({ where: { isDeleted: false } });
+      const upcomingEvents = await eventModel.count({
+        where: {
+          isDeleted: false,
+          eventToDate: {
+            [Op.gte]: new Date(), // greater than or equal to current date
+          },
+        },
+      });
+      const pastEvents = await eventModel.count({
+        where: {
+          isDeleted: false,
+          eventToDate: {
+            [Op.lt]: new Date(), // less than current date
+          },
+        },
+      });
+
+      const activeEvents = await eventModel.count({
+        where: {
+          isDeleted: false,
+          status: "active"
+        },
+      });
+
+      const recentEvents = await eventModel.findAll({
+        where: {
+          isDeleted: false,
+        },
+        order: [["createdAt", "DESC"]],
+        limit: 5,
+      });
+      
+
+      res.status(200).json({ totalEvents, upcomingEvents, pastEvents, activeEvents, recentEvents });
+    } catch (error) {
+      console.error("Error fetching event counts:", error);
+      res.status(500).json({ message: "Error fetching event counts" });
+    }
+  },
 };

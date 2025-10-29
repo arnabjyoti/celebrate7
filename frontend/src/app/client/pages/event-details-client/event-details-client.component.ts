@@ -114,8 +114,14 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
   }
 
   openLightbox(i: number) {
+    console.log('openLightbox', i);
+    
     this.lightboxIndex = i;
     this.lightboxOpen = true;
+  }
+
+  setLightboxIndex(i: number) {
+    this.lightboxIndex = i;
   }
   closeLightbox() {
     this.lightboxOpen = false;
@@ -190,7 +196,7 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
   }
 
   getImagePreview(file: any): string {
-    // console.log('file ', file);
+    console.log('file ', file);
     // return URL.createObjectURL(file);
     return this.url + '/' + file.path;
   }
