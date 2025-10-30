@@ -26,20 +26,19 @@ import { LocationDetailComponent } from './location-detail/location-detail.compo
 // import { MapTestComponent } from './map-test/map-test.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
-import { LandingScreenComponent } from './client/pages/landing-screen/landing-screen.component';
+import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
 const routes: Routes = [
   {
     path: '',
     component: ClientLayoutComponent,
     children: [
       { path: '', component: HomeComponent },
-      { path: 'landing-screen', component: LandingScreenComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'events', component: EventsComponent },
       { path: 'contactUs', component: ContactUsComponent },
       { path: 'event/:id', component: EventDetailsClientComponent },
-      // { path: 'test', component: MapTestComponent },
+      { path: 'events-by-category/:categoryName', component: EventsCategorywiseComponent }
     ],
   },
   {

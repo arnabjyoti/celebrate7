@@ -57,7 +57,7 @@ import { MapViewComponent } from './map-view/map-view.component';
 import { LocationDetailComponent } from './location-detail/location-detail.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
-import { LandingScreenComponent } from './client/pages/landing-screen/landing-screen.component';
+import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
 
 @NgModule({
   declarations: [
@@ -88,7 +88,7 @@ import { LandingScreenComponent } from './client/pages/landing-screen/landing-sc
     LocationDetailComponent,
     AdminProfileComponent,
     ContactUsComponent,
-    LandingScreenComponent,
+    EventsCategorywiseComponent,
   ],
   imports: [
     FormsModule,

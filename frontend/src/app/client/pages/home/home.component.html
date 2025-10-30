@@ -14,12 +14,12 @@
           ')'
         "
       >
-        <div class="info">
+        <div class="info" style="float: right;">
           <h1>{{ f.title }}</h1>
           <p>{{ f.tagline }}</p>
           <div>
-            <button class="btn">Book Now</button>
-            <button class="btn ghost">Watch Trailer</button>
+            <button class="btn" routerLink="/login">Sign In</button> &nbsp;&nbsp;
+            <button class="btn ghost" routerLink="/register">Sign Up</button>
           </div>
         </div>
         <div style="flex: 1"></div>
@@ -87,7 +87,7 @@
   </section> -->
   <main class="jtv-main"  *ngIf="categories.length; else noResults">
     <section *ngFor="let cat of categories;let i=index;" class="category-section" id="section{{i}}">
-      <h2 class="cchip cat-title aactive">{{ cat }} <a href="javascript:;"><span style="float: right;font-size: 14px;bottom: 0;margin-top: 25px;">View All</span></a></h2>
+      <h2 class="cchip cat-title aactive">{{ cat }} <a [routerLink]="['/events-by-category', cat]"><span style="float: right;font-size: 14px;bottom: 0;margin-top: 25px;">View All</span></a></h2>
       
       <div class="slider-container">
         <button class="nav-btn left" (click)="scrollLeft(cat, i)">‹</button>

@@ -9,21 +9,45 @@ import { environment } from 'src/environments/environment';
 const featuredItems = [
   {
     id: 'f1',
-    title: 'Hornbill Festival',
-    tagline: 'A modern space odyssey',
-    bg: 'http://localhost:8600/uploads/images/slider/bannerImage1.png',
+    title: "Celebrate7 - Bihu of Assam",
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/Bihu.png`,
   },
   {
     id: 'f2',
-    title: 'A Sky of Stars',
-    tagline: 'A modern space odyssey',
-    bg: 'http://localhost:8600/uploads/images/1755407420031-360_F_517195733_OmTgPE2tN0uJjOMKxJRaaJRg2RL3CwG2.jpg',
+    title: 'Celebrate7 - Durga Puja Vibe',
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/DurgaPuja.png`,
   },
   {
     id: 'f3',
-    title: 'Echoes of Earth',
-    tagline: 'An emotional drama',
-    bg: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1400&auto=format&fit=crop&ixlib=rb-4.0.3&s=placeholder',
+    title: 'Celebrate7 -  The Sky of Stars',
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/Singers.png`,
+  },
+  {
+    id: 'f4',
+    title: 'Celebrate7 - Echoes of Earth',
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/Tourism.png`,
+  },
+  {
+    id: 'f5',
+    title: 'Celebrate7 - Christmas Fest',
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/Christmas.png`,
+  },
+  {
+    id: 'f6',
+    title: 'Celebrate7 - Eid Fest',
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/Eid.png`,
+  },
+  {
+    id: 'f7',
+    title: 'Celebrate7 - NorthEast Culture',
+    tagline: 'Join the celebration',
+    bg: `${environment.BASE_URL}/uploads/images/slider/Culture.png`,
   },
 ];
 
@@ -69,7 +93,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   // ================== Carousel Code ======================
   startCarousel() {
     clearInterval(this.carouselInterval);
-    this.carouselInterval = setInterval(() => this.nextSlide(), 6000);
+    this.carouselInterval = setInterval(() => this.nextSlide(), 9000);
   }
 
   nextSlide() {
@@ -120,6 +144,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
 
     this.categories = Array.from(new Set(this.events.map((c: any) => c.genre)));
+    console.log("Cat==", this.categories);
     this.groupByCategory();
   }
   

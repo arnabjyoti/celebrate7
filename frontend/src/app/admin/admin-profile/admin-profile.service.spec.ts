@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { LandingScreenService } from './landing-screen.service';
+import { AdminProfileService } from './admin-profile.service';
 
-describe('LandingScreenService', () => {
-  let service: LandingScreenService;
+describe('AdminProfileService', () => {
+  let service: AdminProfileService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(LandingScreenService);
+    service = TestBed.inject(AdminProfileService);
   });
 
   it('should be created', () => {

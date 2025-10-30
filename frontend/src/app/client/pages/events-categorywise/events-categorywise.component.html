@@ -1,6 +1,5 @@
-<!-- HERO / Carousel -->
 <div style="padding-left: 80px; padding-right: 80px">
-  <section class="hero" *ngIf="featured.length">
+    <section class="hero" *ngIf="featured.length">
     <div
       class="slides"
       [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
@@ -14,12 +13,12 @@
           ')'
         "
       >
-        <div class="info">
+        <div class="info" style="float: right;">
           <h1>{{ f.title }}</h1>
           <p>{{ f.tagline }}</p>
           <div>
-            <button class="btn">Book Now</button>
-            <button class="btn ghost">Watch Trailer</button>
+            <button class="btn" routerLink="/login">Sign In</button> &nbsp;&nbsp;
+            <button class="btn ghost" routerLink="/register">Sign Up</button>
           </div>
         </div>
         <div style="flex: 1"></div>
@@ -31,38 +30,10 @@
       <button (click)="nextSlide()">▶</button>
     </div>
   </section>
-
-  <!-- Filters -->
-  <div class="filters-row">
-    <div class="filters">
-      <button
-        class="chip"
-        [class.active]="activeGenre === null"
-        (click)="setGenre(null)"
-      >
-        All
-      </button>
-      <button
-        class="chip"
-        *ngFor="let g of genres"
-        [class.active]="activeGenre === g"
-        (click)="setGenre(g)"
-      >
-        {{ g }}
-      </button>
-    </div>
-
-    <div class="right-controls" style="float: right">
-      <div class="badge">City: Guwahati</div>
-      <button class="btn ghost" (click)="resetFilters()">Reset</button>
-    </div>
-  </div>
-
-  <!-- Events grid -->
-  <section>
-    <h2>Now Showing</h2>
-    <div class="grid" *ngIf="filtered.length; else noResults">
-      <article class="card event-card" *ngFor="let m of filtered">
+  <section style="padding-top: 50px;">
+    <h2>{{categoryName}}</h2>
+    <div class="grid" *ngIf="events.length; else noResults">
+      <article class="card event-card" *ngFor="let m of events">
         <div class="image-container">
           <img [src]="m.poster" class="card-img-top" alt="{{ m.title }}" />
         </div>
@@ -88,8 +59,6 @@
               >
                 View
               </a>
-              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
-              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
             </div>
           </div>
         </div>
@@ -107,6 +76,6 @@
   size="medium"
   color="#5b3fd4"
   type="ball-spin-clockwise"
-  [fullScreen]="false"
-  name="nowShowingSectionSpinner"
+  [fullScreen]="true"
+  name="SectionSpinner"
 ></ngx-spinner>

@@ -65,6 +65,148 @@ module.exports = {
   //End
 
   //Start: Method to view event categories
+  async getEventsByCategory(req, res) {
+    try {
+      const requestObject = req.body.requestObject;
+      console.log("RequestObject===", requestObject);
+      const categoryName = requestObject.categoryName || "";
+      const page = parseInt(requestObject.page) || 1;
+      const limit = parseInt(requestObject.limit) || 50;
+      const offset = (page - 1) * limit;
+      asyncLib.waterfall(
+        [
+          // Step 1
+          function (callback) {
+            (async () => {
+              let response = {
+                status: false,
+                data: null,
+                message: "No category found",
+              };
+              if (categoryName) {
+                const category = await eventCategoriesModel.findOne({
+                  where: {
+                    categoryName: categoryName,
+                    isDeleted: false,
+                    status: "Active",
+                  },
+                });
+                response = {
+                  status: true,
+                  data: category,
+                  message: "Category found",
+                };
+              }
+              callback(null, response);
+            })();
+          },
+
+          // Step 2
+          function (category, callback) {
+            (async () => {
+              try {
+                let response = {
+                  status: false,
+                  data: [],
+                  pagination: null,
+                  message: "No event found",
+                };
+                if (category?.status && category?.data?.id) {
+                  const whereClause = {
+                    isDeleted: false,
+                    type: category?.data?.id,
+                    status: "active",
+                  };
+                  const events = await eventModel.findAndCountAll({
+                    where: whereClause,
+                    offset,
+                    limit,
+                    order: [["createdAt", "DESC"]],
+                    include: [
+                      {
+                        model: organizersModel,
+                        as: "organizerDetails",
+                        attributes: [
+                          "id",
+                          "organizer_name",
+                          "email",
+                          "phone",
+                          "country",
+                          "state",
+                          "city",
+                        ],
+                      },
+                      {
+                        model: eventCategoriesModel,
+                        as: "categoryDetails",
+                        attributes: ["id", "categoryName", "status"],
+                      },
+                      {
+                        model: eventImageModel,
+                        as: "images",
+                        attributes: [
+                          "id",
+                          "filename",
+                          "path",
+                          "originalname",
+                          "isDefault",
+                        ],
+                        where: { isDeleted: false },
+                        required: false,
+                      },
+                    ],
+                  });
+
+                  const totalPages = Math.ceil(events.count / limit);
+                  response = {
+                    status: true,
+                    data: events.rows,
+                    pagination: {
+                      totalItems: events.count,
+                      totalPages,
+                      currentPage: page,
+                      perPage: limit,
+                    },
+                    message: "Events found",
+                  };
+                }
+
+                callback(null, response);
+              } catch (err) {
+                callback(err);
+              }
+            })();
+          },
+        ],
+        function (err, result) {
+          if (err) {
+            console.error("Error===>", err);
+            return res.status(400).json({
+              success: false,
+              message: "Error fetching events",
+              data: err,
+            });
+          } else {
+            return res.status(200).json({
+              status: result.status,
+              data: result.data,
+              pagination: result.pagination,
+              message: result.message,
+            });
+          }
+        }
+      );
+    } catch (error) {
+      console.error("Error fetching event categories:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to fetch event categories",
+      });
+    }
+  },
+  //End
+
+  //Start: Method to view event categories
   async getEventCategories(req, res) {
     try {
       const requestObject = req.body;
@@ -413,11 +555,14 @@ module.exports = {
       }
 
       if (requestType && requestType == "Public") {
-         whereClause[Op.and].push({
-          isDeleted: false, // events ending today or later
-        },{
-          status: "active"
-        });
+        whereClause[Op.and].push(
+          {
+            isDeleted: false, // events ending today or later
+          },
+          {
+            status: "active",
+          }
+        );
       } else {
         whereClause[Op.and].push({
           isDeleted: false, // events ending today or later
@@ -500,7 +645,7 @@ module.exports = {
           function (callback) {
             (async () => {
               let response = {
-                status: true,
+                status: false,
                 data: null,
                 message: "No organizer found",
               };
@@ -735,11 +880,11 @@ module.exports = {
     }
   },
 
-
-
-  async getCounts (req, res) {
+  async getCounts(req, res) {
     try {
-      const totalEvents = await eventModel.count({ where: { isDeleted: false } });
+      const totalEvents = await eventModel.count({
+        where: { isDeleted: false },
+      });
       const upcomingEvents = await eventModel.count({
         where: {
           isDeleted: false,
@@ -760,7 +905,7 @@ module.exports = {
       const activeEvents = await eventModel.count({
         where: {
           isDeleted: false,
-          status: "active"
+          status: "active",
         },
       });
 
@@ -771,9 +916,16 @@ module.exports = {
         order: [["createdAt", "DESC"]],
         limit: 5,
       });
-      
 
-      res.status(200).json({ totalEvents, upcomingEvents, pastEvents, activeEvents, recentEvents });
+      res
+        .status(200)
+        .json({
+          totalEvents,
+          upcomingEvents,
+          pastEvents,
+          activeEvents,
+          recentEvents,
+        });
     } catch (error) {
       console.error("Error fetching event counts:", error);
       res.status(500).json({ message: "Error fetching event counts" });

@@ -6,6 +6,33 @@ var request = require("request");
 const Op = require("sequelize").Op;
 
 module.exports = {
+  //Start: Method to get organizer profile
+  async getProfileInfo(req, res) {
+    try {
+      const requestObject = req.body.requestObject;
+      const email = requestObject?.email;
+      let whereClause = { isDeleted: false, email: email, status:'Active' };
+
+      const record = await organizersModel.findOne({
+        where: whereClause
+      });
+
+      res.status(200).json({
+        status: true,
+        message: "Success",
+        data: record,
+      });
+    } catch (error) {
+      console.error("Error fetching organizers:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to fetch organizers",
+        data: null
+      });
+    }
+  },
+  //End
+
   //Start: Method to register organizer
   async organizerRegistration(req, res) {
     const requestObject = req.body.requestObject;
