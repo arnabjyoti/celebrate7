@@ -45,6 +45,11 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   subs = new Subscription();
 
+  homePageRequest = {
+  page: 'homePage',
+  status: 'active',
+  }
+
   // modal state
   showModal = false;
   selectedEvent?: Event;
@@ -96,6 +101,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     const reqBody = {
       limit: 13,
       page: 1,
+      homePageRequest: this.homePageRequest,
     };
 
     this.http

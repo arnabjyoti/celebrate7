@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./client-navbar.component.css']
 })
 export class ClientNavbarComponent {
+ menuOpen = false;
 
+  toggleMenu(): void {
+    this.menuOpen = !this.menuOpen;
+  }
 }

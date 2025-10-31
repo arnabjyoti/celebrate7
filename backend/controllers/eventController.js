@@ -266,20 +266,38 @@ module.exports = {
     const limit = parseInt(req.body.limit) || 50;
     const offset = (page - 1) * limit;
 
+    // for home page
+    const homePageRequest = req.body.homePageRequest || {};
+    console.log("homePageRequest:", homePageRequest);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // ignore time, just date
+
     const search = req.body.filters || {};
-    console.log("Incoming filters:", search);
+    console.log("searchhhhh:", search);
 
     // Base where clause
     const whereClause= { isDeleted: false };
 
+    // home page data
+    if (homePageRequest.page) {
+      whereClause.status = homePageRequest.status;
+       whereClause.eventToDate = { [Op.gte]: today };// eventToDate >= today
+  
+    }
+
     // Country filter
     if (search.country) {
       whereClause.country = { [Op.like]: `%${search.country}%` };
+      whereClause.status = 'active';
+      whereClause.eventToDate = { [Op.gte]: today };// eventToDate >= today
     }
 
     // State filter ONLY if country is selected
     if (search.country && search.state) {
       whereClause.state = { [Op.like]: `%${search.state}%` };
+      whereClause.status = 'active';
+      whereClause.eventToDate = { [Op.gte]: today };// eventToDate >= today
     }
 
     // City filter ONLY if country and state are selected
@@ -288,6 +306,8 @@ module.exports = {
         Sequelize.fn('LOWER', Sequelize.col('city')),
         { [Op.like]: `%${search.city.toLowerCase()}%` }
       );
+      whereClause.status = 'active';
+      whereClause.eventToDate = { [Op.gte]: today };// eventToDate >= today
     }
 
     // Date range filter
@@ -296,14 +316,14 @@ module.exports = {
         { eventFromDate: { [Op.between]: [search.fromDate, search.toDate] } },
         { eventToDate: { [Op.between]: [search.fromDate, search.toDate] } },
       ];
+      whereClause.status = 'active';
       console.log("✅ Date range filter applied:", search.fromDate, "to", search.toDate);
     }
 
     console.log("Final WHERE clause:", JSON.stringify(whereClause, null, 2));
 
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // ignore time, just date
+   
 
     if (search.month) {
       // Month filter (e.g., 'July')
@@ -316,6 +336,7 @@ module.exports = {
           monthIndex + 1 // MySQL MONTH() returns 1-12
         )
       );
+      whereClause.status = 'active';
     }
 
     if (search.fromDate && !search.toDate) {
@@ -324,6 +345,7 @@ module.exports = {
       if (from < today) from.setTime(today.getTime()); // no past dates
       whereClause[Op.and] = whereClause[Op.and] || [];
       whereClause[Op.and].push({ eventFromDate: { [Op.gte]: from } });
+      whereClause.status = 'active';
     }
 
     if (search.fromDate && search.toDate) {
@@ -332,6 +354,7 @@ module.exports = {
       const to = new Date(search.toDate);
       if (from < today) from.setTime(today.getTime()); // no past dates
       whereClause[Op.and] = whereClause[Op.and] || [];
+      whereClause.status = 'active';
       whereClause[Op.and].push({
         [Op.or]: [
           { eventFromDate: { [Op.between]: [from, to] } },
@@ -345,47 +368,48 @@ module.exports = {
     today.setHours(0, 0, 0, 0); // start of today
 
     if (search.date) {
-  let start = new Date(today);
-  let end = new Date(today);
+      let start = new Date(today);
+      let end = new Date(today);
 
-  switch (search.date.toLowerCase()) {
-    case 'today':
-      end.setDate(end.getDate() + 1);
-      break;
+      switch (search.date.toLowerCase()) {
+        case 'today':
+          end.setDate(end.getDate() + 1);
+          break;
 
-    case 'tomorrow':
-      start.setDate(start.getDate() + 1);
-      end.setDate(end.getDate() + 2);
-      break;
+        case 'tomorrow':
+          start.setDate(start.getDate() + 1);
+          end.setDate(end.getDate() + 2);
+          break;
 
-    case 'thisweek':
-      const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
+        case 'thisweek':
+          const dayOfWeek = today.getDay(); // 0=Sunday, 1=Monday, ..., 6=Saturday
 
-      // Start of this week (Monday)
-      start = new Date(today);
-      const daysSinceMonday = (dayOfWeek + 6) % 7; // converts Sunday=6, Monday=0, etc.
-      start.setDate(today.getDate() - daysSinceMonday);
-      start.setHours(0, 0, 0, 0);
+          // Start of this week (Monday)
+          start = new Date(today);
+          const daysSinceMonday = (dayOfWeek + 6) % 7; // converts Sunday=6, Monday=0, etc.
+          start.setDate(today.getDate() - daysSinceMonday);
+          start.setHours(0, 0, 0, 0);
 
-      // End of this week (next Monday)
-      end = new Date(start);
-      end.setDate(start.getDate() + 7);
-      end.setHours(0, 0, 0, 0);
-      break;
+          // End of this week (next Monday)
+          end = new Date(start);
+          end.setDate(start.getDate() + 7);
+          end.setHours(0, 0, 0, 0);
+          break;
 
-    default:
-      return; // unknown filter, do nothing
-  }
+        default:
+          return; // unknown filter, do nothing
+      }
 
-  // Now add single date filter
-  whereClause[Op.and] = whereClause[Op.and] || [];
-  whereClause[Op.and].push({
-    eventFromDate: { [Op.gte]: start, [Op.lt]: end },
-  });
-}
+      // Now add single date filter
+      whereClause[Op.and] = whereClause[Op.and] || [];
+      whereClause.status = 'active';
+      whereClause[Op.and].push({
+        eventFromDate: { [Op.gte]: start, [Op.lt]: end },
+      });
+    }
 
 
-console.log("today==========",today );
+    console.log("today==========",today );
 
 
 
@@ -396,6 +420,7 @@ console.log("today==========",today );
       const categoryId = parseInt(search.category);
       if (!isNaN(categoryId)) {
         whereClause.type = categoryId;
+        whereClause.status = 'active';
       }
     }
 
@@ -409,6 +434,7 @@ console.log("today==========",today );
       !search.toDate
     ) {
       whereClause[Op.and] = whereClause[Op.and] || [];
+      whereClause.status = 'active';
       whereClause[Op.and].push({
         eventToDate: { [Op.gte]: today } // events ending today or later
       });
