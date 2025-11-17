@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {jwtDecode} from 'jwt-decode';
+import { environment } from 'src/environments/environment';
 // import { JwtHelperService } from '@auth0/angular-jwt';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = 'http://localhost:8600/api';
   // constructor(
   //   public jwtHelper: JwtHelperService
   // ) {}
@@ -22,15 +22,15 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   requestOtp(mobile?: string, email?: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/request-otp`, { mobile, email });
+    return this.http.post(`${environment.BASE_URL}/api/request-otp`, { mobile, email });
   }
 
   verifyOtp(mobile?: string, email?: string, otp?: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/verify-otp`, { mobile, email, otp });
+    return this.http.post(`${environment.BASE_URL}/api/verify-otp`, { mobile, email, otp });
   }
 
   refreshToken(refreshToken: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/refresh-token`, { refreshToken });
+    return this.http.post(`${environment.BASE_URL}/api/refresh-token`, { refreshToken });
   }
 
   // refreshAccessToken() {

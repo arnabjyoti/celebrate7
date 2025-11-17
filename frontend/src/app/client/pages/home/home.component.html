@@ -14,12 +14,12 @@
           ')'
         "
       >
-        <div class="info">
-          <h1>{{ f.title }}</h1>
-          <p>{{ f.tagline }}</p>
+        <div cclass="info" style="float: right;padding-left: 20px;padding-right: 20px;">
+          <h1 style="font-weight: bold;color:aliceblue">{{ f.title }}</h1>
+          <p style="font-weight: bold;font-size: 1.2em;">{{ f.tagline }}</p>
           <div>
-            <button class="btn" (click)="openBooking(f.id)">Book Now</button>
-            <button class="btn ghost">Watch Trailer</button>
+            <button class="btn" routerLink="/login">Sign In</button> &nbsp;&nbsp;
+            <button class="btn ghost" routerLink="/register">Sign Up</button>
           </div>
         </div>
         <div style="flex: 1"></div>
@@ -35,38 +35,25 @@
   <!-- Filters -->
   <div class="filters-row">
     <div class="filters">
-      <button
-        class="chip"
-        [class.active]="activeGenre === null"
-        (click)="setGenre(null)"
-      >
-        All
-      </button>
-      <button
-        class="chip"
-        *ngFor="let g of genres"
-        [class.active]="activeGenre === g"
-        (click)="setGenre(g)"
-      >
-        {{ g }}
-      </button>
+      <span *ngFor="let cat of categories;let i=index;">
+        <a href="#section{{i}}" class="chip active"> {{ cat }} </a>
+      </span>
     </div>
 
-    <div class="right-controls" style="float: right">
+    <!-- <div class="right-controls" style="float: right">
       <div class="badge">City: Guwahati</div>
       <button class="btn ghost" (click)="resetFilters()">Reset</button>
-    </div>
+    </div> -->
   </div>
 
   <!-- Events grid -->
-  <section>
+  <!-- <section>
     <h2>Now Showing</h2>
-    <div class="grid" *ngIf="filtered.length; else noResults">      
+    <div class="grid" *ngIf="filtered.length; else noResults">
       <article class="card event-card" *ngFor="let m of filtered">
-        <div
-          class="poster"
-          [style.backgroundImage]="'url(' + m.poster + ')'"
-        ></div>
+        <div class="image-container">
+          <img [src]="m.poster" class="card-img-top" alt="{{ m.title }}" />
+        </div>
         <div class="meta">
           <div class="title-row">
             <div>
@@ -88,9 +75,6 @@
                 class="btn btn-outline-primary btn-sm w-100"
               >
                 View
-              </a>
-              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
-              <!-- <button class="btn" (click)="openBooking(m.id)">Book</button> -->
             </div>
           </div>
         </div>
@@ -100,53 +84,76 @@
     <ng-template #noResults>
       <div class="no-results">No results found</div>
     </ng-template>
-  </section>
+  </section> -->
+  <main class="jtv-main"  *ngIf="categories.length; else noResults">
+    <section *ngFor="let cat of categories;let i=index;" class="category-section" id="section{{i}}">
+      <h2 class="cchip cat-title aactive">{{ cat }} <a [routerLink]="['/events-by-category', cat]"><span style="float: right;font-size: 14px;bottom: 0;margin-top: 25px;">View All</span></a></h2>
+      
+      <div class="slider-container">
+        <button class="nav-btn left" (click)="scrollLeft(cat, i)">‹</button>
 
-  <!-- Booking modal -->
-  <div class="modal-backdrop" *ngIf="showModal">
-    <div class="modal">
-      <div class="modal-header">
-        <div>
-          <strong>Book — {{ selectedEvent?.title }}</strong>
-          <div class="modal-sub">
-            {{ selectedEvent?.genre }} • {{ selectedEvent?.runtime }}
+        <div class="card-slider" id="slider{{i}}">
+          <div class="slider-wrapper">
+            <div
+              *ngFor="let m of groupedChannels[cat]"
+              class="cchannel-card">
+              <!-- <img [src]="ch.poster" [alt]="ch.title" loading="lazy" />
+              <div class="card-meta">
+                <strong>{{ ch.title }}</strong>
+              </div> -->
+              <article class="card event-card">
+                <div class="image-container">
+                  <img
+                    [src]="m.poster"
+                    class="card-img-top"
+                    alt="{{ m.title }}"
+                    loading="lazy"
+                  />
+                </div>
+                <div class="meta">
+                  <div class="title-row">
+                    <div>
+                      <div class="title">{{ m.title }}</div>
+                      <div class="sub">{{ m.genre }} • {{ m.runtime }}</div>
+                    </div>
+                    <div style="text-align: right">
+                      <div class="rating">{{ m.rating }}</div>
+                      <div class="imdb">{{ m.city }}</div>
+                    </div>
+                  </div>
+
+                  <div style="flex: 1"></div>
+                  <div class="card-footer">
+                    <div class="lang">{{ m.organizer }}</div>
+                    <div>
+                      <a
+                        [routerLink]="['/event', m.id]"
+                        class="btn btn-outline-primary btn-sm w-100"
+                      >
+                        View
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
           </div>
         </div>
-        <button class="close-btn" (click)="closeModal()">&times;</button>
+
+        <button class="nav-btn right" (click)="scrollRight(cat,i)">›</button>
       </div>
-
-      <div class="modal-body">
-        <div class="form-row">
-          <div>
-            <label>Choose Date</label>
-            <select [(ngModel)]="selectedDate">
-              <option *ngFor="let d of dateOptions" [value]="d">{{ d }}</option>
-            </select>
-          </div>
-
-          <div>
-            <label>Qty</label>
-            <input type="number" [(ngModel)]="qty" min="1" max="10" />
-          </div>
-
-          <div class="actions">
-            <button class="btn" (click)="confirmBooking()">
-              Confirm Booking
-            </button>
-          </div>
-        </div>
-
-        <div class="booking-msg" *ngIf="bookingMsg">{{ bookingMsg }}</div>
-      </div>
-    </div>
-  </div>
+    </section>
+  </main>
+  <ng-template #noResults>
+      <div class="no-results">No results found</div>
+    </ng-template>
 </div>
 
 <ngx-spinner
-        bdColor="rgba(255,255,255,0.8)"
-        size="medium"
-        color="#5b3fd4"
-        type="ball-spin-clockwise"
-        [fullScreen]="false"
-        name="nowShowingSectionSpinner"
-      ></ngx-spinner>
+  bdColor="rgba(255,255,255,0.8)"
+  size="medium"
+  color="#5b3fd4"
+  type="ball-spin-clockwise"
+  [fullScreen]="false"
+  name="nowShowingSectionSpinner"
+></ngx-spinner>

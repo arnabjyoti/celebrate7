@@ -6,8 +6,8 @@
       <!-- <img [src]="user.avatarUrl || 'assets/default-avatar.png'" alt="Profile Picture" /> -->
     </div>
     <div class="profile-info">
-      <h2>{{ user.name || 'User Name' }}</h2>
-      <p class="profile-role">{{ user.organizationName || 'Organization' }}</p>
+      <h2>{{ profileInfo?.contact_name }}</h2>
+      <p class="profile-role">{{ profileInfo?.organizer_name }}</p>
     </div>
     <!-- <div class="profile-actions">
       <button class="btn btn-primary" (click)="editProfile()">Edit Profile</button>
@@ -19,27 +19,36 @@
   <div class="profile-details">
     <div class="detail-row">
       <span class="label">Email</span>
-      <span class="value">{{ user.email || '-' }}</span>
+      <span class="value">{{ profileInfo?.email || '-' }}</span>
     </div>
     <div class="detail-row">
       <span class="label">Phone</span>
-      <span class="value">{{ user.phone || '-' }}</span>
+      <span class="value">{{ profileInfo?.phone || '-' }}</span>
     </div>
     <div class="detail-row">
       <span class="label">Country</span>
-      <span class="value">{{ user.country || '-' }}</span>
+      <span class="value">{{ profileInfo?.country || '-' }}</span>
     </div>
     <div class="detail-row">
       <span class="label">State</span>
-      <span class="value">{{ user.state || '-' }}</span>
+      <span class="value">{{ profileInfo?.state || '-' }}</span>
     </div>
     <div class="detail-row">
       <span class="label">City</span>
-      <span class="value">{{ user.city || '-' }}</span>
+      <span class="value">{{ profileInfo?.city || '-' }}</span>
     </div>
     <div class="detail-row">
       <span class="label">Joined On</span>
-      <!-- <span class="value">{{ user.joinedDate | date:'mediumDate' || '-' }}</span> -->
+      <span class="value">{{ profileInfo?.createdAt | date:'mediumDate' || '-' }}</span>
     </div>
   </div>
 </div>
+
+<ngx-spinner
+  bdColor="rgba(255,255,255,0.8)"
+  size="medium"
+  color="#5b3fd4"
+  type="ball-spin-clockwise"
+  [fullScreen]="true"
+  name="SectionSpinner"
+></ngx-spinner>

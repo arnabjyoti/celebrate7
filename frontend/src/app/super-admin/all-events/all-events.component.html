@@ -54,8 +54,12 @@
           <th scope="col" class="text-center">#</th>
           <th scope="col">Event Name</th>
           <th scope="col">Organizer</th>
-          <th scope="col">Date / Time</th>
-          <th scope="col">City</th>
+          <th scope="col">Category</th>
+          <th scope="col">Time</th>
+          <th scope="col">From</th>
+          <th scope="col">To</th>
+          <th scope="col">Location</th>
+          <th scope="col">CreatedAt</th>
           <th scope="col">Status</th>
           <th scope="col">Action</th>
         </tr>
@@ -64,10 +68,14 @@
         <tr *ngFor="let event of dataSource; let i = index">
           <!-- <th scope="row" class="text-center">{{ i + 1 }}</th> -->
           <th scope="row" class="text-center">{{ (currentPage - 1) * perPage + i + 1 }}</th>
-          <td>{{ event.eventName }}</td>
-          <td>{{ event.organizer }}</td>
-          <td>{{ event.eventDate }} / {{ event.eventTime }}</td>
-          <td>{{ event.city }}</td>
+          <td>{{ event?.eventName }}</td>
+          <td>{{ event?.organizerDetails?.organizer_name }}</td>
+          <td>{{ event?.categoryDetails?.categoryName }}</td>
+          <td>{{ event?.eventTime }}</td>
+          <td>{{ event?.eventFromDate }}</td>
+          <td>{{ event?.eventToDate }}</td>
+          <td>{{ event?.fullAddress }}</td>
+          <td>{{ event?.createdAt | date: 'yyyy-MM-dd'}}</td>
           <td>
             <span
               class="badge rounded-pill"
@@ -76,7 +84,7 @@
                 'bg-success': event.status !== 'draft'
               }"
             >
-              {{ event.status === "draft" ? "Draft" : "Active" }}
+              <span style="color: aliceblue;">{{ event.status === "draft" ? "Draft" : "Active" }}</span>
             </span>
           </td>
           <td class="text-center">

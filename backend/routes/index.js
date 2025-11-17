@@ -25,6 +25,7 @@ module.exports = (app) => {
 	app.post('/api/saveEvent', eventController.saveEvent);
 	app.post('/api/saveTicket', eventController.saveTicket);
 	app.post('/api/getAllEvents', eventController.getAllEvents);
+	app.post('/api/getEventsByOrganizer', eventController.getEventsByOrganizer);
 	app.post('/api/saveEventImg',upload.single('image'), eventController.saveEventImg);
 	app.get('/api/getEventDetails', eventController.getEventDetails);
 	app.post('/api/updateEvent', eventController.updateEvent);
@@ -33,11 +34,13 @@ module.exports = (app) => {
 	app.post('/api/getEventCategories', eventController.getEventCategories);
 	// Organizer API's
 	app.post('/api/organizer-registration', OrganizerController.organizerRegistration);
+	app.post('/api/get-profile-info', OrganizerController.getProfileInfo)
 	app.post('/api/upsert-organizer', OrganizerController.upsert);
 	app.post('/api/get-organizers', OrganizerController.view);
 	app.post('/api/getOrganizerByEmail', OrganizerController.getOrganizerByEmail);
 	app.post('/api/delete-organizer', OrganizerController.delete);
 	app.post('/api/get-event-categories', eventController.viewEventCategories);
+	app.post('/api/get-events-by-category', eventController.getEventsByCategory);
 	app.post('/api/upsert-event-category', eventController.upsertEventCategory);
 	app.post('/api/delete-event-category', eventController.deleteEventCategory);
 

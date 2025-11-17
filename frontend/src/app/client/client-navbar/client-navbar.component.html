@@ -38,11 +38,14 @@
           <button id="searchBtn">Search</button>
         </div>
 
-        <nav>
+        <nav>          
           <a href="javascript:;" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="/">Home</a>
           <a href="javascript:;" routerLinkActive="active" routerLink="/events">Find events</a>
+          <a href="javascript:;" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="/about-us">About Us</a>
           <a href="javascript:;" routerLinkActive="active" routerLink="/contactUs">Contact us</a>
-          <a href="javascript:;" routerLinkActive="active" routerLink="/login">Login</a>
+          <a href="javascript:;" *ngIf="!isLoggedIn?.SA && !isLoggedIn?.Admin" routerLinkActive="active" routerLink="/login">Login</a>
+          <a href="javascript:;" *ngIf="isLoggedIn?.SA && !isLoggedIn?.Admin" routerLinkActive="active" routerLink="/sa-dashboard">My Account</a>
+          <a href="javascript:;" *ngIf="!isLoggedIn?.SA && isLoggedIn?.Admin" routerLinkActive="active" routerLink="/dashboard">My Account</a>
         </nav>
       </div>
     </header>

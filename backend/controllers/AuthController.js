@@ -143,7 +143,7 @@ module.exports = {
             res.json({
               status: true,
               message: "OTP sent to your registerd email id",
-              otp: otp,
+              // otp: otp,
             });
           }
         });

@@ -15,3 +15,4 @@ export interface Event {
   organizer?: string;
   poster?: string;
 }
+

@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FeaturedItem, Event } from './home.model';
+import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { HomeService } from './home.service';
 import { Subscription } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { FeaturedItem, Event } from '../home/home.model';
+import { EventsCategorywiseService } from './events-categorywise.service';
 import { environment } from 'src/environments/environment';
+
 const featuredItems = [
   {
     id: 'f1',
@@ -59,29 +60,27 @@ const featuredItems = [
 ];
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+  selector: 'app-events-categorywise',
+  templateUrl: './events-categorywise.component.html',
+  styleUrls: ['./events-categorywise.component.css'],
 })
-export class HomeComponent implements OnInit, OnDestroy {
+export class EventsCategorywiseComponent implements OnInit {
   featured: FeaturedItem[] = [];
-  events: Event[] = [];
-
-  // carousel state
   currentSlide = 0;
   carouselInterval: any;
-
-  subs = new Subscription();
+  categoryName: any = '';
   env = environment.BASE_URL;
+  subs = new Subscription();
   constructor(
-    private http: HttpClient,
-    private router: Router,
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
     private spinner: NgxSpinnerService,
-    private homeService: HomeService
+    private eventsCategorywiseService: EventsCategorywiseService
   ) {}
-
   ngOnInit(): void {
-    this.loadData();
+    this.categoryName = this.route.snapshot.paramMap.get('categoryName');
+    this.startCarousel();
+    this.getEventsByCategory();
   }
 
   ngOnDestroy(): void {
@@ -89,16 +88,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
-  categories: string[] = [];
-  loadData(): void {
-    this.spinner.show('nowShowingSectionSpinner');
-    this.featured = featuredItems;
-    this.startCarousel();
-    this.fetchEvents();
-  }
-
   // ================== Carousel Code ======================
   startCarousel() {
+    this.featured = featuredItems;
     clearInterval(this.carouselInterval);
     this.carouselInterval = setInterval(() => this.nextSlide(), 9000);
   }
@@ -115,62 +107,49 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // ================== Carousel Code End ======================
 
-  fetchEvents(): void {
-    const reqBody = {
-      requestType: 'Public',
-      limit: 15,
+  events: any = [];
+  getEventsByCategory() {
+    this.spinner.show('SectionSpinner');
+    let requestObject: any = {
       page: 1,
+      limit: 100,
+      categoryName: this.categoryName,
     };
-
-    this.http
-      .post(`${environment.BASE_URL}/api/getAllEvents`, reqBody)
-      .subscribe((res: any) => {
-        let data: any = res.data || [];
-        if (data?.length > 0) {
-          this.structureEventObjects(data);
-        } else {
-          this.spinner.hide('nowShowingSectionSpinner');
-        }
+    this.eventsCategorywiseService
+      .getEventsByCategory(requestObject)
+      .subscribe({
+        next: (response: any) => {
+          if (response.status) {
+            this.structureEventObjects(response.data);
+          } else {
+            this.spinner.hide('SectionSpinner');
+            this.toastr.error(response.message, 'Error Message');
+          }
+        },
+        error: (err: any) => {
+          this.spinner.hide('SectionSpinner');
+          this.toastr.error(err, 'Error Message');
+        },
       });
   }
 
   structureEventObjects(data: any) {
     this.events = [];
-    data.map((item: any) => {
-      let obj: any = {
-        id: item?.id,
-        title: item?.eventName,
-        genre: item?.categoryDetails?.categoryName,
-        rating: '7.9',
-        runtime: item?.eventTime,
-        city: item?.city,
-        organizer: item?.organizerDetails?.organizer_name,
-        poster: this.env + '/' + item?.images[0].path,
-      };
-      this.events.push(obj);
-    });
-
-    this.categories = Array.from(new Set(this.events.map((c: any) => c.genre)));
-    console.log("Cat==", this.categories);
-    this.groupByCategory();
-  }
-  
-  groupedChannels: Record<string, Event[]> = {};
-  groupByCategory() {
-    this.groupedChannels = this.categories.reduce((acc, cat) => {
-      acc[cat] = this.events.filter((c) => c.genre === cat);
-      return acc;
-    }, {} as Record<string, Event[]>);
-    this.spinner.hide('nowShowingSectionSpinner');
-  }
-
-  scrollLeft(cat: string, index:any) {    
-    const container = document.querySelector(`#slider${index}`) as HTMLElement;
-    if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
-  }
-
-  scrollRight(cat: string, index:any) {
-    const container = document.querySelector(`#slider${index}`) as HTMLElement;
-    if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
+    if (data?.length > 0) {
+      data.map((item: any) => {
+        let obj: any = {
+          id: item?.id,
+          title: item?.eventName,
+          genre: item?.categoryDetails?.categoryName,
+          rating: '7.9',
+          runtime: item?.eventTime,
+          city: item?.city,
+          organizer: item?.organizerDetails?.organizer_name,
+          poster: this.env + '/' + item?.images[0].path,
+        };
+        this.events.push(obj);
+      });
+    }
+    this.spinner.hide('SectionSpinner');
   }
 }

@@ -26,19 +26,20 @@ import { LocationDetailComponent } from './location-detail/location-detail.compo
 // import { MapTestComponent } from './map-test/map-test.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
-
+import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
 const routes: Routes = [
   {
     path: '',
     component: ClientLayoutComponent,
     children: [
       { path: '', component: HomeComponent },
+      { path: 'about-us', component: AboutComponent },
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
       { path: 'events', component: EventsComponent },
       { path: 'contactUs', component: ContactUsComponent },
       { path: 'event/:id', component: EventDetailsClientComponent },
-      // { path: 'test', component: MapTestComponent },
+      { path: 'events-by-category/:categoryName', component: EventsCategorywiseComponent }
     ],
   },
   {
@@ -69,6 +70,21 @@ const routes: Routes = [
         canActivate: [RoleGuard],
         data: { expectedRole: 'sa' },
       },
+      { path: 'create-event', 
+        component: AddEventComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' }, 
+      },
+      { path: 'modify-event/:id', 
+        component: AddEventComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' },
+      },
+      { path: 'event-details-view/:id', 
+        component: EventDetailsComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' }, 
+      },
     ],
   },
   {
@@ -87,13 +103,26 @@ const routes: Routes = [
         canActivate: [RoleGuard],
         data: { expectedRole: 'admin' },
       },
-      // { path: 'users', component: UsersComponent },
-      // { path: 'settings', component: SettingsComponent },
-      // { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
-      { path: 'add-event', component: AddEventComponent },
-      { path: 'edit-event/:id', component: AddEventComponent },
-      { path: 'view-event', component: ViewEventsComponent },
-      { path: 'event-details/:id', component: EventDetailsComponent },
+      { path: 'add-event', 
+        component: AddEventComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' }, 
+      },
+      { path: 'edit-event/:id', 
+        component: AddEventComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' }, 
+      },
+      { path: 'view-event', 
+        component: ViewEventsComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' },
+      },
+      { path: 'event-details/:id', 
+        component: EventDetailsComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'admin' }, 
+      },
     ],
   },
 

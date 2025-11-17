@@ -1,0 +1,81 @@
+<div style="padding-left: 80px; padding-right: 80px">
+    <section class="hero" *ngIf="featured.length">
+    <div
+      class="slides"
+      [style.transform]="'translateX(-' + currentSlide * 100 + '%)'"
+    >
+      <section
+        class="slide"
+        *ngFor="let f of featured"
+        [style.backgroundImage]="
+          'linear-gradient(180deg, rgba(2,6,23,0.18), rgba(2,6,23,0.12)), url(' +
+          f.bg +
+          ')'
+        "
+      >
+        <div cclass="info" style="float: right;padding-left: 20px;padding-right: 20px;">
+          <h1 style="font-weight: bold;color:aliceblue">{{ f.title }}</h1>
+          <p style="font-weight: bold;font-size: 1.2em;">{{ f.tagline }}</p>
+          <div>
+            <button class="btn" routerLink="/login">Sign In</button> &nbsp;&nbsp;
+            <button class="btn ghost" routerLink="/register">Sign Up</button>
+          </div>
+        </div>
+        <div style="flex: 1"></div>
+      </section>
+    </div>
+
+    <div class="carousel-controls">
+      <button (click)="prevSlide()">◀</button>
+      <button (click)="nextSlide()">▶</button>
+    </div>
+  </section>
+  <section style="padding-top: 50px;">
+    <h2>{{categoryName}}</h2>
+    <div class="grid" *ngIf="events.length; else noResults">
+      <article class="card event-card" *ngFor="let m of events">
+        <div class="image-container">
+          <img [src]="m.poster" class="card-img-top" alt="{{ m.title }}" />
+        </div>
+        <div class="meta">
+          <div class="title-row">
+            <div>
+              <div class="title">{{ m.title }}</div>
+              <div class="sub">{{ m.genre }} • {{ m.runtime }}</div>
+            </div>
+            <div style="text-align: right">
+              <div class="rating">{{ m.rating }}</div>
+              <div class="imdb">{{ m.city }}</div>
+            </div>
+          </div>
+
+          <div style="flex: 1"></div>
+          <div class="card-footer">
+            <div class="lang">{{ m.organizer }}</div>
+            <div>
+              <a
+                [routerLink]="['/event', m.id]"
+                class="btn btn-outline-primary btn-sm w-100"
+              >
+                View
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <ng-template #noResults>
+      <div class="no-results">No results found</div>
+    </ng-template>
+  </section>
+</div>
+
+<ngx-spinner
+  bdColor="rgba(255,255,255,0.8)"
+  size="medium"
+  color="#5b3fd4"
+  type="ball-spin-clockwise"
+  [fullScreen]="true"
+  name="SectionSpinner"
+></ngx-spinner>

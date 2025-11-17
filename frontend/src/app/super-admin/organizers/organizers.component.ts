@@ -238,9 +238,19 @@ export class OrganizersComponent {
   };
 
   upsertOrganizer = () => {
-    let validationObject: any = this.dataValidator();
+    let requestObject: any = {
+        organizerName: this.selectedOrganizer?.organizer_name,
+        typeOfOrganizer: this.selectedOrganizer?.type_of_organization,
+        contactName: this.selectedOrganizer?.contact_name,
+        email: this.selectedOrganizer?.email,
+        mobileNumber: this.selectedOrganizer?.phone,
+        country: this.selectedOrganizer?.country,
+        state: this.selectedOrganizer?.state,
+        city: this.selectedOrganizer?.city,
+    };
+    let validationObject: any = this.dataValidator(requestObject);
     if (validationObject.isValid) {
-      this.organizersService.upsertOrganizer(this.selectedOrganizer).subscribe({
+      this.organizersService.organizerRegistration(requestObject).subscribe({
         next: (response: any) => {
           if (response.status) {
             this.getOrganizers();
@@ -259,43 +269,50 @@ export class OrganizersComponent {
         },
       });
     } else {
-      this.toastr.warning(validationObject.message, 'Warning Message');
+      this.toastr.warning(validationObject.warning, 'Warning Message');
     }
   };
 
-  dataValidator = () => {
-    let validationObject: any = { isValid: true, message: '' };
-    if (this.selectedOrganizer.name) {
-      if (this.selectedOrganizer.email || this.selectedOrganizer.phone) {
-        if (this.selectedOrganizer.location) {
-          if (this.selectedOrganizer.status) {
-            validationObject = { isValid: true, message: 'Valid data' };
-          } else {
-            validationObject = {
-              isValid: false,
-              message: 'Please select status',
-            };
-          }
-        } else {
-          validationObject = {
-            isValid: false,
-            message: 'Please select location of the organizer',
-          };
-        }
-      } else {
-        validationObject = {
-          isValid: false,
-          message:
-            'Please enter either phone number or email id of the organizer',
-        };
-      }
-    } else {
-      validationObject = {
-        isValid: false,
-        message: 'Please enter name of the organizer',
-      };
+  dataValidator = (requestObject:any) => {
+    console.log("RequestObject===", requestObject);
+    
+    let validation: any = {
+      isValid: true,
+      warning: null
+    };
+    if (!requestObject.city) {
+      validation.isValid = false;
+      validation.warning = 'Please select your city';
     }
-    return validationObject;
+    if (!requestObject.state) {
+      validation.isValid = false;
+      validation.warning = 'Please select your state/region';
+    }
+    if (!requestObject.country) {
+      validation.isValid = false;
+      validation.warning = 'Please select your country';
+    }
+    if (!requestObject.contactName) {
+      validation.isValid = false;
+      validation.warning = 'Contact person name can not be left blank';
+    }
+    if (!requestObject.mobileNumber) {
+      validation.isValid = false;
+      validation.warning = 'Mobile number can not be left blank';
+    }
+    if (!requestObject.email) {
+      validation.isValid = false;
+      validation.warning = 'Email id can not be left blank';
+    }
+    if (!requestObject.typeOfOrganizer) {
+      validation.isValid = false;
+      validation.warning = 'Please select type of your organization';
+    }
+    if (!requestObject.organizerName) {
+      validation.isValid = false;
+      validation.warning = 'Organization name can not left blank';
+    }
+    return validation;
   };
 
   confirmDelete(item: any) {

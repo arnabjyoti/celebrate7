@@ -1,0 +1,77 @@
+body {
+    padding-top: 80px;
+}
+
+.hero-section {
+    background-image: url('https://images.pexels.com/photos/1047442/pexels-photo-1047442.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+    padding-top: 80px;
+}
+
+.hero-section .container {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.festival-gallery img {
+    border-radius: 10px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.hero-slider .carousel-inner {
+    max-height: 500px; /* Adjust height here */
+  }
+
+  .hero-slider .carousel-item img {
+    object-fit: cover;
+    height: 500px; /* Match this to max-height above */
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .hero-slider .carousel-item img {
+      height: 250px; /* Smaller height on mobile */
+    }
+  }
+
+  /* .event-card {
+  background: linear-gradient(to bottom, #fffde4, #ffeaa7);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  text-align: center;
+} */
+
+.event-card {
+  /* width: 300px; */
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.event-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.image-container {
+  position: relative;
+}
+
+.image-container img {
+  height: 240px;
+  width: 100%;
+  object-fit: cover;
+}

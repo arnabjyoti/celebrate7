@@ -91,7 +91,7 @@
             </td>
           </tr>
           <tr *ngIf="paginatedOrganizers.length === 0">
-            <td colspan="6" class="text-center">No organizers found</td>
+            <td colspan="10" class="text-center">No organizers found</td>
           </tr>
         </tbody>
       </table>
@@ -238,15 +238,13 @@
   <div class="card-footer">
     <button
       (click)="upsertOrganizer()"
-      type="submit"
-      class="btn btn-primary float-end"
+      class="btn btn-primary"
     >
       Save
     </button>
     <button
       (click)="setViewMode('Cancel')"
-      type="button"
-      class="btn btn-default float-end"
+      class="btn btn-default"
       style="margin-right: 10px"
     >
       Cancel

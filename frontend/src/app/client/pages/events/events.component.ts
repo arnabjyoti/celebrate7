@@ -76,7 +76,8 @@ dateError: string = '';
 
   fetchEvents(): void {
     const reqBody = {
-      limit: 16,
+      requestType: 'Public',
+      limit: 15,
       page: 1,
       filters: this.filters,
     };
