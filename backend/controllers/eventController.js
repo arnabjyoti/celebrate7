@@ -68,7 +68,6 @@ module.exports = {
   async getEventsByCategory(req, res) {
     try {
       const requestObject = req.body.requestObject;
-      console.log("RequestObject===", requestObject);
       const categoryName = requestObject.categoryName || "";
       const page = parseInt(requestObject.page) || 1;
       const limit = parseInt(requestObject.limit) || 50;
