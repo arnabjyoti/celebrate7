@@ -143,7 +143,7 @@ export class ViewEventsComponent implements OnInit {
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
         console.log('response here ', response);
-        
+        this.fetchEvents();
         // this.toastr.success('Event updated successfully');
       },
       (error) => {

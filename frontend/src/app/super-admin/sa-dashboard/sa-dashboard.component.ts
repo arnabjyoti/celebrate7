@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../auth/auth.service';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-sa-dashboard',
@@ -6,6 +9,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./sa-dashboard.component.css']
 })
 export class SaDashboardComponent {
+  constructor( private authService: AuthService, private http: HttpClient){}
+  counts: any ={};
+  ngOnInit(): void {
+    let payload=this.authService.getDecodedToken();
+    console.log("Payload=",payload);
+    this.getCounts();
+  }
 // Define the columns to show in the Material table
   displayedColumns: string[] = ['event', 'date', 'tickets', 'status'];
 
@@ -36,4 +46,19 @@ export class SaDashboardComponent {
       status: 'Completed'
     }
   ];
+
+
+  getCounts(): void {
+  
+    this.http.get(`${environment.BASE_URL}/api/getCounts`).subscribe((res: any) => {
+      console.log('getAllEvents', res);
+      this.counts = res;
+    
+    });
+  }
+
+
+ createEvent(): void {
+    window.location.href = '/add-event';
+  }
 }
