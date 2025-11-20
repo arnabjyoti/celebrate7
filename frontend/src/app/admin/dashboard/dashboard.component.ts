@@ -13,9 +13,11 @@ export class DashboardComponent implements OnInit {
   constructor(private appService: AppService, private authService: AuthService, private http: HttpClient){}
 
   counts: any ={};
+  userEmail:any="";
   ngOnInit(): void {
-    let payload=this.authService.getDecodedToken();
+    let payload= this.authService.getDecodedToken();
     console.log("Payload=",payload);
+    this.userEmail=payload.email;
     this.getCounts();
   }
 // Define the columns to show in the Material table
@@ -52,7 +54,7 @@ export class DashboardComponent implements OnInit {
 
   getCounts(): void {
   
-    this.http.get(`${environment.BASE_URL}/api/getCounts`).subscribe((res: any) => {
+    this.http.get(`${environment.BASE_URL}/api/getCounts?email=${this.userEmail}`).subscribe((res: any) => {
       console.log('getAllEvents', res);
       this.counts = res;
     

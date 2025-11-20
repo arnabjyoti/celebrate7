@@ -6,9 +6,9 @@
   <!-- Basic Details -->
   <div class="row mb-3">
     <div class="col-md-6 mb-2"><strong>Event Name:</strong> {{ event.eventName }}</div>
-    <div class="col-md-6 mb-2"><strong>Organizer:</strong> {{ event.organizer }}</div>
-    <div class="col-md-4 mb-2"><strong>Type:</strong> {{ event.type }}</div>
-    <div class="col-md-4 mb-2"><strong>Date:</strong> {{ event.eventDate }}</div>
+    <div class="col-md-6 mb-2"><strong>Organizer:</strong> {{ organizer.organizer_name }}</div>
+    <div class="col-md-4 mb-2"><strong>Type:</strong> {{ category.categoryName }}</div>
+    <div class="col-md-4 mb-2"><strong>Date:</strong> {{ event.eventFromDate }}</div>
     <div class="col-md-4 mb-2"><strong>Time:</strong> {{ event.eventTime }}</div>
   </div>
 
@@ -45,7 +45,7 @@
   </div>
 
   <!-- Ticket Details -->
-  <div *ngIf="ticket_details?.length > 0" class="ticket-details mb-4">
+  <!-- <div *ngIf="ticket_details?.length > 0" class="ticket-details mb-4">
     <h4 class="mb-3"><i class="bi bi-ticket-perforated"></i> Ticket Details</h4>
     <div class="table-responsive">
       <table class="table table-bordered align-middle">
@@ -76,7 +76,7 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </div> -->
 
   <!-- Event Images -->
   <div class="event-images">

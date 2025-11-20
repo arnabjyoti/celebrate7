@@ -87,11 +87,20 @@ export class AllEventsComponent implements OnInit {
   }
   editEvent(event: any): void {
     // console.log('Edit Event:', event);
-    this.router.navigate([`/modify-event/${event.id}`]);
+    this.router.navigate([`/edit-event/${event.id}`]);
   }
 
   deleteEvent(event: any): void {
     console.log('Delete Event:', event);
+    if (confirm('Are you sure you want to delete this event?')) {
+      // User confirmed, proceed with deletion logic
+      this.onDeleteEvent(event);
+    } else {
+      // User cancelled, do nothing or display a message
+      console.log('Event deletion cancelled.');
+    }
+
+    
   }
 
   changePage(page: number): void {
@@ -110,6 +119,32 @@ export class AllEventsComponent implements OnInit {
       console.log('getAllEvents', res);
       this.fetchEvents();
     });
+  }
+
+  onDeleteEvent(event: any) {
+
+    let reqBody = {
+      id : event.id,
+      isDeleted : true
+
+    }
+
+    const ENDPOINT = `${environment.BASE_URL}/api/updateEvent`;
+    const requestOptions = {
+      method: 'post',
+      data: reqBody,
+    };
+
+    this.http.post(ENDPOINT, requestOptions).subscribe(
+      (response: any) => {
+        console.log('response here ', response);
+        this.fetchEvents();
+        // this.toastr.success('Event updated successfully');
+      },
+      (error) => {
+        console.error('Update error:', error);
+      }
+    );
   }
 
 
