@@ -24,6 +24,7 @@ export class EventDetailsComponent {
     eventName: '',
     organizer: '',
     type: '',
+    eventFromDate: '',
     eventDate: '',
     eventTime: '',
     country: '',
@@ -38,6 +39,8 @@ export class EventDetailsComponent {
   url = environment.BASE_URL;
 
   ticket_details: any = [];
+  organizer: any = {};
+  category: any = {};
 
 
   ngOnInit(): void {
@@ -57,6 +60,9 @@ export class EventDetailsComponent {
         this.content = response.event.description;
         this.selectedFiles = response.eventImages;
         this.ticket_details = response.ticket_details;
+        this.organizer = response.organizer;
+        this.category = response.category;
+        // organizer, category
         // this.
 
         // return callback && callback(response);

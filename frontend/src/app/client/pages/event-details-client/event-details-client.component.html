@@ -153,6 +153,13 @@
 
           <hr />
 
+          <div>
+            <h4>category</h4>
+            <div>
+              {{category.categoryName}}
+            </div>
+          </div>
+
           <!-- <h4>What to expect</h4>
           <ul class="amenities">
             <li *ngFor="let a of attributePairs(event.attributes)">
@@ -189,6 +196,29 @@
       </div>
 
       <aside class="main-right" aria-label="Right side panels">
+
+        <div class="policies-panel card custom-card shadow-sm bg-white border-0">
+          <h4>Organized by: </h4>
+          <br>
+          <div>
+            <b>{{ organizer.organizer_name }}</b>
+          </div>
+          <div>
+            <div>Contact:</div>
+
+            <div>
+              <i class="bi bi-people"></i> {{ organizer.contact_name }}
+            </div>
+
+            <div>
+              <i class="bi bi-telephone"></i> {{ organizer.phone }}
+            </div>
+            <div>
+              <i class="bi bi-envelope"></i> {{ organizer.email }}
+            </div>
+            
+          </div>
+        </div>
         <!-- ******************** -->
         <!-- <div class="map-panel card custom-card shadow-sm bg-white border-0">
           <h4>Location</h4>
