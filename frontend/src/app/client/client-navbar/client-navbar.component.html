@@ -23,29 +23,45 @@
     </div>
   </nav> -->
 
-  <header style="padding-left: 80px;padding-right: 80px;">
-      <a class="brand" href="#">
+  <header class="pro-navbar">
+  <div class="nav-left">
+    <a class="brand" href="#">
         <div class="logo"><img src="assets/image/celebrate7.png" alt="" height="65px" width="70px" sstyle="margin-top:-20px; position: absolute;z-index: 99999;"></div>
         <div>
           <div class="rainbow">Celebrate7</div>
           <div style="font-size:12px;color:#fc946f;">Event, Shows & more</div>
         </div>
       </a>
+  </div>
 
-      <div style="display:flex;gap:12px;align-items:center">
-        <div class="search-bar" role="search" aria-label="Search movies">
-          <input id="searchInput" type="search" placeholder="Search events, shows, venues..." />
-          <button id="searchBtn">Search</button>
-        </div>
+  <button class="hamburger" (click)="isMenuOpen = !isMenuOpen">
+    <span></span><span></span><span></span>
+  </button>
 
-        <nav>          
-          <a href="javascript:;" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="/">Home</a>
-          <a href="javascript:;" routerLinkActive="active" routerLink="/events">Find events</a>
-          <a href="javascript:;" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" routerLink="/about-us">About Us</a>
-          <a href="javascript:;" routerLinkActive="active" routerLink="/contactUs">Contact us</a>
-          <a href="javascript:;" *ngIf="!isLoggedIn?.SA && !isLoggedIn?.Admin" routerLinkActive="active" routerLink="/login">Login</a>
-          <a href="javascript:;" *ngIf="isLoggedIn?.SA && !isLoggedIn?.Admin" routerLinkActive="active" routerLink="/sa-dashboard">My Account</a>
-          <a href="javascript:;" *ngIf="!isLoggedIn?.SA && isLoggedIn?.Admin" routerLinkActive="active" routerLink="/dashboard">My Account</a>
-        </nav>
-      </div>
-    </header>
+  <div class="nav-right" [class.open]="isMenuOpen">
+
+    <div class="search-wrapper">
+      <input type="search" placeholder="Search events, shows, venues..." />
+      <button>Search</button>
+    </div>
+
+    <nav>
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact:true }">Home</a>
+      <a routerLink="/events" routerLinkActive="active">Find events</a>
+      <a routerLink="/about-us" routerLinkActive="active" [routerLinkActiveOptions]="{ exact:true }">About Us</a>
+      <a routerLink="/contactUs" routerLinkActive="active">Contact us</a>
+
+      <a *ngIf="!isLoggedIn?.SA && !isLoggedIn?.Admin" 
+         routerLink="/login" routerLinkActive="active">Login</a>
+
+      <a *ngIf="isLoggedIn?.SA && !isLoggedIn?.Admin"
+         routerLink="/sa-dashboard" routerLinkActive="active">My Account</a>
+
+      <a *ngIf="!isLoggedIn?.SA && isLoggedIn?.Admin"
+         routerLink="/dashboard" routerLinkActive="active">My Account</a>
+    </nav>
+  </div>
+
+  <!-- Background overlay -->
+  <div class="overlay" [class.show]="isMenuOpen" (click)="isMenuOpen = false"></div>
+</header>

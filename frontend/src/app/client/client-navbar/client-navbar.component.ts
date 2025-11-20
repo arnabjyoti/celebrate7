@@ -15,6 +15,8 @@ export class ClientNavbarComponent implements OnInit {
     this.getLoggedInInfo();
   }
 
+  isMenuOpen: boolean = false;
+
   getLoggedInInfo = () =>{
     let token:any = this.authService.getDecodedToken();
     console.log("TOKEN==>",token);

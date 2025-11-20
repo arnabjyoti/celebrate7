@@ -189,7 +189,7 @@
       </div>
 
       <div class="row" *ngIf="viewAs === 'grid'">
-        <div *ngFor="let event of filteredEvents" class="col-md-4 col-lg-3 mb-4">
+        <div *ngFor="let event of filteredEvents" class="col-12 col-md-6 col-lg-4 mb-4">
           <div class="card custom-card shadow-sm border-0">
             <div class="image-container">
               <img [src]="env + '/' + event.images[0].path" class="card-img-top" alt="{{ event.eventName }}" />
