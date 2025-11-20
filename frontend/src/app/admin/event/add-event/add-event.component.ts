@@ -351,7 +351,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   steps = [
     { label: 'Basic Details', icon: 'fas fa-info-circle' },
     { label: 'Location Details', icon: 'fas fa-map-marker-alt' },
-    { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
+    // { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
     { label: 'Photos', icon: 'fas fa-camera' },
   ];
 
