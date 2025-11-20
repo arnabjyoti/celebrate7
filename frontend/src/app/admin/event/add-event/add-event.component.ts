@@ -61,6 +61,15 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
   userEmail: any;
 
+  editorModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      ['clean']
+      
+    ]
+  };
+
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('id');
