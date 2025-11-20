@@ -111,7 +111,7 @@ module.exports = {
         const otpExpiry = new Date(Date.now() + 5 * 60 * 1000);
         await usersModel.update({ otp, otpExpiry }, { where: contactFilter });
         console.log(`OTP sent to ${mobile || email}: ${otp}`);
-        
+
         // Email Template
         const htmlTemplate = `
             <!DOCTYPE html>
@@ -278,6 +278,23 @@ module.exports = {
       .catch((error) => {
         console.log(error);
         return res.status(400).send(error);
+      });
+  },
+
+  getUser(req, res) {
+    console.log("req.body.email ", req.body.email);
+    return usersModel
+      .findOne({
+        where: {
+          email: req.body.email,
+        },
+      })
+      .then((users) => {
+        return res.status(200).send({ status: true, message: users });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).send({ status: false, message: error });
       });
   },
 };

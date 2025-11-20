@@ -2,7 +2,7 @@
   <div class="container">
     <!-- HERO: Gallery (left) + Booking panel (right) -->
     <section class="hero" role="region" aria-label="Event hero">
-      <div class="gallery-col card custom-card shadow-sm bg-white border-0 p-0" >
+      <div class="gallery-col card custom-card shadow-sm bg-white border-0 p-0">
         <div class="main-gallery" aria-hidden="false">
           <img
             class="main-image"
@@ -94,22 +94,20 @@
 
           </form> -->
 
-
-
           <div class="policies pt-3 location">
             <div>
               <strong>Start:</strong>
               {{ event.eventToDate | date : "mediumDate" }}
             </div>
             <div>
-              <strong>End:</strong> {{ event.eventToDate | date : "mediumDate" }}
+              <strong>End:</strong>
+              {{ event.eventToDate | date : "mediumDate" }}
             </div>
           </div>
 
-
           <div>
             <strong>Location on map:</strong>
-  
+
             <!-- Embedded Google Map (responsive) -->
             <div class="map-embed">
               <iframe
@@ -123,7 +121,7 @@
                 title="Event location map"
               ></iframe>
             </div>
-  
+
             <!-- Link to open in Google Maps (new tab) -->
             <div class="map-actions" style="margin-top: 2px; font-size: 13px">
               <a [href]="mapsLink" target="_blank" rel="noopener"
@@ -131,8 +129,6 @@
               >
             </div>
           </div>
-
-          
         </div>
       </aside>
     </section>
@@ -143,7 +139,7 @@
         <div class="top-info">
           <div class="rating">
             <span class="bg-primary px-2 rounded-3 text-white">
-                {{ averageRating() | number : "1.1-1" }} <small>/5</small>
+              {{ averageRating() | number : "1.1-1" }} <small>/5</small>
             </span>
           </div>
           <div class="review-count">
@@ -157,25 +153,32 @@
 
           <hr />
 
-          <h4>What to expect</h4>
+          <div>
+            <h4>category</h4>
+            <div>
+              {{category.categoryName}}
+            </div>
+          </div>
+
+          <!-- <h4>What to expect</h4>
           <ul class="amenities">
             <li *ngFor="let a of attributePairs(event.attributes)">
               <strong>{{ a.key }}:</strong> {{ a.value }}
             </li>
-          </ul>
+          </ul> -->
         </div>
 
-        <div class="section">
+        <!-- <div class="section">
           <h4>Programme</h4>
           <ul class="programme">
             <li *ngFor="let s of event.schedule">
               <strong>{{ s.time }}</strong> — {{ s.activity }}
             </li>
           </ul>
-        </div>
+        </div> -->
         <hr />
 
-        <div class="section reviews-section" aria-label="Guest reviews">
+        <!-- <div class="section reviews-section" aria-label="Guest reviews">
           <h4>Guest reviews</h4>
           <div class="review-list">
             <article *ngFor="let r of event.reviews" class="review">
@@ -189,10 +192,33 @@
               <div class="r-date text-muted">{{ r.date | date : "mediumDate" }}</div>
             </article>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <aside class="main-right" aria-label="Right side panels">
+
+        <div class="policies-panel card custom-card shadow-sm bg-white border-0">
+          <h4>Organized by: </h4>
+          <br>
+          <div>
+            <b>{{ organizer.organizer_name }}</b>
+          </div>
+          <div>
+            <div>Contact:</div>
+
+            <div>
+              <i class="bi bi-people"></i> {{ organizer.contact_name }}
+            </div>
+
+            <div>
+              <i class="bi bi-telephone"></i> {{ organizer.phone }}
+            </div>
+            <div>
+              <i class="bi bi-envelope"></i> {{ organizer.email }}
+            </div>
+            
+          </div>
+        </div>
         <!-- ******************** -->
         <!-- <div class="map-panel card custom-card shadow-sm bg-white border-0">
           <h4>Location</h4>
@@ -223,17 +249,17 @@
           <div class="map-placeholder">Map coordinates: ({{ event.lat }}, {{ event.lng }})</div>
         </div> -->
 
-        <div class="policies-panel card custom-card shadow-sm bg-white border-0">
+        <!-- <div class="policies-panel card custom-card shadow-sm bg-white border-0">
           <h4>Policies</h4>
           <p>Refunds, accessibility and safety guidelines.</p>
-        </div>
+        </div> -->
 
-        <div class="nearby-panel card custom-card shadow-sm bg-white border-0" *ngIf="event.nearby?.length">
+        <!-- <div class="nearby-panel card custom-card shadow-sm bg-white border-0" *ngIf="event.nearby?.length">
           <h4>Nearby</h4>
           <ul>
             <li *ngFor="let n of event.nearby" style="color: #007bff;">{{ n }}</li>
           </ul>
-        </div>
+        </div> -->
       </aside>
     </section>
 
@@ -246,7 +272,6 @@
       aria-modal="true"
     >
       <img
-        
         [src]="getImagePreview(selectedFiles[lightboxIndex])"
         [alt]="event.title + ' image ' + (lightboxIndex + 1)"
       />

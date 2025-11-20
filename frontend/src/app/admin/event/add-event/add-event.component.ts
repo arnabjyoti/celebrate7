@@ -47,6 +47,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     fullAddress: '',
     description: '',
     status: 'draft',
+    userEmail: '',
   };
 
   ticket_details = {
@@ -58,6 +59,9 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     isActive: true,
   };
 
+  userEmail: any;
+
+
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('id');
     const fullPath = this.route.snapshot.routeConfig?.path;
@@ -67,7 +71,18 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     if (this.routeName === 'edit-event') {
       this.getEventDetails(this.eventId);
     }
+
+
+
+    // **********************
+    let payload= this.authService.getDecodedToken();
+    console.log("Payload=",payload);
+    this.userEmail=payload.email;
+    // **********************
   }
+
+
+
 
   ngAfterViewInit() {
     this.initMap();
@@ -234,6 +249,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   onSubmit() {
     this.submitted = true;
     this.event.description = this.content;
+    this.event.userEmail = this.userEmail;
 
     const ENDPOINT = `${environment.BASE_URL}/api/saveEvent`;
     const requestOptions = {
@@ -351,7 +367,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   steps = [
     { label: 'Basic Details', icon: 'fas fa-info-circle' },
     { label: 'Location Details', icon: 'fas fa-map-marker-alt' },
-    { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
+    // { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
     { label: 'Photos', icon: 'fas fa-camera' },
   ];
 

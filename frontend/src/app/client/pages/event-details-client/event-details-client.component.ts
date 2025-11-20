@@ -59,6 +59,8 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
   url = environment.BASE_URL;
 
   ticket_details: any = [];
+  organizer: any = {};
+  category: any = {};
 
   // ngOnInit() {
   //   this.selectedTier = this.event.pricing?.[0] ?? null;
@@ -177,6 +179,8 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
         this.content = response.event.description;
         this.selectedFiles = response.eventImages;
         this.ticket_details = response.ticket_details;
+        this.organizer = response.organizer;
+        this.category = response.category;
         
         this.updateMap();
 
