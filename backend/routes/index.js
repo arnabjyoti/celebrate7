@@ -45,4 +45,5 @@ module.exports = (app) => {
 
 	app.get('/api/getCounts', eventController.getCounts);
 	app.post('/api/getEventsByOrganizer', eventController.getEventsByOrganizer);
+	app.get('/api/init', eventController.init);
 	};

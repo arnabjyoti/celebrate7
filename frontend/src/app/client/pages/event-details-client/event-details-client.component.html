@@ -1,3 +1,5 @@
+<app-loader [show]="loader"></app-loader>
+
 <div class="pt-4" style="background: rgb(242, 245, 249)">
   <div class="container">
     <!-- HERO: Gallery (left) + Booking panel (right) -->
@@ -97,11 +99,15 @@
           <div class="policies pt-3 location">
             <div>
               <strong>Start:</strong>
-              {{ event.eventToDate | date : "mediumDate" }}
+              {{ event.eventFromDate | date : "mediumDate" }}
             </div>
             <div>
               <strong>End:</strong>
               {{ event.eventToDate | date : "mediumDate" }}
+            </div>
+            <div>
+              <strong>Time:</strong>
+              {{ event.eventTime }}
             </div>
           </div>
 
@@ -137,14 +143,14 @@
     <section class="main" aria-label="Event details">
       <div class="main-left card custom-card shadow-sm bg-white border-0 p-4">
         <div class="top-info">
-          <div class="rating">
+          <!-- <div class="rating">
             <span class="bg-primary px-2 rounded-3 text-white">
               {{ averageRating() | number : "1.1-1" }} <small>/5</small>
             </span>
-          </div>
-          <div class="review-count">
+          </div> -->
+          <!-- <div class="review-count">
             {{ event.reviews?.length || 0 }} reviews
-          </div>
+          </div> -->
         </div>
 
         <div class="summary-card">

@@ -25,6 +25,7 @@ export class EventDetailsComponent {
     organizer: '',
     type: '',
     eventFromDate: '',
+    eventToDate: '',
     eventDate: '',
     eventTime: '',
     country: '',
@@ -42,6 +43,8 @@ export class EventDetailsComponent {
   organizer: any = {};
   category: any = {};
 
+  loader: boolean = false;
+
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('id');
@@ -50,6 +53,7 @@ export class EventDetailsComponent {
   }
 
   getEventDetails(id: any) {
+    this.loader = true;
     const ENDPOINT = `${environment.BASE_URL}/api/getEventDetails?id=${id}`;
 
     this.http.get(ENDPOINT).subscribe(
@@ -62,6 +66,8 @@ export class EventDetailsComponent {
         this.ticket_details = response.ticket_details;
         this.organizer = response.organizer;
         this.category = response.category;
+
+        this.loader = false;
         // organizer, category
         // this.
 
@@ -69,6 +75,7 @@ export class EventDetailsComponent {
       },
       (error) => {
         console.log('error ', error);
+        this.loader = false;
         // return callback && callback(error);
       },
       () => {
