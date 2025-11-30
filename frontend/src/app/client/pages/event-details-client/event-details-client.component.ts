@@ -61,6 +61,7 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
   ticket_details: any = [];
   organizer: any = {};
   category: any = {};
+  loader: boolean = false;
 
   // ngOnInit() {
   //   this.selectedTier = this.event.pricing?.[0] ?? null;
@@ -157,10 +158,12 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
   }
 
   getEventDetails(id: any) {
+    this.loader = true;
     const ENDPOINT = `${environment.BASE_URL}/api/getEventDetails?id=${id}`;
 
     this.http.get(ENDPOINT).subscribe(
       (response: any) => {
+        this.loader = false;
         console.log('Success');
         console.log('response here ', response);
 
@@ -190,6 +193,7 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
         // return callback && callback(response);
       },
       (error) => {
+        this.loader = false;
         console.log('error ', error);
         // return callback && callback(error);
       },

@@ -36,6 +36,8 @@ export class ViewEventsComponent implements OnInit {
     // search : ''
   }
 
+  loader : boolean = false;
+
   onSearchChange(event: any) {
     console.log(event.target.value);
     console.log(event.target.name);
@@ -54,6 +56,7 @@ export class ViewEventsComponent implements OnInit {
   }
 
   fetchEvents(): void {
+    this.loader = true;
 
     let reqBody = {
       limit : this.perPage,
@@ -72,6 +75,8 @@ export class ViewEventsComponent implements OnInit {
       this.totalPages = res.pagination.totalPages;
       this.currentPage = res.pagination.currentPage;
       this.perPage = res.pagination.perPage;
+
+      this.loader = false;
 
       // this.dataSource.paginator = this.paginator;
       // this.dataSource.sort = this.sort;
@@ -112,6 +117,7 @@ export class ViewEventsComponent implements OnInit {
 
   // activeEvent 
   activeEvent(event: any): void {
+    this.loader = true;
     console.log('Active Event:', event);
     let reqBody = {
       eventId : event.id
@@ -119,6 +125,7 @@ export class ViewEventsComponent implements OnInit {
     this.http.post(`${environment.BASE_URL}/api/activeEvent`, reqBody).subscribe((res: any) => {
       console.log('getAllEvents', res);
       this.fetchEvents();
+      this.loader = false;
     });
   }
 
@@ -127,6 +134,7 @@ export class ViewEventsComponent implements OnInit {
 
 
   onDeleteEvent(event: any) {
+    this.loader = true;
 
     let reqBody = {
       id : event.id,
@@ -145,8 +153,10 @@ export class ViewEventsComponent implements OnInit {
         console.log('response here ', response);
         this.fetchEvents();
         // this.toastr.success('Event updated successfully');
+        this.loader = false;
       },
       (error) => {
+        this.loader = false;
         console.error('Update error:', error);
       }
     );

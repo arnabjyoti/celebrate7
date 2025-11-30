@@ -445,10 +445,11 @@ module.exports = {
 
       // City filter ONLY if country and state are selected
       if (search.country && search.state && search.city) {
-        whereClause.city = Sequelize.where(
-          Sequelize.fn("LOWER", Sequelize.col("city")),
-          { [Op.like]: `%${search.city.toLowerCase()}%` }
-        );
+        // whereClause.city = Sequelize.where(
+        //   Sequelize.fn("LOWER", Sequelize.col("city")),
+        //   { [Op.like]: `%${search.city.toLowerCase()}%` }
+        // );
+        whereClause.city = { [Op.like]: `%${search.city}%` };
       }
 
       // Date range filter
@@ -835,7 +836,7 @@ module.exports = {
 
     const category = await eventCategoriesModel.findOne({
       where: {
-        id: event?.organizer,
+        id: event?.type,
       },
     });
 
@@ -920,7 +921,7 @@ module.exports = {
     try {
       let user;
       if (email) {
-         user = await usersModel.findOne({
+        user = await usersModel.findOne({
           where: {
             email: email,
           },
@@ -1026,6 +1027,76 @@ module.exports = {
     } catch (error) {
       console.error("Error fetching event counts:", error);
       res.status(500).json({ message: "Error fetching event counts" });
+    }
+  },
+
+  async init(req, res) {
+    try {
+      const rows = await eventModel.findAll({
+        where: { isDeleted: false },
+        attributes: ['country', 'state', 'city'],
+        raw: true
+      });
+      
+      const allCountries = new Set();
+      const structure = {}; // { country: { state: Set(cities) } }
+      
+      rows.forEach(row => {
+        const { country, state, city } = row;
+      
+        if (!country) return;
+      
+        // Add country
+        allCountries.add(country);
+      
+        // Initialize country in structure
+        if (!structure[country]) {
+          structure[country] = {};
+        }
+      
+        // Add state
+        if (state) {
+          if (!structure[country][state]) {
+            structure[country][state] = new Set();
+          }
+        }
+      
+        // Add city
+        if (city && state) {
+          structure[country][state].add(city);
+        }
+      });
+      
+      // Format final output
+      const countries = [...allCountries].map(c => ({ name: c }));
+      
+      const finalData = {};
+      
+      Object.keys(structure).forEach(country => {
+        finalData[country] = [];
+      
+        Object.keys(structure[country]).forEach(state => {
+          finalData[country].push({
+            name: state,
+            cities: [...structure[country][state]]
+          });
+        });
+      });
+
+      res.status(200).json({
+        status: true,
+        message: "Success",
+        countries: countries,
+        statesByCountry: finalData,
+      });
+    } catch (error) {
+      console.error("Error fetching init:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to fetch init",
+        countries: [],
+        statesByCountry: [],
+      });
     }
   },
 };
