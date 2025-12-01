@@ -11,13 +11,13 @@ const config = require("../config/config.json")[env];
 const nodemailer = require("nodemailer");
 
 // Create a transporter
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: "celebrate7info@gmail.com",
-//     pass: "xboz vhrp lpsm sewi",
-//   },
-// });
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "celebrate7info@gmail.com",
+    pass: "xboz vhrp lpsm sewi",
+  },
+});
 
 
 // const transporter = nodemailer.createTransport({
@@ -28,18 +28,18 @@ const nodemailer = require("nodemailer");
 //   },
 // });
 
-const transporter = nodemailer.createTransport({
-  host: "mail.celebrate7.com",
-  port: 587,//2079, //465,          // or 587 depending on your server
-  secure: false,       // true for 465, false for 587
-  auth: {
-    user: "info@celebrate7.com",
-    pass: "Um3!l!c@l",
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-});
+// const transporter = nodemailer.createTransport({
+//   host: "mail.celebrate7.com",
+//   port: 465,//2079, //465,          // or 587 depending on your server
+//   secure: true,       // true for 465, false for 587
+//   auth: {
+//     user: "info@celebrate7.com",
+//     pass: "Um3!l!c@l",
+//   },
+//   tls: {
+//     rejectUnauthorized: false
+//   }
+// });
 
 const generateAccessToken = (user, name) => {
   return jwt.sign({ id: user._id, name: name, role: user.role, mobile:user.mobile, email:user.email }, config.JWT_SECRET, {
