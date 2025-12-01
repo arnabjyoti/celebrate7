@@ -1,3 +1,5 @@
+<app-loader [show]="loader"></app-loader>  
+
 <div class="container">
   <!-- <div>
     <button mat-icon-button (click)="goBack()">
@@ -8,7 +10,11 @@
   <!-- Stepper Navigation -->
 
   <div class="card border shadow">
-    <ul class="nav nav-pills mb-4 justify-content-center sticky-stepper" *ngIf="activeForm !== 5" style="top: 0px; z-index: 0;">
+    <ul
+      class="nav nav-pills mb-4 justify-content-center sticky-stepper"
+      *ngIf="activeForm !== 5"
+      style="top: 0px; z-index: 0"
+    >
       <li class="nav-item" *ngFor="let step of steps; let i = index">
         <button
           class="nav-link d-flex align-items-center gap-2"
@@ -42,7 +48,12 @@
               <label for="organizer">Organizer:</label>
               <select [(ngModel)]="event.organizer" class="form-control">
                 <option value="">--Select--</option>
-                <option *ngFor="let organizer of organizers" value="{{organizer.id}}">{{organizer.organizer_name}}</option>
+                <option
+                  *ngFor="let organizer of organizers"
+                  value="{{ organizer.id }}"
+                >
+                  {{ organizer.organizer_name }}
+                </option>
               </select>
             </div>
 
@@ -55,8 +66,13 @@
                 class="form-control"
                 [(ngModel)]="event.type"
               >
-              <option value="">--Select--</option>
-              <option *ngFor="let category of eventCategories" value="{{category?.id}}">{{category?.categoryName}}</option>
+                <option value="">--Select--</option>
+                <option
+                  *ngFor="let category of eventCategories"
+                  value="{{ category?.id }}"
+                >
+                  {{ category?.categoryName }}
+                </option>
                 <!-- <option value="Festival">Festival</option>
                 <option value="Sports">Sports</option>
                 <option value="Party">Party</option>
@@ -75,6 +91,7 @@
                 name="eventDate"
                 [(ngModel)]="event.eventFromDate"
                 required
+                [min]="today"
               />
             </div>
 
@@ -86,6 +103,7 @@
                 id="eventDate"
                 name="eventDate"
                 [(ngModel)]="event.eventToDate"
+                [min]="event.eventFromDate"
                 required
               />
             </div>
@@ -107,6 +125,7 @@
               <quill-editor
                 [(ngModel)]="content"
                 name="editorContent"
+                [modules]="editorModules"
               ></quill-editor>
               <!-- <div [innerHTML]="content"></div> -->
             </div>
@@ -180,6 +199,7 @@
                 class="btn btn-primary"
                 (click)="handleNext()"
                 type="submit"
+                [disabled]="form1Validation()"
               >
                 Next <i class="bi bi-arrow-right-circle"></i>
               </button>
@@ -270,6 +290,7 @@
                 class="btn btn-primary"
                 (click)="handleNext()"
                 type="submit"
+                [disabled]="form2Validation()"
               >
                 Next <i class="bi bi-arrow-right-circle"></i>
               </button>
@@ -280,30 +301,8 @@
 
       <!-- *************************** form 3 ************************ -->
 
-      <div class="form3" *ngIf="activeForm === 3">
+      <!-- <div class="form3" *ngIf="activeForm === 3">
         <div class="row">
-          <!-- <div class="col-md-12 pb-3">
-          <label for="country">Ticket Type:</label> &nbsp; &nbsp; &nbsp;
-          <input
-            type="radio"
-            id="single"
-            name="ticket_type"
-            value="single"
-            [(ngModel)]="ticket_details.ticket_type"
-            required
-          /> <label for="single">Single Ticket</label> 
-          
-          &nbsp; &nbsp;
-          <input
-            type="radio"
-            id="multiple"
-            name="ticket_type"
-            value="multiple"
-            [(ngModel)]="ticket_details.ticket_type"
-            required
-          /> <label for="multiple">Multiple Tickets</label> 
-        </div> -->
-
           <div class="col-md-4 pb-3">
             <label for="country">Ticket Name:</label>
             <input
@@ -349,16 +348,6 @@
               required
             />
           </div>
-
-          <!-- <div class="col-md-2 pb-3">
-          <label for="state"></label>
-          <br>
-          <input
-            class="btn btn-primary"
-            type="button"
-            value="Add"
-          />
-        </div> -->
         </div>
 
         <div>
@@ -382,11 +371,11 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- *************************** form 4 ************************ -->
 
-      <div class="form4" *ngIf="activeForm === 4">
+      <div class="form4" *ngIf="activeForm === 3">
         <div class="row">
           <div class="row">
             <!-- Other fields -->
@@ -410,8 +399,9 @@
                 class="btn btn-success mt-3"
                 type="submit"
                 (click)="onSubmit()"
+                [disabled]="submitted"
               >
-                <i class="bi bi-check-circle"></i> Submit
+                <i class="bi bi-check-circle"></i> {{submitted ? 'Saving...' : 'Submit'}} 
               </button>
 
               <!-- <div class="pb-3" *ngIf="routeName === 'edit-event'"> -->
@@ -452,17 +442,11 @@
             </button>
 
             <!-- routerLink="/add-event" -->
-            <button
-              class="btn btn-outline-success"
-              (click)="reloadAddEvent()"
-            >
+            <button class="btn btn-outline-success" (click)="reloadAddEvent()">
               <i class="bi bi-plus-circle me-2"></i> Add Another Event
             </button>
 
-            <button
-              class="btn btn-outline-secondary"
-              routerLink="/dashboard"
-            >
+            <button class="btn btn-outline-secondary" routerLink="/dashboard">
               <i class="bi bi-house-door me-2"></i> Go to Dashboard
             </button>
           </div>

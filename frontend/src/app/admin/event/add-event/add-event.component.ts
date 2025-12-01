@@ -47,6 +47,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     fullAddress: '',
     description: '',
     status: 'draft',
+    userEmail: '',
   };
 
   ticket_details = {
@@ -58,6 +59,19 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     isActive: true,
   };
 
+  userEmail: any;
+
+  editorModules = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['clean'],
+    ],
+  };
+
+  today: string = '';
+  loader: boolean = false;
+
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('id');
     const fullPath = this.route.snapshot.routeConfig?.path;
@@ -67,6 +81,15 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     if (this.routeName === 'edit-event') {
       this.getEventDetails(this.eventId);
     }
+
+    // **********************
+    let payload = this.authService.getDecodedToken();
+    console.log('Payload=', payload);
+    this.userEmail = payload.email;
+    // **********************
+
+    const now = new Date();
+    this.today = now.toISOString().split('T')[0];
   }
 
   ngAfterViewInit() {
@@ -155,11 +178,13 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
   eventCategories: any = [];
   getEventCategories() {
+    this.loader = true;
     this.eventCategories = [];
     let requestObject = {};
     this.http
       .post(`${environment.BASE_URL}/api/getEventCategories`, requestObject)
       .subscribe((res: any) => {
+        this.loader = false;
         if (res.status && res.data.length >= 1) {
           this.eventCategories = res.data || [];
         } else {
@@ -232,8 +257,10 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
+    this.loader = true;
     this.submitted = true;
     this.event.description = this.content;
+    this.event.userEmail = this.userEmail;
 
     const ENDPOINT = `${environment.BASE_URL}/api/saveEvent`;
     const requestOptions = {
@@ -248,9 +275,14 @@ export class AddEventComponent implements OnInit, AfterViewInit {
         this.saveTicket(eventId);
         this.toastr.success('Event added successfully');
         this.activeForm = 5;
+        this.submitted = false;
+        this.loader = false;
       },
       (error) => {
         console.error('Submission error:', error);
+        this.toastr.error('Something went wrong', 'Error Message');
+        this.submitted = false;
+        this.loader = false;
       }
     );
   }
@@ -302,6 +334,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   getEventDetails(id: any) {
+    this.loader = true;
     const ENDPOINT = `${environment.BASE_URL}/api/getEventDetails?id=${id}`;
 
     this.http.get(ENDPOINT).subscribe(
@@ -313,9 +346,11 @@ export class AddEventComponent implements OnInit, AfterViewInit {
         this.selectedFiles = response.eventImages;
         this.staticFiles = response.eventImages;
         this.ticket_details = response.ticket_details[0];
+        this.loader = false;
       },
       (error) => {
         console.error('Error fetching event details:', error);
+        this.loader = false;
       }
     );
   }
@@ -331,12 +366,15 @@ export class AddEventComponent implements OnInit, AfterViewInit {
       data: this.event,
     };
 
+    this.loader = true;
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
         this.toastr.success('Event updated successfully');
+        this.loader = false;
       },
       (error) => {
         console.error('Update error:', error);
+        this.loader = false;
       }
     );
   }
@@ -351,7 +389,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   steps = [
     { label: 'Basic Details', icon: 'fas fa-info-circle' },
     { label: 'Location Details', icon: 'fas fa-map-marker-alt' },
-    { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
+    // { label: 'Ticket Details', icon: 'fas fa-ticket-alt' },
     { label: 'Photos', icon: 'fas fa-camera' },
   ];
 
@@ -383,5 +421,31 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
   reloadAddEvent() {
     window.location.reload();
+  }
+
+  form1Validation() {
+    if (
+      this.event.eventName == '' ||
+      this.event.organizer == null ||
+      this.event.type == '' ||
+      this.event.eventFromDate == '' ||
+      this.event.eventToDate == '' ||
+      this.event.eventTime == ''
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  form2Validation() {
+    if (
+      this.event.country == '' ||
+      this.event.state == null ||
+      this.event.fullAddress == ''
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

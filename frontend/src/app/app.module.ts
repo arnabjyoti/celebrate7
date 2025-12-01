@@ -58,6 +58,8 @@ import { LocationDetailComponent } from './location-detail/location-detail.compo
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
 import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
+import { LoaderComponent } from './components/loader/loader.component';
+// import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
   declarations: [
@@ -89,6 +91,7 @@ import { EventsCategorywiseComponent } from './client/pages/events-categorywise/
     AdminProfileComponent,
     ContactUsComponent,
     EventsCategorywiseComponent,
+    LoaderComponent,
   ],
   imports: [
     FormsModule,

@@ -325,7 +325,25 @@ module.exports = {
       if (!eventData) {
         return res.status(400).send({ message: "No event data provided" });
       }
-      eventData.createdBy = eventData?.organizer;
+
+      console.log("eventData==>", eventData.userEmail);
+
+      if (eventData.userEmail) {
+        const user = await usersModel.findOne({
+          where: {
+            email: eventData.userEmail,
+          },
+        });
+        if (user) {
+          eventData.createdBy = user.id;
+        }
+      }
+
+      // console.log("createdBy ", eventData.createdBy);
+
+      // return;
+
+      // eventData.createdBy = eventData?.organizer;
       console.log("eventData", eventData);
       // Save to DB
       const createdEvent = await eventModel.create(eventData);
@@ -427,10 +445,11 @@ module.exports = {
 
       // City filter ONLY if country and state are selected
       if (search.country && search.state && search.city) {
-        whereClause.city = Sequelize.where(
-          Sequelize.fn("LOWER", Sequelize.col("city")),
-          { [Op.like]: `%${search.city.toLowerCase()}%` }
-        );
+        // whereClause.city = Sequelize.where(
+        //   Sequelize.fn("LOWER", Sequelize.col("city")),
+        //   { [Op.like]: `%${search.city.toLowerCase()}%` }
+        // );
+        whereClause.city = { [Op.like]: `%${search.city}%` };
       }
 
       // Date range filter
@@ -809,7 +828,24 @@ module.exports = {
       },
     });
 
-    return res.status(200).send({ event, eventImages, ticket_details });
+    const organizer = await organizersModel.findOne({
+      where: {
+        id: event?.organizer,
+      },
+    });
+
+    const category = await eventCategoriesModel.findOne({
+      where: {
+        id: event?.type,
+      },
+    });
+
+    console.log("event organizer ", event.organizer);
+    console.log("event type ", event.type);
+
+    return res
+      .status(200)
+      .send({ event, eventImages, ticket_details, organizer, category });
   },
 
   async updateEvent(req, res) {
@@ -880,54 +916,187 @@ module.exports = {
   },
 
   async getCounts(req, res) {
+    const { email } = req.query;
+    console.log("params", email);
     try {
-      const totalEvents = await eventModel.count({
-        where: { isDeleted: false },
-      });
-      const upcomingEvents = await eventModel.count({
-        where: {
-          isDeleted: false,
-          eventToDate: {
-            [Op.gte]: new Date(), // greater than or equal to current date
+      let user;
+      if (email) {
+        user = await usersModel.findOne({
+          where: {
+            email: email,
           },
-        },
-      });
-      const pastEvents = await eventModel.count({
-        where: {
-          isDeleted: false,
-          eventToDate: {
-            [Op.lt]: new Date(), // less than current date
-          },
-        },
-      });
-
-      const activeEvents = await eventModel.count({
-        where: {
-          isDeleted: false,
-          status: "active",
-        },
-      });
-
-      const recentEvents = await eventModel.findAll({
-        where: {
-          isDeleted: false,
-        },
-        order: [["createdAt", "DESC"]],
-        limit: 5,
-      });
-
-      res
-        .status(200)
-        .json({
-          totalEvents,
-          upcomingEvents,
-          pastEvents,
-          activeEvents,
-          recentEvents,
         });
+      }
+
+      let role = user?.role;
+
+      let userId = user?.id;
+
+      console.log("user ==> ", role, userId);
+
+      let totalEvents = 0;
+      let upcomingEvents = 0;
+      let pastEvents = 0;
+      let activeEvents = 0;
+      let recentEvents = [];
+
+      if (role == "admin") {
+        totalEvents = await eventModel.count({
+          where: { isDeleted: false, createdBy: userId },
+        });
+
+        upcomingEvents = await eventModel.count({
+          where: {
+            isDeleted: false,
+            createdBy: userId,
+            eventToDate: {
+              [Op.gte]: new Date(), // greater than or equal to current date
+            },
+          },
+        });
+        pastEvents = await eventModel.count({
+          where: {
+            isDeleted: false,
+            createdBy: userId,
+            eventToDate: {
+              [Op.lt]: new Date(), // less than current date
+            },
+          },
+        });
+
+        activeEvents = await eventModel.count({
+          where: {
+            isDeleted: false,
+            createdBy: userId,
+            status: "active",
+          },
+        });
+
+        recentEvents = await eventModel.findAll({
+          where: {
+            isDeleted: false,
+            createdBy: userId,
+          },
+          order: [["createdAt", "DESC"]],
+          limit: 5,
+        });
+      } else {
+        totalEvents = await eventModel.count({
+          where: { isDeleted: false },
+        });
+        upcomingEvents = await eventModel.count({
+          where: {
+            isDeleted: false,
+            eventToDate: {
+              [Op.gte]: new Date(), // greater than or equal to current date
+            },
+          },
+        });
+        pastEvents = await eventModel.count({
+          where: {
+            isDeleted: false,
+            eventToDate: {
+              [Op.lt]: new Date(), // less than current date
+            },
+          },
+        });
+
+        activeEvents = await eventModel.count({
+          where: {
+            isDeleted: false,
+            status: "active",
+          },
+        });
+
+        recentEvents = await eventModel.findAll({
+          where: {
+            isDeleted: false,
+          },
+          order: [["createdAt", "DESC"]],
+          limit: 5,
+        });
+      }
+
+      res.status(200).json({
+        totalEvents,
+        upcomingEvents,
+        pastEvents,
+        activeEvents,
+        recentEvents,
+      });
     } catch (error) {
       console.error("Error fetching event counts:", error);
       res.status(500).json({ message: "Error fetching event counts" });
+    }
+  },
+
+  async init(req, res) {
+    try {
+      const rows = await eventModel.findAll({
+        where: { isDeleted: false },
+        attributes: ['country', 'state', 'city'],
+        raw: true
+      });
+      
+      const allCountries = new Set();
+      const structure = {}; // { country: { state: Set(cities) } }
+      
+      rows.forEach(row => {
+        const { country, state, city } = row;
+      
+        if (!country) return;
+      
+        // Add country
+        allCountries.add(country);
+      
+        // Initialize country in structure
+        if (!structure[country]) {
+          structure[country] = {};
+        }
+      
+        // Add state
+        if (state) {
+          if (!structure[country][state]) {
+            structure[country][state] = new Set();
+          }
+        }
+      
+        // Add city
+        if (city && state) {
+          structure[country][state].add(city);
+        }
+      });
+      
+      // Format final output
+      const countries = [...allCountries].map(c => ({ name: c }));
+      
+      const finalData = {};
+      
+      Object.keys(structure).forEach(country => {
+        finalData[country] = [];
+      
+        Object.keys(structure[country]).forEach(state => {
+          finalData[country].push({
+            name: state,
+            cities: [...structure[country][state]]
+          });
+        });
+      });
+
+      res.status(200).json({
+        status: true,
+        message: "Success",
+        countries: countries,
+        statesByCountry: finalData,
+      });
+    } catch (error) {
+      console.error("Error fetching init:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to fetch init",
+        countries: [],
+        statesByCountry: [],
+      });
     }
   },
 };

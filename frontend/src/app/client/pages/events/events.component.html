@@ -1,3 +1,5 @@
+<app-loader [show]="loader"></app-loader>
+
 <div class="container-fluid pt-4" style="background: rgb(242, 245, 249)">
   <div class="row p-0 m-0">
     <!-- LEFT FILTER SIDEBAR -->
@@ -52,7 +54,7 @@
                   ? (event.eventFromDate | date:'dd MMM yyyy') 
                   : (event.eventFromDate | date:'dd MMM yyyy') + ' - ' + (event.eventToDate | date:'dd MMM yyyy') }}
               </p>
-              <div class="d-flex align-items-center mb-2">
+              <!-- <div class="d-flex align-items-center mb-2">
                 <div class="rating-box">
                   <strong>9.6</strong>
                 </div>
@@ -60,7 +62,7 @@
                   Exceptional <br />
                   <span class="text-muted">{{ event.reviews || 88 }} reviews</span>
                 </span>
-              </div>
+              </div> -->
               <a [routerLink]="['/event', event.id]" class="btn btn-outline-secondary w-100 mt-2">
                 View Details
               </a>
@@ -229,4 +231,5 @@
   <button class="btn btn-outline-secondary w-100 mt-2" (click)="clearFilters()">
     <i class="fas fa-undo me-1"></i> Clear Filters
   </button>
+  <br><br><br><br><br><br>
 </ng-template>

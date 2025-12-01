@@ -36,6 +36,8 @@ export class ViewEventsComponent implements OnInit {
     // search : ''
   }
 
+  loader : boolean = false;
+
   onSearchChange(event: any) {
     console.log(event.target.value);
     console.log(event.target.name);
@@ -54,6 +56,7 @@ export class ViewEventsComponent implements OnInit {
   }
 
   fetchEvents(): void {
+    this.loader = true;
 
     let reqBody = {
       limit : this.perPage,
@@ -72,6 +75,8 @@ export class ViewEventsComponent implements OnInit {
       this.totalPages = res.pagination.totalPages;
       this.currentPage = res.pagination.currentPage;
       this.perPage = res.pagination.perPage;
+
+      this.loader = false;
 
       // this.dataSource.paginator = this.paginator;
       // this.dataSource.sort = this.sort;
@@ -93,6 +98,15 @@ export class ViewEventsComponent implements OnInit {
 
   deleteEvent(event: any): void {
     console.log('Delete Event:', event);
+    if (confirm('Are you sure you want to delete this event?')) {
+      // User confirmed, proceed with deletion logic
+      this.onDeleteEvent(event);
+    } else {
+      // User cancelled, do nothing or display a message
+      console.log('Event deletion cancelled.');
+    }
+
+    
   }
 
   changePage(page: number): void {
@@ -103,6 +117,7 @@ export class ViewEventsComponent implements OnInit {
 
   // activeEvent 
   activeEvent(event: any): void {
+    this.loader = true;
     console.log('Active Event:', event);
     let reqBody = {
       eventId : event.id
@@ -110,7 +125,41 @@ export class ViewEventsComponent implements OnInit {
     this.http.post(`${environment.BASE_URL}/api/activeEvent`, reqBody).subscribe((res: any) => {
       console.log('getAllEvents', res);
       this.fetchEvents();
+      this.loader = false;
     });
+  }
+
+
+
+
+
+  onDeleteEvent(event: any) {
+    this.loader = true;
+
+    let reqBody = {
+      id : event.id,
+      isDeleted : true
+
+    }
+
+    const ENDPOINT = `${environment.BASE_URL}/api/updateEvent`;
+    const requestOptions = {
+      method: 'post',
+      data: reqBody,
+    };
+
+    this.http.post(ENDPOINT, requestOptions).subscribe(
+      (response: any) => {
+        console.log('response here ', response);
+        this.fetchEvents();
+        // this.toastr.success('Event updated successfully');
+        this.loader = false;
+      },
+      (error) => {
+        this.loader = false;
+        console.error('Update error:', error);
+      }
+    );
   }
 
 

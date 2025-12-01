@@ -8,6 +8,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class ContactUsComponent {
 contactForm: FormGroup;
+loader: boolean = false;
 
   constructor(private fb: FormBuilder) {
     this.contactForm = this.fb.group({
@@ -20,9 +21,11 @@ contactForm: FormGroup;
 
   onSubmit() {
     if (this.contactForm.valid) {
+      this.loader = true;   // start loader
       console.log('Form Data:', this.contactForm.value);
       alert('Thank you for reaching out! We’ll get back to you soon.');
       this.contactForm.reset();
+       this.loader = false;   // stop loader
     }
   }
 }
