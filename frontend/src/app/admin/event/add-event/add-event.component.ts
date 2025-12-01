@@ -60,6 +60,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   };
 
   userEmail: any;
+  payload: any;
 
   editorModules = {
     toolbar: [
@@ -85,6 +86,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     // **********************
     let payload = this.authService.getDecodedToken();
     console.log('Payload=', payload);
+    this.payload = payload;
     this.userEmail = payload.email;
     // **********************
 
@@ -356,11 +358,31 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   handleUpdate() {
-    this.onUpdate();
+    // this.onUpdate();
+    console.log('draft ', this.event.status);
+    if (this.event.status === 'draft' || this.payload.role === 'sa') {
+      this.onUpdate();
+      return;
+    }
+
+    if (
+      confirm(
+        'Are you sure you want to update it? This will change the status to draft'
+      )
+    ) {
+      // User confirmed, proceed with deletion logic
+      this.onUpdate();
+    } else {
+      // User cancelled, do nothing or display a message
+      console.log('Event deletion cancelled.');
+    }
   }
 
   onUpdate() {
     const ENDPOINT = `${environment.BASE_URL}/api/updateEvent`;
+    if (this.payload.role === 'admin') {
+      this.event.status = 'draft';
+    }
     const requestOptions = {
       method: 'post',
       data: this.event,
@@ -369,7 +391,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     this.loader = true;
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
-        this.toastr.success('Event updated successfully');
+        this.toastr.success('Event updated successfully.');
         this.loader = false;
       },
       (error) => {
