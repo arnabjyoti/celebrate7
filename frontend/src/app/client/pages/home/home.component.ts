@@ -73,6 +73,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   subs = new Subscription();
   env = environment.BASE_URL;
+
+  loader: boolean = false;
+
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -122,6 +125,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       page: 1,
     };
 
+    this.loader = true;   // start loader
+
     this.http
       .post(`${environment.BASE_URL}/api/getAllEvents`, reqBody)
       .subscribe((res: any) => {
@@ -131,6 +136,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         } else {
           this.spinner.hide('nowShowingSectionSpinner');
         }
+        this.loader = false;   // stop loader
       });
   }
 

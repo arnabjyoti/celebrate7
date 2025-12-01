@@ -1,5 +1,7 @@
+<app-loader [show]="loader"></app-loader>
+
 <!-- HERO / Carousel -->
-<div style="padding-left: 80px; padding-right: 80px">
+<div style="padding-left: 20px; padding-right: 20px">
   <section class="hero" *ngIf="featured.length">
     <div
       class="slides"
@@ -117,7 +119,7 @@
                       <div class="sub">{{ m.genre }} • {{ m.runtime }}</div>
                     </div>
                     <div style="text-align: right">
-                      <div class="rating">{{ m.rating }}</div>
+                      <!-- <div class="rating">{{ m.rating }}</div> -->
                       <div class="imdb">{{ m.city }}</div>
                     </div>
                   </div>
