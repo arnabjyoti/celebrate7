@@ -1,5 +1,6 @@
 const async = require("async");
 const usersModel = require("../models").users;
+const organizersModel = require("../models").organizers;
 const bcrypt = require("bcrypt");
 var request = require("request");
 const Op = require("sequelize").Op;
@@ -13,23 +14,41 @@ const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "mithuzaman2020@gmail.com",
-    pass: "smlx bsxs hksp ognj",
+    user: "celebrate7info@gmail.com",
+    pass: "xboz vhrp lpsm sewi",
   },
 });
 
-const generateAccessToken = (user) => {
-  return jwt.sign(
-    { id: user._id, role: user.role, mobile: user.mobile, email: user.email },
-    config.JWT_SECRET,
-    {
-      expiresIn: "15m",
-    }
-  );
+
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: "mithuzaman2020@gmail.com",
+//     pass: "smlx bsxs hksp ognj",
+//   },
+// });
+
+// const transporter = nodemailer.createTransport({
+//   host: "mail.celebrate7.com",
+//   port: 465,//2079, //465,          // or 587 depending on your server
+//   secure: true,       // true for 465, false for 587
+//   auth: {
+//     user: "info@celebrate7.com",
+//     pass: "Um3!l!c@l",
+//   },
+//   tls: {
+//     rejectUnauthorized: false
+//   }
+// });
+
+const generateAccessToken = (user, name) => {
+  return jwt.sign({ id: user._id, name: name, role: user.role, mobile:user.mobile, email:user.email }, config.JWT_SECRET, {
+    expiresIn: "15m",
+  });
 };
 
-const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user._id }, config.JWT_REFRESH_SECRET, {
+const generateRefreshToken = (user, name) => {
+  return jwt.sign({ id: user._id, name: name, role: user.role, mobile:user.mobile, email:user.email }, config.JWT_REFRESH_SECRET, {
     expiresIn: "7d",
   });
 };
@@ -160,12 +179,13 @@ module.exports = {
     const filter = mobile ? { mobile } : { email };
 
     const user = await usersModel.findOne({ where: filter });
+    const organizer = await organizersModel.findOne({ where: filter });
     if (!user || user.otp !== otp || new Date() > user.otpExpiry) {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }
-
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
+    const userName=organizer ? organizer?.contact_name : 'Admin';
+    const accessToken = generateAccessToken(user, userName);
+    const refreshToken = generateRefreshToken(user, userName);
 
     user.otp = null;
     user.otpExpiry = null;

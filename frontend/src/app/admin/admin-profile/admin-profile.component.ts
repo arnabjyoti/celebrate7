@@ -27,6 +27,8 @@ export class AdminProfileComponent implements OnInit {
       .getProfileInfo(requestObject)
       .subscribe({
         next: (response: any) => {
+          console.log("REsss==",response);
+          
           if (response.status) {
             this.profileInfo = response.data;
           } else {

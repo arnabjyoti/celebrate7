@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import * as data from 'countrycitystatejson';
+import { HelperService } from 'src/app/helpers/helper.service';
 
 interface LocationPoint {
   id: string | number;
@@ -18,7 +19,11 @@ interface LocationPoint {
   styleUrls: ['./events.component.css'],
 })
 export class EventsComponent {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private helper: HelperService
+  ) {}
 
   AllData: any = null;
   Countries: any = [];
@@ -27,8 +32,9 @@ export class EventsComponent {
   selectedState: any = '';
   Cities: any = [];
   selectedCity: any = '';
+  countryDetails: any = {};
 
-   locations: LocationPoint[] = [];
+  locations: LocationPoint[] = [];
 
   env = environment.BASE_URL;
   events: any[] = [];
@@ -37,41 +43,63 @@ export class EventsComponent {
   viewAs: string = 'grid';
 
   filters = {
-  dateRange: false,
-  fromDate: '',
-  toDate: '',
-  date: '',
-  country: '',
-  state: '',
-  city: '',
-  month: '',
-  language: '',
-  category: '',
-  genre: '',
-  more: '',
-  activeDateButton: '',
-};
+    dateRange: false,
+    fromDate: '',
+    toDate: '',
+    date: '',
+    country: '',
+    state: '',
+    city: '',
+    month: '',
+    language: '',
+    category: '',
+    genre: '',
+    more: '',
+    activeDateButton: '',
+  };
 
   months: string[] = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
-today: string = '';
+  today: string = '';
 
-isDateRangeValid: boolean = false;
-dateError: string = '';
-  
+  isDateRangeValid: boolean = false;
+  dateError: string = '';
+  loader: boolean = false;
+
   ngOnInit(): void {
     this.fetchEvents();
+    this.getInitApi();
     const now = new Date();
     this.today = now.toISOString().split('T')[0];
 
     this.AllData = data.getAll();
-    this.Countries = data.getCountries();
+    // this.Countries = data.getCountries();
     console.log('AllData==', this.AllData);
+    console.log('data =>', data.getCountries());
 
     this.getEventCategories();
+  }
+
+  getInitApi() {
+    this.helper.getCountryStateCity().subscribe(() => {
+      const countries = this.helper.getAllCountries();
+
+      console.log('countries: ', countries);
+      this.Countries = countries;
+    });
   }
 
   fetchEvents(): void {
@@ -83,41 +111,48 @@ dateError: string = '';
     };
 
     console.log('📤 Sending request to backend with filters:', reqBody);
+    this.loader = true;
+    this.http
+      .post(`${environment.BASE_URL}/api/getAllEvents`, reqBody)
+      .subscribe({
+        next: (res: any) => {
+          this.loader = false;
+          console.log('✅ Response received:', res);
+          this.events = res.data || [];
+          console.log('Events:', this.events);
+          this.locations = this.events.map((event: any) => ({
+            id: event.id,
+            title: event.eventName,
+            // {{ event.eventDate | date : "mediumDate" }}
+            description: `${new Date(event.eventFromDate).toLocaleDateString(
+              'en-US',
+              {
+                month: 'short',
+                day: 'numeric',
+                year: '2-digit',
+              }
+            )} `,
+            lat: event.lat,
+            lng: event.lng,
+          }));
 
-    this.http.post(`${environment.BASE_URL}/api/getAllEvents`, reqBody).subscribe({
-      next: (res: any) => {
-        console.log('✅ Response received:', res);
-        this.events = res.data || [];
-        console.log('Events:', this.events);
-        this.locations = this.events.map((event: any) => ({
-          id: event.id,
-          title: event.eventName,
-          // {{ event.eventDate | date : "mediumDate" }}
-          description: `${new Date(event.eventFromDate).toLocaleDateString('en-US', {
-            month: 'short', day: 'numeric', year: '2-digit'
-          })} `,
-          lat: event.lat,
-          lng: event.lng
-        }))
+          console.log('Locations:', this.locations);
 
-        console.log('Locations:', this.locations);
-        
-        
-        this.filteredEvents = [...this.events];
-      },
-      error: (err) => console.error('❌ Error fetching events:', err),
-    });
+          this.filteredEvents = [...this.events];
+        },
+        error: (err) => {
+          this.loader = false;
+          console.error('❌ Error fetching events:', err);
+        }
+      });
   }
 
-  
-
-filterByDate(option: string): void {
-  this.filters.activeDateButton = option;  // set active button
-  this.filters.date = option;       // update filter
-  this.filters.dateRange = false;   // optional: turn off date range
-  this.applyFilters();
-}
-
+  filterByDate(option: string): void {
+    this.filters.activeDateButton = option; // set active button
+    this.filters.date = option; // update filter
+    this.filters.dateRange = false; // optional: turn off date range
+    this.applyFilters();
+  }
 
   toggleDateRange(): void {
     if (!this.filters.dateRange) {
@@ -146,7 +181,7 @@ filterByDate(option: string): void {
       category: '',
       genre: '',
       more: '',
-      activeDateButton:'',
+      activeDateButton: '',
     };
     this.dateError = '';
     this.isDateRangeValid = false;
@@ -183,7 +218,12 @@ filterByDate(option: string): void {
 
   searchByDateRange() {
     if (this.isDateRangeValid) {
-      console.log('🔍 Searching between:', this.filters.fromDate, 'and', this.filters.toDate);
+      console.log(
+        '🔍 Searching between:',
+        this.filters.fromDate,
+        'and',
+        this.filters.toDate
+      );
       this.filters.date = ''; // clear single-date filter
       this.applyFilters();
     }
@@ -194,21 +234,25 @@ filterByDate(option: string): void {
     console.log('Switched view to:', mode);
   }
 
-
-
   //country state city fatch
 
   onChangeCountry = () => {
     if (this.filters.country) {
-      // find country object by full name
-      const selectedCountry = this.Countries.find(
-        (c:any) => c.name.toLowerCase() === this.filters.country.toLowerCase()
-      );
+      this.helper.getCountryStateCity().subscribe(() => {
+        const states = this.helper.getStates(this.filters.country);
+        console.log('statessss', states);
+        this.States = states;
+      });
 
-      // get states using shortName (like "IN")
-      this.States = selectedCountry
-        ? data.getStatesByShort(selectedCountry.shortName)
-        : [];
+      // find country object by full name
+      // const selectedCountry = this.Countries.find(
+      //   (c:any) => c.name.toLowerCase() === this.filters.country.toLowerCase()
+      // );
+
+      // // get states using shortName (like "IN")
+      // this.States = selectedCountry
+      //   ? data.getStatesByShort(selectedCountry.shortName)
+      //   : [];
 
       this.filters.state = '';
       this.Cities = [];
@@ -220,18 +264,29 @@ filterByDate(option: string): void {
 
   onChangeState = () => {
     if (this.filters.state && this.filters.country) {
-      const selectedCountry = this.Countries.find(
-        (c:any) => c.name.toLowerCase() === this.filters.country.toLowerCase()
-      );
+      this.helper.getCountryStateCity().subscribe(() => {
+        const cities = this.helper.getCities(
+          this.filters.country,
+          this.filters.state
+        );
+        console.log('getCities', cities);
+        // this.States = states;
+        this.Cities = cities || [];
+        // this.filters.state = '';
+        this.filters.city = '';
+      });
 
-      this.Cities = selectedCountry
-        ? data.getCities(selectedCountry.shortName, this.filters.state)
-        : [];
+      // const selectedCountry = this.Countries.find(
+      //   (c:any) => c.name.toLowerCase() === this.filters.country.toLowerCase()
+      // );
+
+      // this.Cities = selectedCountry
+      //   ? data.getCities(selectedCountry.shortName, this.filters.state)
+      //   : [];
     } else {
       this.Cities = [];
     }
   };
-
 
   // types/ categories
   eventCategories: any = [];
@@ -248,7 +303,4 @@ filterByDate(option: string): void {
         }
       });
   }
-
-
-  
 }

@@ -43,7 +43,7 @@
 
   <mat-sidenav-content>
     <mat-toolbar class="custom-toolbar">
-      <span class="toolbar-title">Welcome Admin</span>
+      <span class="toolbar-title">Welcome {{user?.name || 'User'}}</span>
       <span class="spacer"></span>
       <button (click)="handleLogout()" mat-button color="aliceblue">
         <mat-icon>logout</mat-icon>

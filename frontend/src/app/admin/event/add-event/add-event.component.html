@@ -1,3 +1,5 @@
+<app-loader [show]="loader"></app-loader>  
+
 <div class="container">
   <!-- <div>
     <button mat-icon-button (click)="goBack()">
@@ -89,6 +91,7 @@
                 name="eventDate"
                 [(ngModel)]="event.eventFromDate"
                 required
+                [min]="today"
               />
             </div>
 
@@ -100,6 +103,7 @@
                 id="eventDate"
                 name="eventDate"
                 [(ngModel)]="event.eventToDate"
+                [min]="event.eventFromDate"
                 required
               />
             </div>
@@ -195,6 +199,7 @@
                 class="btn btn-primary"
                 (click)="handleNext()"
                 type="submit"
+                [disabled]="form1Validation()"
               >
                 Next <i class="bi bi-arrow-right-circle"></i>
               </button>
@@ -285,6 +290,7 @@
                 class="btn btn-primary"
                 (click)="handleNext()"
                 type="submit"
+                [disabled]="form2Validation()"
               >
                 Next <i class="bi bi-arrow-right-circle"></i>
               </button>
@@ -393,8 +399,9 @@
                 class="btn btn-success mt-3"
                 type="submit"
                 (click)="onSubmit()"
+                [disabled]="submitted"
               >
-                <i class="bi bi-check-circle"></i> Submit
+                <i class="bi bi-check-circle"></i> {{submitted ? 'Saving...' : 'Submit'}} 
               </button>
 
               <!-- <div class="pb-3" *ngIf="routeName === 'edit-event'"> -->
@@ -402,7 +409,7 @@
               <button
                 class="btn btn-success mt-3"
                 *ngIf="routeName === 'edit-event'"
-                (click)="onUpdate()"
+                (click)="handleUpdate()"
               >
                 Update event
               </button>

@@ -2,6 +2,7 @@ const { sendMail, eventController} = require('../controllers');
 
 const AuthController = require('../controllers').AuthController;
 const OrganizerController = require('../controllers').OrganizerController;
+const ClientController = require('../controllers').ClientController;
 
 const upload = require('../middlewares/multer');
 //Api's
@@ -34,15 +35,21 @@ module.exports = (app) => {
 	app.post('/api/getEventCategories', eventController.getEventCategories);
 	// Organizer API's
 	app.post('/api/organizer-registration', OrganizerController.organizerRegistration);
+	app.post('/api/get-profile-info', OrganizerController.getProfileInfo);
 	app.post('/api/upsert-organizer', OrganizerController.upsert);
 	app.post('/api/get-organizers', OrganizerController.view);
 	app.post('/api/getOrganizerByEmail', OrganizerController.getOrganizerByEmail);
 	app.post('/api/delete-organizer', OrganizerController.delete);
 	app.post('/api/get-event-categories', eventController.viewEventCategories);
+	app.post('/api/get-events-by-category', eventController.getEventsByCategory);
 	app.post('/api/upsert-event-category', eventController.upsertEventCategory);
 	app.post('/api/delete-event-category', eventController.deleteEventCategory);
 
 
 	app.get('/api/getCounts', eventController.getCounts);
 	app.post('/api/getEventsByOrganizer', eventController.getEventsByOrganizer);
+	app.get('/api/init', eventController.init);
+
+	// Client contact-us API's
+	app.post('/api/save-client-query', ClientController.saveClientQuery);
 	};
