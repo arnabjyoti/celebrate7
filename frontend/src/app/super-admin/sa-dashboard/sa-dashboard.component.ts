@@ -59,6 +59,6 @@ export class SaDashboardComponent {
 
 
  createEvent(): void {
-    window.location.href = '/add-event';
+    window.location.href = '/add-event-sa';
   }
 }

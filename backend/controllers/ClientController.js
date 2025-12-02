@@ -76,84 +76,22 @@ module.exports = {
   },
   //End
 
-  //Start: Method to view organizers
-  async getOrganizerByEmail(req, res) {
-    try {
-      const requestObject = req.body;
-      const role = requestObject?.role;
-      const email = requestObject?.email;
-      if (email) {
-        if (role.toUpperCase() == "ADMIN") {
-          const organizer = await organizersModel.findAll({
-            where: {
-              email: email,
-              isDeleted: false,
-              status: "Active",
-            },
-          });
-          res.status(200).json({
-            status: true,
-            message: "Success",
-            data: organizer,
-          });
-        } else {
-          const organizer = await organizersModel.findAll({
-            where: {
-              isDeleted: false,
-              status: "Active",
-            },
-          });
-          res.status(200).json({
-            status: true,
-            message: "Success",
-            data: organizer,
-          });
-        }
-      } else {
-        res.status(200).json({
-          status: false,
-          message: "Organizer email id is missing in request payload",
-          data: [],
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching organizers:", error);
-      res.status(500).json({
-        status: false,
-        message: "Failed to fetch organizers",
-      });
-    }
-  },
-  //End
-
-  //Start: Method to delete organizer
-  async delete(req, res) {
-    const data = req.body.organizer;
+  //Start: Method to delete query
+  async deleteQuery(req, res) {
+    const data = req.body.query;
     try {
       const id = data.id;
-      const organizer = await organizersModel.findByPk(id);
-      if (!organizer) {
+      const query = await contactUsModel.findByPk(id);
+      if (!query) {
         return res
           .status(404)
-          .json({ status: false, message: "Organizer not found" });
+          .json({ status: false, message: "Query not found" });
       }
-      organizer.isDeleted = true;
-
-      await organizer.save();
-
-      const email = data.email;
-      const mobile = data.phone;
-      const user = await usersModel.findOne({
-        where: {
-          [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
-        },
-      });
-
-      user.isDeleted = true;
-      await user.save();
+      query.isDeleted = true;
+      await query.save();
       return res.status(200).send({
         status: true,
-        message: "Organizer deleted successfully",
+        message: "Query deleted successfully",
       });
     } catch (error) {
       console.error("Error updating organizer:", error);

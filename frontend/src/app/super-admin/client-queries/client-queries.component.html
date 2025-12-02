@@ -1,1 +1,66 @@
-<p>client-queries works!</p>
+<div class="card" *ngIf="isDefaultView">
+  <div class="card-header">
+    <h4>
+      Client Queries
+    </h4>
+  </div>
+  <div class="card-body">    
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="table-light">
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Subject</th>
+            <th>Message</th>
+            <th>Date</th>
+            <th style="width: 120px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let query of paginatedQueries">
+            <td>{{ query.name }}</td>
+            <td>{{ query.email }}</td>
+            <td>{{ query.subject }}</td>
+            <td>{{ query.message }}</td>
+            <td>{{ query.createdAt | date:'short' }}</td>
+            <td class="text-center">
+              <button
+                class="btn btn-sm btn-secondary"
+                (click)="confirmDelete(query)"
+              >
+                <i class="fa fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedQueries.length === 0">
+            <td colspan="5" class="text-center">No queries found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <!-- Pagination -->
+    <nav *ngIf="totalPages() > 1">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="currentPage = currentPage - 1"
+            >Previous</a
+          >
+        </li>
+        <li
+          class="page-item"
+          *ngFor="let page of [].constructor(totalPages()); let i = index"
+          [class.active]="currentPage === i + 1"
+        >
+          <a class="page-link" (click)="currentPage = i + 1">{{ i + 1 }}</a>
+        </li>
+        <li class="page-item" [class.disabled]="currentPage === totalPages()">
+          <a class="page-link" (click)="currentPage = currentPage + 1">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>

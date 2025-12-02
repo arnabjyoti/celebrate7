@@ -87,7 +87,7 @@ export class AllEventsComponent implements OnInit {
   }
   editEvent(event: any): void {
     // console.log('Edit Event:', event);
-    this.router.navigate([`/edit-event/${event.id}`]);
+    this.router.navigate([`/edit-event-sa/${event.id}`]);
   }
 
   deleteEvent(event: any): void {

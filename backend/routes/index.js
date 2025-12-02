@@ -52,4 +52,5 @@ module.exports = (app) => {
 	// Client contact-us API's
 	app.post('/api/save-client-query', ClientController.saveClientQuery);
 	app.post('/api/get-all-queries', ClientController.getAllQueries);
+	app.post('/api/delete-query', ClientController.deleteQuery);
 	};

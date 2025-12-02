@@ -1,0 +1,35 @@
+.filter-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.filter-section select,
+.filter-section input {
+  padding: 5px;
+}
+
+/* Reduce padding in table cells */
+.table td, 
+.table th {
+  padding: 0.4rem 0.6rem; /* default is around 0.75rem */
+  vertical-align: middle;
+}
+
+/* Smaller font size for compact look */
+.table {
+  font-size: 0.875rem; /* 14px */
+}
+
+/* Reduce button padding in action column */
+.table .btn {
+  padding: 0.15rem 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+/* Ensure icon buttons are vertically centered */
+.table .btn i {
+  vertical-align: middle;
+}
+
