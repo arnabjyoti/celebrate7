@@ -45,11 +45,11 @@ module.exports = (app) => {
 	app.post('/api/upsert-event-category', eventController.upsertEventCategory);
 	app.post('/api/delete-event-category', eventController.deleteEventCategory);
 
-
 	app.get('/api/getCounts', eventController.getCounts);
 	app.post('/api/getEventsByOrganizer', eventController.getEventsByOrganizer);
 	app.get('/api/init', eventController.init);
 
 	// Client contact-us API's
 	app.post('/api/save-client-query', ClientController.saveClientQuery);
+	app.post('/api/get-all-queries', ClientController.getAllQueries);
 	};

@@ -59,6 +59,7 @@ import { AdminProfileComponent } from './admin/admin-profile/admin-profile.compo
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
 import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { ClientQueriesComponent } from './super-admin/client-queries/client-queries.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -92,6 +93,7 @@ import { LoaderComponent } from './components/loader/loader.component';
     ContactUsComponent,
     EventsCategorywiseComponent,
     LoaderComponent,
+    ClientQueriesComponent,
   ],
   imports: [
     FormsModule,

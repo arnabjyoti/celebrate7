@@ -5,130 +5,53 @@ const Op = require("sequelize").Op;
 module.exports = {
   //Start: Method to register organizer
   async saveClientQuery(req, res) {
-    const requestObject = req.body.contactForm;
-    const newQuery = {
-      name: requestObject.name,
-      email: requestObject.email,
-      subject: requestObject.subject,
-      message: requestObject.message,
-      status: "Active",
-      isDeleted: false,
-    };
-    contactUsModel.create(newQuery).then((r) => {
-      return res.status(200).send({
+    try {
+      const requestObject = req.body.contactForm;
+      const newQuery = {
+        name: requestObject.name,
+        email: requestObject.email,
+        subject: requestObject.subject,
+        message: requestObject.message,
+        status: "Active",
+        isDeleted: false,
+      };
+      contactUsModel.create(newQuery).then((r) => {
+        return res.status(200).send({
           status: true,
           message: "Thank you for reaching out! We’ll get back to you soon.",
         });
-    });
-  },
-  //End
-
-  //Start: Method to add new or update organizer
-  async upsert(req, res) {
-    const organizer = req.body.organizer;
-    if (organizer?.id == 0) {
-      return usersModel
-        .findOne({
-          where: {
-            // status: "Active",
-            isDeleted: false,
-            [Op.or]: [{ email: organizer.email }, { mobile: organizer.phone }],
-          },
-        })
-        .then((organizerData) => {
-          if (organizerData) {
-            return res.status(200).send({
-              status: false,
-              message: `Organizer with the same phone or email is already exist.`,
-            });
-          } else {
-            organizersModel.create(organizer).then((r) => {
-              const newUser = {
-                mobile: organizer.phone,
-                email: organizer.email,
-                role: "admin",
-                otp: null,
-                otpExpiry: null,
-                refreshToken: null,
-                status: organizer.status,
-                isDeleted: false,
-              };
-              usersModel.create(newUser).then((user) => {
-                return res.status(200).send({
-                  status: true,
-                  message: "New organizer added successfully",
-                });
-              });
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(500).send({ status: false, message: error });
-        });
-    } else {
-      const { id, name, email, phone, location, status } = organizer;
-      const [updated] = await organizersModel.update(
-        { name, email, phone, location, status },
-        { where: { id } }
-      );
-      if (updated) {
-        const email = organizer.email;
-        const mobile = organizer.phone;
-        const status = organizer.status;
-        const user = await usersModel.findOne({
-          where: {
-            [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
-          },
-        });
-        user.email = email;
-        user.mobile = mobile;
-        user.status = status;
-        await user.save();
-        const updatedOrganizer = await organizersModel.findByPk(id);
-        return res.json({
-          status: true,
-          message: "Organizer record updated successfully",
-          category: updatedOrganizer,
-        });
-      }
+      });
+    } catch (error) {
+      console.error("Error saving query:", error);
+      res.status(500).json({
+        status: false,
+        message: "Failed to save client's query",
+      });
     }
   },
   //End
 
-  //Start: Method to view organizers
-  async view(req, res) {
+  //Start: Method to get all queries
+  async getAllQueries(req, res) {
     try {
       const requestObject = req.body.requestObject;
       const page = requestObject?.currentPage;
       const limit = requestObject?.pageSize;
       const search = requestObject?.searchText;
-      const location = requestObject?.location;
-      const status = requestObject?.status;
 
       const offset = (page - 1) * limit;
       let whereClause = { isDeleted: false };
 
-      // Search in name/email/phone
+      // Search in name/email
       if (search) {
         whereClause[Op.or] = [
           { name: { [Op.like]: `%${search}%` } },
-          { email: { [Op.like]: `%${search}%` } },
-          { phone: { [Op.like]: `%${search}%` } },
+          { email: { [Op.like]: `%${search}%` } }
         ];
       }
 
-      // Filter by status if provided
-      if (location) {
-        whereClause.location = location;
-      }
-
-      if (status) {
-        whereClause.status = status;
-      }
-
       // Fetch paginated data
-      const { count, rows } = await organizersModel.findAndCountAll({
+      const { count, rows } = await contactUsModel.findAndCountAll({
         where: whereClause,
         offset: parseInt(offset),
         limit: parseInt(limit),

@@ -27,6 +27,8 @@ import { LocationDetailComponent } from './location-detail/location-detail.compo
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
 import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
+import { ClientQueriesComponent } from './super-admin/client-queries/client-queries.component';
+
 const routes: Routes = [
   {
     path: '',
@@ -67,6 +69,12 @@ const routes: Routes = [
       {
         path: 'all-events',
         component: AllEventsComponent,
+        canActivate: [RoleGuard],
+        data: { expectedRole: 'sa' },
+      },
+      {
+        path: 'all-queries',
+        component: ClientQueriesComponent,
         canActivate: [RoleGuard],
         data: { expectedRole: 'sa' },
       },

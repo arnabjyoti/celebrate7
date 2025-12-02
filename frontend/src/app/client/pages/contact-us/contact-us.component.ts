@@ -10,7 +10,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./contact-us.component.css'],
 })
 export class ContactUsComponent {
-  contactForm: FormGroup;
+contactForm: FormGroup;
+loader: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +28,7 @@ export class ContactUsComponent {
 
   onSubmit() {
     if (this.contactForm.valid) {
+      this.loader = true;
       this.contactUsService.saveClientQuery(this.contactForm.value).subscribe({
         next: (response: any) => {
           if (response.status) {
@@ -44,12 +46,15 @@ export class ContactUsComponent {
               }
               this.contactForm.reset();
             });
+            this.loader = false;
           } else {
             this.toastr.error(response.message, 'Error Message');
+            this.loader = false;
           }
         },
         error: (err: any) => {
           this.toastr.error(err, 'Error Message');
+          this.loader = false;
         },
       });
     }
