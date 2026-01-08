@@ -145,7 +145,7 @@ export class EventsCategorywiseComponent implements OnInit {
           runtime: item?.eventTime,
           city: item?.city,
           organizer: item?.organizerDetails?.organizer_name,
-          poster: this.env + '/' + item?.images[0].path,
+          poster: this.env + '/' + item?.images[0]?.path,
         };
         this.events.push(obj);
       });

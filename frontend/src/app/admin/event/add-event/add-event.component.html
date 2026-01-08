@@ -395,7 +395,7 @@
               </button>
 
               <button
-                *ngIf="routeName !== 'edit-event'"
+                *ngIf="(routeName !== 'edit-event' && routeName !== 'edit-event-sa')"
                 class="btn btn-success mt-3"
                 type="submit"
                 (click)="onSubmit()"
@@ -408,7 +408,7 @@
               <!-- [disabled]="!eventForm.form.valid" -->
               <button
                 class="btn btn-success mt-3"
-                *ngIf="routeName === 'edit-event'"
+                *ngIf="routeName === 'edit-event' || routeName === 'edit-event-sa'"
                 (click)="handleUpdate()"
               >
                 Update event

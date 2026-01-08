@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "celebrate7info@gmail.com",
-    pass: "xboz vhrp lpsm sewi",
+    pass: "xboz vhrp lpsm sewi",   // Celebrate7@7
   },
 });
 
@@ -166,7 +166,7 @@ module.exports = {
             res.json({
               status: true,
               message: "OTP sent to your registerd email id",
-              // otp: otp,
+              otp: otp,
             });
           }
         });

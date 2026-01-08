@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { environment } from 'src/environments/environment';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add-event',
@@ -358,23 +359,23 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   handleUpdate() {
-    // this.onUpdate();
-    console.log('draft ', this.event.status);
     if (this.event.status === 'draft' || this.payload.role === 'sa') {
       this.onUpdate();
       return;
-    }
-
-    if (
-      confirm(
-        'Are you sure you want to update it? This will change the status to draft'
-      )
-    ) {
-      // User confirmed, proceed with deletion logic
-      this.onUpdate();
     } else {
-      // User cancelled, do nothing or display a message
-      console.log('Event deletion cancelled.');
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Event updation will require re-activation of the event by Team Celebrate7.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.onUpdate();
+        }
+      });
     }
   }
 
