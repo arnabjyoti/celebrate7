@@ -38,8 +38,8 @@
           <div class="card custom-card shadow-sm border-0">
             <div class="image-container">
               <img [src]="env + '/' + event.images[0]?.path" class="card-img-top" alt="{{ event.eventName }}" />
-              <button class="favorite-btn">
-                <i class="far fa-heart"></i>
+              <button (click)="shareUrl(event)" class="favorite-btn">
+                  <i class="fas fa-share-square"></i>
               </button>
             </div>
             <div class="card-body">

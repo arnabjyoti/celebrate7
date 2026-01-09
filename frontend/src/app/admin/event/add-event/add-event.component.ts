@@ -303,7 +303,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
-        this.toastr.success('Ticket added successfully');
+        // this.toastr.success('Ticket added successfully');
       },
       (error) => {
         console.error('Submission error:', error);

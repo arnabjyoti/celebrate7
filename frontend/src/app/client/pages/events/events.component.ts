@@ -143,7 +143,7 @@ export class EventsComponent {
         error: (err) => {
           this.loader = false;
           console.error('❌ Error fetching events:', err);
-        }
+        },
       });
   }
 
@@ -302,5 +302,35 @@ export class EventsComponent {
           this.eventCategories = [];
         }
       });
+  }
+
+  shareUrl(event:any) {
+    event
+    const shareData = {
+      title: event.eventName,
+      text: event?.city+','+event.state,
+      url: 'https://celebrate7.com/event/'+event.id,
+    };
+
+    if (navigator.share) {
+      navigator
+        .share(shareData)
+        .then(() => console.log('Shared successfully'))
+        .catch((err) => console.error('Share failed', err));
+    } else {
+      this.fallbackShare(shareData.url);
+    }
+  }
+
+  fallbackShare(url: string) {
+    const encodedUrl = encodeURIComponent(url);
+    const text = encodeURIComponent('Check this out!');
+    const links = {
+      whatsapp: `https://wa.me/?text=${text}%20${encodedUrl}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      twitter: `https://twitter.com/intent/tweet?text=${text}&url=${encodedUrl}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+    };
+    window.open(links.whatsapp, '_blank');
   }
 }

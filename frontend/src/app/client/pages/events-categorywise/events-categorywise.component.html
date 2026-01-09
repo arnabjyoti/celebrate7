@@ -12,7 +12,7 @@
           f.bg +
           ')'
         "
-      >
+      >      
         <div cclass="info" style="float: right;padding-left: 20px;padding-right: 20px;">
           <h1 style="font-weight: bold;color:aliceblue">{{ f.title }}</h1>
           <p style="font-weight: bold;font-size: 1.2em;">{{ f.tagline }}</p>
@@ -36,6 +36,9 @@
       <article class="card event-card" *ngFor="let m of events">
         <div class="image-container">
           <img [src]="m.poster" class="card-img-top" alt="{{ m.title }}" />
+          <button (click)="shareUrl(m)" class="favorite-btn">
+                  <i class="fas fa-share-square"></i>
+      </button>
         </div>
         <div class="meta">
           <div class="title-row">
