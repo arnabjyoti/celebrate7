@@ -71,7 +71,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     .search-bar button{border:0;padding:8px 12px;border-radius:8px;background:#111827;color:#fff;cursor:pointer}
 
     /* Hero Carousel */
-    .hero{margin-top:18px;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 10px 30px rgba(2,6,23,.06)}
+    .hero{margin-top:18px;border-radius:12px;overflow:hidden;position:relative;box-shadow:0 0px 0px rgba(2,6,23,.06)}
     .slides{display:flex;transition:transform .5s ease}
     .slide{min-width:100%;display:flex;align-items:center;gap:24px;padding:28px;background-size:cover;background-position:center}
     .slide .info{max-width:50%;background:rgba(255,255,255,.85);padding:18px;border-radius:10px}

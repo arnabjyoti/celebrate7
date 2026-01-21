@@ -1,7 +1,7 @@
 <app-loader [show]="loader"></app-loader>
 
 <div class="pt-4" style="background: rgb(242, 245, 249)">
-  <div class="container">
+  <div class="container booking-page">
     <!-- HERO: Gallery (left) + Booking panel (right) -->
     <section class="hero" role="region" aria-label="Event hero">
       <div class="gallery-col card custom-card shadow-sm bg-white border-0 p-0">
@@ -25,10 +25,7 @@
         </div>
       </div>
 
-      <aside
-        class="booking-col card custom-card shadow-sm bg-white border-0"
-        aria-label="Booking panel"
-      >
+      <aside class="booking-col card custom-card shadow-sm bg-white border-0 sticky-booking">
         <div class="booking-panel">
           <h2 class="title">{{ event.eventName }}</h2>
           <div class="location">{{ event.city }} • {{ event.fullAddress }}</div>
