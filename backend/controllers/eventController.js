@@ -564,13 +564,23 @@ module.exports = {
       // After handling all date filters (fromDate/toDate, today/tomorrow/thisweekend)
       today.setHours(0, 0, 0, 0); // start of today
 
+      // console.log("today==========1>", new Date().toISOString().split('T')[0]);
+
       // Apply default "today onward" filter if no date filters provided
       if (!search.date && !search.fromDate && !search.toDate) {
         whereClause[Op.and] = whereClause[Op.and] || [];
-        whereClause[Op.and].push({
-          eventToDate: { [Op.gte]: today }, // events ending today or later
-        });
+        if (requestType && requestType == "Public") {
+          whereClause[Op.and].push({
+            eventToDate: { [Op.gte]: new Date().toISOString().split("T")[0] }, // events ending today or later
+          });
+        }
+        // whereClause[Op.and].push({
+        //   eventToDate: { [Op.gte]: new Date().toISOString().split('T')[0] }, // events ending today or later
+        // });
       }
+
+      console.log("search ===>> ", search);
+      console.log("requestType ==>", requestType);
 
       if (requestType && requestType == "Public") {
         whereClause[Op.and].push(
@@ -1032,53 +1042,61 @@ module.exports = {
 
   async init(req, res) {
     try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       const rows = await eventModel.findAll({
-        where: { isDeleted: false },
-        attributes: ['country', 'state', 'city'],
-        raw: true
+        where: {
+          isDeleted: false,
+          eventToDate: {
+            [Op.gte]: today,
+          },
+        },
+        attributes: ["country", "state", "city"],
+        raw: true,
       });
-      
+
       const allCountries = new Set();
       const structure = {}; // { country: { state: Set(cities) } }
-      
-      rows.forEach(row => {
+
+      rows.forEach((row) => {
         const { country, state, city } = row;
-      
+
         if (!country) return;
-      
+
         // Add country
         allCountries.add(country);
-      
+
         // Initialize country in structure
         if (!structure[country]) {
           structure[country] = {};
         }
-      
+
         // Add state
         if (state) {
           if (!structure[country][state]) {
             structure[country][state] = new Set();
           }
         }
-      
+
         // Add city
         if (city && state) {
           structure[country][state].add(city);
         }
       });
-      
+
       // Format final output
-      const countries = [...allCountries].map(c => ({ name: c }));
-      
+      const countries = [...allCountries].map((c) => ({ name: c }));
+
       const finalData = {};
-      
-      Object.keys(structure).forEach(country => {
+
+      Object.keys(structure).forEach((country) => {
         finalData[country] = [];
-      
-        Object.keys(structure[country]).forEach(state => {
+
+        Object.keys(structure[country]).forEach((state) => {
           finalData[country].push({
             name: state,
-            cities: [...structure[country][state]]
+            cities: [...structure[country][state]],
           });
         });
       });

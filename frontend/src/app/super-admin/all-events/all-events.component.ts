@@ -35,6 +35,7 @@ export class AllEventsComponent implements OnInit {
     searchByDate: '',
     // search : ''
   }
+  todayDate = new Date().toISOString().split('T')[0];
 
   onSearchChange(event: any) {
     console.log(event.target.value);

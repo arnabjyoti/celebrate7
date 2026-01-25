@@ -302,7 +302,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
-        this.toastr.success('Ticket added successfully');
+        // this.toastr.success('Ticket added successfully');
       },
       (error) => {
         console.error('Submission error:', error);
@@ -326,7 +326,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
     this.http.post(ENDPOINT, imgData).subscribe(
       (res: any) => {
-        console.log('Image upload response:', res);
+        // console.log('Image upload response:', res);
       },
       (err) => {
         console.error('Upload failed:', err);
