@@ -1,0 +1,29 @@
+<div class="not-found-wrapper">
+    <div class="card">
+      
+      <!-- Illustration -->
+      <div class="illustration">
+        <svg viewBox="0 0 500 300">
+          <circle cx="250" cy="150" r="120" fill="#eef2ff"/>
+          <rect x="190" y="100" width="120" height="80" rx="12" fill="#667eea"/>
+          <line x1="210" y1="130" x2="290" y2="130" stroke="white" stroke-width="4"/>
+          <line x1="210" y1="150" x2="260" y2="150" stroke="white" stroke-width="4"/>
+          <text x="250" y="220" text-anchor="middle" font-size="20" fill="#999">
+            Event Missing
+          </text>
+        </svg>
+      </div>
+  
+      <!-- Content -->
+      <h1>Event Not Found</h1>
+      <p>
+        The event you're looking for may have expired or doesn’t exist anymore.
+      </p>
+  
+      <div class="actions">
+        <button class="primary" (click)="browseEvents()">Browse Events</button>
+        <button class="secondary" (click)="goHome()">Go Home</button>
+      </div>
+  
+    </div>
+  </div>

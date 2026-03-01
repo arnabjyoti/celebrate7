@@ -60,6 +60,7 @@ import { ContactUsComponent } from './client/pages/contact-us/contact-us.compone
 import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { ClientQueriesComponent } from './super-admin/client-queries/client-queries.component';
+import { EventNotFoundComponent } from './event-not-found/event-not-found.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -94,6 +95,7 @@ import { ClientQueriesComponent } from './super-admin/client-queries/client-quer
     EventsCategorywiseComponent,
     LoaderComponent,
     ClientQueriesComponent,
+    EventNotFoundComponent,
   ],
   imports: [
     FormsModule,

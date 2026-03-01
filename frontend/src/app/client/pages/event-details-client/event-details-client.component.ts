@@ -63,6 +63,8 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
   category: any = {};
   loader: boolean = false;
 
+  notFound: boolean = false;
+
   // ngOnInit() {
   //   this.selectedTier = this.event.pricing?.[0] ?? null;
   // }
@@ -166,6 +168,7 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
         this.loader = false;
         console.log('Success');
         console.log('response here ', response);
+        this.notFound = false;
 
         (response.event.reviews = [
           { user: 'Rupon', rating: 5, comment: 'Nice to be here on this event', date: new Date() },
@@ -195,6 +198,7 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
       (error) => {
         this.loader = false;
         console.log('error ', error);
+        this.notFound = true;
         // return callback && callback(error);
       },
       () => {
