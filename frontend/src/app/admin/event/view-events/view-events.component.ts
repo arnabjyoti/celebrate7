@@ -37,7 +37,7 @@ export class ViewEventsComponent implements OnInit {
   }
 
   loader : boolean = false;
-
+  todayDate = new Date().toISOString().split('T')[0];
   onSearchChange(event: any) {
     console.log(event.target.value);
     console.log(event.target.name);

@@ -28,6 +28,8 @@ import { AdminProfileComponent } from './admin/admin-profile/admin-profile.compo
 import { ContactUsComponent } from './client/pages/contact-us/contact-us.component';
 import { EventsCategorywiseComponent } from './client/pages/events-categorywise/events-categorywise.component';
 import { ClientQueriesComponent } from './super-admin/client-queries/client-queries.component';
+import { EventNotFoundComponent } from './event-not-found/event-not-found.component';
+
 
 const routes: Routes = [
   {
@@ -41,7 +43,8 @@ const routes: Routes = [
       { path: 'events', component: EventsComponent },
       { path: 'contactUs', component: ContactUsComponent },
       { path: 'event/:id', component: EventDetailsClientComponent },
-      { path: 'events-by-category/:categoryName', component: EventsCategorywiseComponent }
+      { path: 'events-by-category/:categoryName', component: EventsCategorywiseComponent },
+      { path: 'event-not-found', component: EventNotFoundComponent },
     ],
   },
   {

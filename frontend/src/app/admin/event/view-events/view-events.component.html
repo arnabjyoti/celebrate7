@@ -74,7 +74,7 @@
           <td>{{ event?.eventToDate }}</td>
           <td>{{ event?.fullAddress }}</td>
           <td>{{ event?.createdAt | date: 'yyyy-MM-dd'}}</td>
-          <td>
+          <!-- <td>
             <span
               class="badge rounded-pill"
               [ngClass]="{
@@ -84,7 +84,29 @@
             >
               <span style="color:aliceblue">{{ event.status === "draft" ? "Draft" : "Active" }}</span>
             </span>
+          </td> -->
+
+          <td>
+            <span
+              class="badge rounded-pill"
+              [ngClass]="{
+                'bg-secondary': event.status === 'draft',
+                'bg-success': event.status === 'active',
+                'bg-danger': todayDate > event.eventToDate
+              }"
+            >
+              <!-- <span style="color: aliceblue;">{{ event.status === "draft" ? "Draft" : "Active" }}</span> -->
+              <span style="color: aliceblue;">
+                {{
+                  todayDate > event.eventToDate
+                        ? "Expired"
+                        : (event.status === "draft" ? "Draft" : "Active")
+                }}
+            </span>
+            </span>
           </td>
+
+          
           <td class="text-center">
             <div class="dropdown">
               <button

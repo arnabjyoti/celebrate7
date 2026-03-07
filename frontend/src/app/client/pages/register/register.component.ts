@@ -35,7 +35,13 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.AllData = data.getAll();
     this.Countries = data.getCountries();
-    console.log('AllData==', this.AllData);
+    // console.log('AllData==', this.AllData);
+
+    this.Countries = data.getCountries().sort(
+      (a, b) => String(a['name'] ?? '').localeCompare(String(b['name'] ?? ''))
+    );
+
+
   }
 
   onChangeCountry = () => {

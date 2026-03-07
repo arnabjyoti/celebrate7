@@ -564,13 +564,23 @@ module.exports = {
       // After handling all date filters (fromDate/toDate, today/tomorrow/thisweekend)
       today.setHours(0, 0, 0, 0); // start of today
 
+      // console.log("today==========1>", new Date().toISOString().split('T')[0]);
+
       // Apply default "today onward" filter if no date filters provided
       if (!search.date && !search.fromDate && !search.toDate) {
         whereClause[Op.and] = whereClause[Op.and] || [];
-        whereClause[Op.and].push({
-          eventToDate: { [Op.gte]: today }, // events ending today or later
-        });
+        if (requestType && requestType == "Public") {
+          whereClause[Op.and].push({
+            eventToDate: { [Op.gte]: new Date().toISOString().split("T")[0] }, // events ending today or later
+          });
+        }
+        // whereClause[Op.and].push({
+        //   eventToDate: { [Op.gte]: new Date().toISOString().split('T')[0] }, // events ending today or later
+        // });
       }
+
+      console.log("search ===>> ", search);
+      console.log("requestType ==>", requestType);
 
       if (requestType && requestType == "Public") {
         whereClause[Op.and].push(
@@ -696,12 +706,28 @@ module.exports = {
                   message: "No event found",
                 };
                 if (organizer?.status && organizer?.data?.id) {
-                  const search = req.body.filters || {};
+                  const search = req.body.search || {};
                   const orConditions = [];
+                  console.log("search ===>> ", search);
 
                   if (search.state) {
                     orConditions.push({
                       state: { [Op.like]: `%${search.state}%` },
+                    });
+                  }
+                  if (search.searchByCity) {
+                    orConditions.push({
+                      city: { [Op.like]: `%${search.searchByCity}%` },
+                    });
+                  }
+                  if (search.searchByEventName) {
+                    orConditions.push({
+                      eventName: { [Op.like]: `%${search.searchByEventName}%` },
+                    });
+                  }
+                  if (search.searchByDate) {
+                    orConditions.push({
+                      eventFromDate: { [Op.like]: `%${search.searchByDate}%` },
                     });
                   }
 
@@ -807,56 +833,120 @@ module.exports = {
   },
 
   async getEventDetails(req, res) {
-    console.log("req.params.id", req.query.id);
-    let query = {
-      raw: true,
-      order: [["id", "DESC"]],
-      where: {
-        id: req.query.id,
-      },
-    };
+    try {
+      console.log("req.params.id", req.query.id);
 
-    const event = await eventModel.findOne(query);
-    const eventImages = await eventImageModel.findAll({
-      where: {
-        eventId: req.query.id,
-      },
-    });
-    const ticket_details = await ticketModel.findAll({
-      where: {
-        eventId: req.query.id,
-      },
-    });
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // remove time part
 
-    const organizer = await organizersModel.findOne({
-      where: {
-        id: event?.organizer,
-      },
-    });
+      let query = {
+        raw: true,
+        order: [["id", "DESC"]],
+        where: {
+          id: req.query.id,
+          eventToDate: {
+            [Op.gte]: today, // eventToDate >= today
+          },
+        },
+      };
 
-    const category = await eventCategoriesModel.findOne({
-      where: {
-        id: event?.type,
-      },
-    });
+      const event = await eventModel.findOne(query);
 
-    console.log("event organizer ", event.organizer);
-    console.log("event type ", event.type);
+      // If no event found
+      if (!event) {
+        return res.status(404).send({
+          message: "Event expired or no data found",
+        });
+      }
 
-    return res
-      .status(200)
-      .send({ event, eventImages, ticket_details, organizer, category });
+      // console.log("event==>", event);
+
+      const eventImages = await eventImageModel.findAll({
+        where: { eventId: req.query.id },
+      });
+
+      const ticket_details = await ticketModel.findAll({
+        where: { eventId: req.query.id },
+      });
+
+      const organizer = await organizersModel.findOne({
+        where: { id: event.organizer },
+      });
+
+      const category = await eventCategoriesModel.findOne({
+        where: { id: event.type },
+      });
+
+      console.log("event organizer ", event.organizer);
+      console.log("event type ", event.type);
+
+      return res.status(200).send({
+        event,
+        eventImages,
+        ticket_details,
+        organizer,
+        category,
+      });
+    } catch (error) {
+      console.error("Error fetching event details:", error);
+      return res.status(500).send({
+        message: "Internal server error",
+      });
+    }
   },
+
+  // async getEventDetails(req, res) {
+  //   console.log("req.params.id", req.query.id);
+  //   let query = {
+  //     raw: true,
+  //     order: [["id", "DESC"]],
+  //     where: {
+  //       id: req.query.id,
+  //     },
+  //   };
+
+  //   const event = await eventModel.findOne(query);
+  //   console.log("event==>", event);
+  //   const eventImages = await eventImageModel.findAll({
+  //     where: {
+  //       eventId: req.query.id,
+  //     },
+  //   });
+  //   const ticket_details = await ticketModel.findAll({
+  //     where: {
+  //       eventId: req.query.id,
+  //     },
+  //   });
+
+  //   const organizer = await organizersModel.findOne({
+  //     where: {
+  //       id: event?.organizer,
+  //     },
+  //   });
+
+  //   const category = await eventCategoriesModel.findOne({
+  //     where: {
+  //       id: event?.type,
+  //     },
+  //   });
+
+  //   console.log("event organizer ", event?.organizer);
+  //   console.log("event type ", event?.type);
+
+  //   return res
+  //     .status(200)
+  //     .send({ event, eventImages, ticket_details, organizer, category });
+  // },
 
   async updateEvent(req, res) {
     try {
       const eventData = req.body.data;
 
-      if (!eventData || !eventData.id) {
+      if (!eventData || !eventData?.id) {
         return res.status(400).send({ message: "Missing event ID or data" });
       }
 
-      const eventId = eventData.id;
+      const eventId = eventData?.id;
 
       // Check if the event exists
       const existingEvent = await eventModel.findByPk(eventId);
@@ -1032,53 +1122,61 @@ module.exports = {
 
   async init(req, res) {
     try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
       const rows = await eventModel.findAll({
-        where: { isDeleted: false },
-        attributes: ['country', 'state', 'city'],
-        raw: true
+        where: {
+          isDeleted: false,
+          eventToDate: {
+            [Op.gte]: today,
+          },
+        },
+        attributes: ["country", "state", "city"],
+        raw: true,
       });
-      
+
       const allCountries = new Set();
       const structure = {}; // { country: { state: Set(cities) } }
-      
-      rows.forEach(row => {
+
+      rows.forEach((row) => {
         const { country, state, city } = row;
-      
+
         if (!country) return;
-      
+
         // Add country
         allCountries.add(country);
-      
+
         // Initialize country in structure
         if (!structure[country]) {
           structure[country] = {};
         }
-      
+
         // Add state
         if (state) {
           if (!structure[country][state]) {
             structure[country][state] = new Set();
           }
         }
-      
+
         // Add city
         if (city && state) {
           structure[country][state].add(city);
         }
       });
-      
+
       // Format final output
-      const countries = [...allCountries].map(c => ({ name: c }));
-      
+      const countries = [...allCountries].map((c) => ({ name: c }));
+
       const finalData = {};
-      
-      Object.keys(structure).forEach(country => {
+
+      Object.keys(structure).forEach((country) => {
         finalData[country] = [];
-      
-        Object.keys(structure[country]).forEach(state => {
+
+        Object.keys(structure[country]).forEach((state) => {
           finalData[country].push({
             name: state,
-            cities: [...structure[country][state]]
+            cities: [...structure[country][state]],
           });
         });
       });

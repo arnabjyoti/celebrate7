@@ -47,7 +47,7 @@ module.exports = {
         if (o) {
           return res.status(200).send({
             status: false,
-            message: `Organizer with the same email is already exist.`,
+            message: `Organiser with the same email already exists`,
           });
         } else {
           const newOrganizer = {
@@ -96,16 +96,15 @@ module.exports = {
       return usersModel
         .findOne({
           where: {
-            // status: "Active",
             isDeleted: false,
-            [Op.or]: [{ email: organizer.email }, { mobile: organizer.phone }],
+            [Op.or]: [{ email: organizer.email }]
           },
         })
         .then((organizerData) => {
           if (organizerData) {
             return res.status(200).send({
               status: false,
-              message: `Organizer with the same phone or email is already exist.`,
+              message: `Organiser with the same email already exist.`,
             });
           } else {
             organizersModel.create(organizer).then((r) => {
@@ -263,7 +262,7 @@ module.exports = {
       console.error("Error fetching organizers:", error);
       res.status(500).json({
         status: false,
-        message: "Failed to fetch organizers",
+        message: "Failed to fetch organisers",
       });
     }
   },
@@ -278,7 +277,7 @@ module.exports = {
       if (!organizer) {
         return res
           .status(404)
-          .json({ status: false, message: "Organizer not found" });
+          .json({ status: false, message: "Organiser not found" });
       }
       organizer.isDeleted = true;
 
@@ -288,7 +287,8 @@ module.exports = {
       const mobile = data.phone;
       const user = await usersModel.findOne({
         where: {
-          [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
+          // [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
+          email:email
         },
       });
 
@@ -296,7 +296,7 @@ module.exports = {
       await user.save();
       return res.status(200).send({
         status: true,
-        message: "Organizer deleted successfully",
+        message: "Organiser deleted successfully",
       });
     } catch (error) {
       console.error("Error updating organizer:", error);

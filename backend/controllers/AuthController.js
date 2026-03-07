@@ -91,7 +91,7 @@ module.exports = {
       return res.status(200).json({
         status: false,
         message:
-          "Can not send OTP as the provided email id is not registered with us",
+          "Cannot send OTP as the provided email id not registered with us",
         otp: "",
       });
     } else {
@@ -99,14 +99,14 @@ module.exports = {
         return res.status(200).json({
           status: false,
           message:
-            "Can not send OTP as your account has been deactivated. Kindly contact with admin",
+            "Cannot send OTP as your account has been deactivated. Kindly contact admin",
           otp: "",
         });
       } else if (user?.isDeleted) {
         return res.status(200).json({
           status: false,
           message:
-            "Can not send OTP as your account has been deleted. Kindly contact with admin",
+            "Cannot send OTP as your account has been deleted. Kindly contact admin",
           otp: "",
         });
       } else {
@@ -146,7 +146,7 @@ module.exports = {
             `;
         // Email options
         const mailOptions = {
-          from: '"Celebrate7" <mithuzaman2020@gmail.com>',
+          from: '"Celebrate7" <celebrate7info@gmail.com>',
           to: email,
           subject: "Celebrate7 - Your login verification code",
           text: "2FA code",
@@ -240,7 +240,6 @@ module.exports = {
         } else {
           userData = userData.get();
           userObject.usr = userData;
-          console.log("llllllllllllllllllllll", userData);
 
           // Since rolePrivilegeModel and privilegeModel are removed,
           // directly respond with the user data.

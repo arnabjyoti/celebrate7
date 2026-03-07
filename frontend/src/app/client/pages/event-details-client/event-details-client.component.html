@@ -1,6 +1,6 @@
 <app-loader [show]="loader"></app-loader>
 
-<div class="pt-4" style="background: rgb(242, 245, 249)">
+<div class="pt-4" style="background: rgb(242, 245, 249)" *ngIf="!notFound">
   <div class="container">
     <!-- HERO: Gallery (left) + Booking panel (right) -->
     <section class="hero" role="region" aria-label="Event hero">
@@ -162,7 +162,7 @@
           <div>
             <h4>category</h4>
             <div>
-              {{category.categoryName}}
+              {{ category.categoryName }}
             </div>
           </div>
 
@@ -202,27 +202,21 @@
       </div>
 
       <aside class="main-right" aria-label="Right side panels">
-
-        <div class="policies-panel card custom-card shadow-sm bg-white border-0">
-          <h4>Organized by: </h4>
-          <br>
+        <div
+          class="policies-panel card custom-card shadow-sm bg-white border-0"
+        >
+          <h4>Organized by:</h4>
+          <br />
           <div>
             <b>{{ organizer.organizer_name }}</b>
           </div>
           <div>
             <div>Contact:</div>
 
-            <div>
-              <i class="bi bi-people"></i> {{ organizer.contact_name }}
-            </div>
+            <div><i class="bi bi-people"></i> {{ organizer.contact_name }}</div>
 
-            <div>
-              <i class="bi bi-telephone"></i> {{ organizer.phone }}
-            </div>
-            <div>
-              <i class="bi bi-envelope"></i> {{ organizer.email }}
-            </div>
-            
+            <div><i class="bi bi-telephone"></i> {{ organizer.phone }}</div>
+            <div><i class="bi bi-envelope"></i> {{ organizer.email }}</div>
           </div>
         </div>
         <!-- ******************** -->
@@ -283,4 +277,8 @@
       />
     </div>
   </div>
+</div>
+
+<div *ngIf="notFound">
+  <app-event-not-found></app-event-not-found>
 </div>

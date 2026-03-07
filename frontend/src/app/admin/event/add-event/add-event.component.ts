@@ -327,7 +327,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
 
     this.http.post(ENDPOINT, imgData).subscribe(
       (res: any) => {
-        console.log('Image upload response:', res);
+        // console.log('Image upload response:', res);
       },
       (err) => {
         console.error('Upload failed:', err);
