@@ -11,10 +11,10 @@ module.exports = {
     try {
       const requestObject = req.body.requestObject;
       const email = requestObject?.email;
-      let whereClause = { isDeleted: false, email: email, status:'Active' };
+      let whereClause = { isDeleted: false, email: email, status: "Active" };
 
       const record = await organizersModel.findOne({
-        where: whereClause
+        where: whereClause,
       });
 
       res.status(200).json({
@@ -27,7 +27,7 @@ module.exports = {
       res.status(500).json({
         status: false,
         message: "Failed to fetch organizers",
-        data: null
+        data: null,
       });
     }
   },
@@ -239,18 +239,18 @@ module.exports = {
             message: "Success",
             data: organizer,
           });
-        }else{
+        } else {
           const organizer = await organizersModel.findAll({
-          where: { 
-            isDeleted: false,
-            status: 'Active'
-          },
-        });
-        res.status(200).json({
-        status: true,
-        message: "Success",
-        data: organizer
-      });
+            where: {
+              isDeleted: false,
+              status: "Active",
+            },
+          });
+          res.status(200).json({
+            status: true,
+            message: "Success",
+            data: organizer,
+          });
         }
       } else {
         res.status(200).json({
@@ -286,18 +286,40 @@ module.exports = {
 
       const email = data.email;
       const mobile = data.phone;
-      const user = await usersModel.findOne({
-        where: {
-          [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
-        },
-      });
 
-      user.isDeleted = true;
-      await user.save();
+      console.log("email", email);
+      console.log("mobile", mobile);
+
+      await usersModel.update(
+        { isDeleted: true },
+        {
+          where: {
+            [Op.or]: [
+              email ? { email } : null,
+              mobile ? { mobile } : null,
+            ].filter(Boolean), // removes null values
+          },
+        }
+      );
+
       return res.status(200).send({
         status: true,
-        message: "Organizer deleted successfully",
+        message: "Organizers deleted successfully",
       });
+
+      // const user = await usersModel.findOne({
+      //   where: {
+      //     // [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
+      //     [Op.or]: [email ? { email } : {}],
+      //   },
+      // });
+
+      // user.isDeleted = true;
+      // await user.save();
+      // return res.status(200).send({
+      //   status: true,
+      //   message: "Organizer deleted successfully",
+      // });
     } catch (error) {
       console.error("Error updating organizer:", error);
       return res.status(500).send({ status: false, message: error });

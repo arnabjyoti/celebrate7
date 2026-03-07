@@ -161,7 +161,7 @@ export class EventDetailsClientComponent implements OnInit, OnChanges {
 
   getEventDetails(id: any) {
     this.loader = true;
-    const ENDPOINT = `${environment.BASE_URL}/api/getEventDetails?id=${id}`;
+    const ENDPOINT = `${environment.BASE_URL}/api/getEventDetails?id=${id}&view=public`;
 
     this.http.get(ENDPOINT).subscribe(
       (response: any) => {

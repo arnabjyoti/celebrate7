@@ -1,23 +1,29 @@
-import { Component, OnInit, ViewChild  } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-all-events',
   templateUrl: './all-events.component.html',
-  styleUrls: ['./all-events.component.css']
+  styleUrls: ['./all-events.component.css'],
 })
-
 export class AllEventsComponent implements OnInit {
-  displayedColumns: string[] = ['eventName', 'organizer', 'eventDate', 'city', 'status', 'actions'];
-  dataSource:any = [];
+  displayedColumns: string[] = [
+    'eventName',
+    'organizer',
+    'eventDate',
+    'city',
+    'status',
+    'actions',
+  ];
+  dataSource: any = [];
 
-
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService,) {}
 
   ngOnInit(): void {
     this.fetchEvents();
@@ -27,29 +33,29 @@ export class AllEventsComponent implements OnInit {
   totalPages: number = 0;
   currentPage: number = 1;
   perPage: number = 16;
-  search : any;
-  manageSearch : any = {
-    searchByEventName : '',
-    searchByOrganizer : '',
-    searchByCity : '',
+  search: any;
+  manageSearch: any = {
+    searchByEventName: '',
+    searchByOrganizer: '',
+    searchByCity: '',
     searchByDate: '',
     // search : ''
-  }
+  };
   todayDate = new Date().toISOString().split('T')[0];
 
   onSearchChange(event: any) {
     console.log(event.target.value);
     console.log(event.target.name);
-    if(event.target.name == 'searchByEventName') {
+    if (event.target.name == 'searchByEventName') {
       this.manageSearch.searchByEventName = event.target.value;
     }
-    if(event.target.name == 'searchByOrganizer') {
+    if (event.target.name == 'searchByOrganizer') {
       this.manageSearch.searchByOrganizer = event.target.value;
     }
-    if(event.target.name == 'searchByCity') {
+    if (event.target.name == 'searchByCity') {
       this.manageSearch.searchByCity = event.target.value;
     }
-    if(event.target.name == 'searchByDate') {
+    if (event.target.name == 'searchByDate') {
       this.manageSearch.searchByDate = event.target.value;
     }
   }
@@ -57,29 +63,35 @@ export class AllEventsComponent implements OnInit {
   fetchEvents(): void {
     let reqBody = {
       requestType: 'SuperAdmin',
-      limit : this.perPage,
+      limit: this.perPage,
       page: this.currentPage,
-      searchBy : 'eventName',
-      search : this.manageSearch || {}
-    }
+      searchBy: 'eventName',
+      filters: this.manageSearch || {},
+    };
 
+    console.log('reqBody', reqBody);
+    // return;
 
-    this.http.post(`${environment.BASE_URL}/api/getAllEvents`, reqBody).subscribe((res: any) => {
-      console.log('getAllEvents', res);
-      
-      this.dataSource = res.data || [];
-      this.totalItems = res.pagination.totalItems;
-      this.totalPages = res.pagination.totalPages;
-      this.currentPage = res.pagination.currentPage;
-      this.perPage = res.pagination.perPage;
+    this.http
+      .post(`${environment.BASE_URL}/api/getAllEvents`, reqBody)
+      .subscribe((res: any) => {
+        console.log('getAllEvents', res);
 
-      // this.dataSource.paginator = this.paginator;
-      // this.dataSource.sort = this.sort;
-    });
+        this.dataSource = res.data || [];
+        this.totalItems = res.pagination.totalItems;
+        this.totalPages = res.pagination.totalPages;
+        this.currentPage = res.pagination.currentPage;
+        this.perPage = res.pagination.perPage;
+
+        // this.dataSource.paginator = this.paginator;
+        // this.dataSource.sort = this.sort;
+      });
   }
 
   applyFilter(event: Event): void {
-    const filterValue = (event.target as HTMLInputElement).value.trim().toLowerCase();
+    const filterValue = (event.target as HTMLInputElement).value
+      .trim()
+      .toLowerCase();
     this.dataSource.filter = filterValue;
   }
 
@@ -100,8 +112,6 @@ export class AllEventsComponent implements OnInit {
       // User cancelled, do nothing or display a message
       console.log('Event deletion cancelled.');
     }
-
-    
   }
 
   changePage(page: number): void {
@@ -109,26 +119,58 @@ export class AllEventsComponent implements OnInit {
     this.fetchEvents();
   }
 
+  // activeEvent
 
-  // activeEvent 
-  activeEvent(event: any): void {
-    console.log('Active Event:', event);
-    let reqBody = {
-      eventId : event.id
+  selectedEvent: any;
+  status: any;
+
+  onChangeStatus(event: any, status: any): void {
+    console.log('onChangeStatus', event);
+  
+    this.selectedEvent = event;
+    this.status = status.target.value;
+  
+    const row = this.dataSource.find((item: any) => item.id === event.id);
+  
+    if (row) {
+      row.change = true;
+      row.status = status.target.value;
     }
-    this.http.post(`${environment.BASE_URL}/api/activeEvent`, reqBody).subscribe((res: any) => {
-      console.log('getAllEvents', res);
-      this.fetchEvents();
-    });
+  }
+
+  // onChangeStatus(event: any, status: any): void {
+  //   console.log('onChangeStatus', event);
+  //   this.selectedEvent = event;
+  //   this.status = status.target.value;
+  //   this.dataSource = this.dataSource.map((item: any) => {
+  //     return {
+  //       ...item,
+  //       change: item.id === event.id,
+  //       status: item.id === event.id ? status.target.value : item.status,
+  //     };
+  //   });
+  // }
+
+  activeEvent(): void {
+    // console.log('Active Event:', event);
+    let reqBody = {
+      eventId: this.selectedEvent.id,
+      status: this.status,
+    };
+    this.http
+      .post(`${environment.BASE_URL}/api/activeEvent`, reqBody)
+      .subscribe((res: any) => {
+        console.log('getAllEvents', res);
+        this.fetchEvents();
+        this.toastr.success('Status updated');
+      });
   }
 
   onDeleteEvent(event: any) {
-
     let reqBody = {
-      id : event.id,
-      isDeleted : true
-
-    }
+      id: event.id,
+      isDeleted: true,
+    };
 
     const ENDPOINT = `${environment.BASE_URL}/api/updateEvent`;
     const requestOptions = {
@@ -147,6 +189,4 @@ export class AllEventsComponent implements OnInit {
       }
     );
   }
-
-
 }

@@ -92,16 +92,20 @@
               [ngClass]="{
                 'bg-secondary': event.status === 'draft',
                 'bg-success': event.status === 'active',
-                'bg-danger': todayDate > event.eventToDate
+                'bg-danger': event.status === 'expired',
               }"
-            >
+              >
+              <!-- 'bg-danger': todayDate > event.eventToDate -->
               <!-- <span style="color: aliceblue;">{{ event.status === "draft" ? "Draft" : "Active" }}</span> -->
               <span style="color: aliceblue;">
-                {{
+                <span *ngIf="event.status === 'draft'">Draft</span>
+                <span *ngIf="event.status === 'active'">Active</span>
+                <span *ngIf="event.status === 'expired'">Expired</span>
+                <!-- {{
                   todayDate > event.eventToDate
                         ? "Expired"
                         : (event.status === "draft" ? "Draft" : "Active")
-                }}
+                }} -->
             </span>
             </span>
           </td>
