@@ -1263,7 +1263,18 @@ module.exports = {
 
       if (role == "admin") {
         totalEvents = await eventModel.count({
-          where: { isDeleted: false, createdBy: userId },
+          where: { 
+            isDeleted: false, 
+            createdBy: userId
+           },
+           include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
 
         upcomingEvents = await eventModel.count({
@@ -1274,6 +1285,14 @@ module.exports = {
               [Op.gte]: new Date(), // greater than or equal to current date
             },
           },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
         pastEvents = await eventModel.count({
           where: {
@@ -1283,6 +1302,14 @@ module.exports = {
               [Op.lt]: new Date(), // less than current date
             },
           },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
 
         activeEvents = await eventModel.count({
@@ -1291,6 +1318,14 @@ module.exports = {
             createdBy: userId,
             status: "active",
           },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
 
         recentEvents = await eventModel.findAll({
@@ -1300,10 +1335,26 @@ module.exports = {
           },
           order: [["createdAt", "DESC"]],
           limit: 5,
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
       } else {
         totalEvents = await eventModel.count({
           where: { isDeleted: false },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
         upcomingEvents = await eventModel.count({
           where: {
@@ -1312,6 +1363,14 @@ module.exports = {
               [Op.gte]: new Date(), // greater than or equal to current date
             },
           },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
         pastEvents = await eventModel.count({
           where: {
@@ -1320,6 +1379,14 @@ module.exports = {
               [Op.lt]: new Date(), // less than current date
             },
           },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
 
         activeEvents = await eventModel.count({
@@ -1327,6 +1394,14 @@ module.exports = {
             isDeleted: false,
             status: "active",
           },
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
 
         recentEvents = await eventModel.findAll({
