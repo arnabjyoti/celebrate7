@@ -31,6 +31,7 @@ module.exports = (app) => {
 	app.get('/api/getEventDetails', eventController.getEventDetails);
 	app.post('/api/updateEvent', eventController.updateEvent);
 	app.post('/api/activeEvent', eventController.activeEvent);
+	app.post('/api/deletedImage', eventController.deletedImage);
 
 	app.post('/api/getEventCategories', eventController.getEventCategories);
 	// Organizer API's

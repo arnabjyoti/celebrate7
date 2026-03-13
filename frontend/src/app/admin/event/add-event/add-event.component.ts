@@ -34,6 +34,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   activeForm = 1;
 
   event = {
+    eventId: '',
     eventName: '',
     organizer: '',
     type: '',
@@ -260,8 +261,8 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
-    this.loader = true;
-    this.submitted = true;
+    // this.loader = true;
+    // this.submitted = true;
     this.event.description = this.content;
     this.event.userEmail = this.userEmail;
 
@@ -271,6 +272,9 @@ export class AddEventComponent implements OnInit, AfterViewInit {
       data: this.event,
     };
 
+    // console.log('event ', this.event);
+    // this.manageImageUpload(1);
+    // return;
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
         const eventId = response.event.id;
@@ -312,14 +316,32 @@ export class AddEventComponent implements OnInit, AfterViewInit {
   }
 
   manageImageUpload(eventId: any) {
-    this.selectedFiles.forEach((file, index) => {
-      const formData = new FormData();
-      formData.append('eventId', eventId);
-      formData.append('image', file);
-      formData.append('title', `Title ${index}`);
+    console.log('selectedFiles ', this.selectedFiles);
+    console.log('eventId ', eventId);
 
-      this.saveEventImg(formData);
+    this.selectedFiles.forEach((file, index) => {
+      if (file instanceof File) {
+        console.log('Local file:', file);
+        const formData = new FormData();
+        formData.append('eventId', eventId);
+        formData.append('image', file);
+        formData.append('title', `Title ${index}`);
+
+        this.saveEventImg(formData);
+      } else {
+        console.log('Server file:', file);
+      }
     });
+
+    // return;
+    // this.selectedFiles.forEach((file, index) => {
+    //   const formData = new FormData();
+    //   formData.append('eventId', eventId);
+    //   formData.append('image', file);
+    //   formData.append('title', `Title ${index}`);
+
+    //   this.saveEventImg(formData);
+    // });
   }
 
   saveEventImg(imgData: any) {
@@ -384,6 +406,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     if (this.payload.role === 'admin') {
       this.event.status = 'draft';
     }
+    this.event.description = this.content;
     const requestOptions = {
       method: 'post',
       data: this.event,
@@ -392,6 +415,8 @@ export class AddEventComponent implements OnInit, AfterViewInit {
     this.loader = true;
     this.http.post(ENDPOINT, requestOptions).subscribe(
       (response: any) => {
+        console.log('response here ', response.event.id);
+        this.manageImageUpload(response.event.id);
         this.toastr.success('Event updated successfully.');
         this.loader = false;
       },
@@ -471,4 +496,6 @@ export class AddEventComponent implements OnInit, AfterViewInit {
       return false;
     }
   }
+
+  hideSubmitButton = ['edit-event', 'edit-event-sa'].includes(this.routeName);
 }

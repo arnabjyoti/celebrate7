@@ -37,7 +37,7 @@
     <div *ngIf="staticFiles.length > 0" class="preview-box row">
       <div class="col-md-3 mb-3" *ngFor="let url of staticFiles; let i = index">
         <img [src]="envUrl+'/'+url.path" class="img-thumbnail w-100" style="height: 150px; object-fit: cover;" />
-        <button class="btn btn-sm btn-danger w-100 mt-1" (click)="removeImage(i)">Remove</button>
+        <button class="btn btn-sm btn-danger w-100 mt-1" (click)="removeImageStatic(url)">Remove</button>
       </div>
     </div>
 
