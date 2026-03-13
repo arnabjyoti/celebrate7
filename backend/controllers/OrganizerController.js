@@ -11,10 +11,10 @@ module.exports = {
     try {
       const requestObject = req.body.requestObject;
       const email = requestObject?.email;
-      let whereClause = { isDeleted: false, email: email, status:'Active' };
+      let whereClause = { isDeleted: false, email: email, status: "Active" };
 
       const record = await organizersModel.findOne({
-        where: whereClause
+        where: whereClause,
       });
 
       res.status(200).json({
@@ -27,7 +27,7 @@ module.exports = {
       res.status(500).json({
         status: false,
         message: "Failed to fetch organizers",
-        data: null
+        data: null,
       });
     }
   },
@@ -47,7 +47,7 @@ module.exports = {
         if (o) {
           return res.status(200).send({
             status: false,
-            message: `Organiser with the same email already exists`,
+            message: `Organizer with the same email is already exist.`,
           });
         } else {
           const newOrganizer = {
@@ -96,15 +96,16 @@ module.exports = {
       return usersModel
         .findOne({
           where: {
+            // status: "Active",
             isDeleted: false,
-            [Op.or]: [{ email: organizer.email }]
+            [Op.or]: [{ email: organizer.email }, { mobile: organizer.phone }],
           },
         })
         .then((organizerData) => {
           if (organizerData) {
             return res.status(200).send({
               status: false,
-              message: `Organiser with the same email already exist.`,
+              message: `Organizer with the same phone or email is already exist.`,
             });
           } else {
             organizersModel.create(organizer).then((r) => {
@@ -238,18 +239,18 @@ module.exports = {
             message: "Success",
             data: organizer,
           });
-        }else{
+        } else {
           const organizer = await organizersModel.findAll({
-          where: { 
-            isDeleted: false,
-            status: 'Active'
-          },
-        });
-        res.status(200).json({
-        status: true,
-        message: "Success",
-        data: organizer
-      });
+            where: {
+              isDeleted: false,
+              status: "Active",
+            },
+          });
+          res.status(200).json({
+            status: true,
+            message: "Success",
+            data: organizer,
+          });
         }
       } else {
         res.status(200).json({
@@ -262,7 +263,7 @@ module.exports = {
       console.error("Error fetching organizers:", error);
       res.status(500).json({
         status: false,
-        message: "Failed to fetch organisers",
+        message: "Failed to fetch organizers",
       });
     }
   },
@@ -277,7 +278,7 @@ module.exports = {
       if (!organizer) {
         return res
           .status(404)
-          .json({ status: false, message: "Organiser not found" });
+          .json({ status: false, message: "Organizer not found" });
       }
       organizer.isDeleted = true;
 
@@ -285,19 +286,40 @@ module.exports = {
 
       const email = data.email;
       const mobile = data.phone;
-      const user = await usersModel.findOne({
-        where: {
-          // [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
-          email:email
-        },
-      });
 
-      user.isDeleted = true;
-      await user.save();
+      console.log("email", email);
+      console.log("mobile", mobile);
+
+      await usersModel.update(
+        { isDeleted: true },
+        {
+          where: {
+            [Op.or]: [
+              email ? { email } : null,
+              mobile ? { mobile } : null,
+            ].filter(Boolean), // removes null values
+          },
+        }
+      );
+
       return res.status(200).send({
         status: true,
-        message: "Organiser deleted successfully",
+        message: "Organizers deleted successfully",
       });
+
+      // const user = await usersModel.findOne({
+      //   where: {
+      //     // [Op.or]: [email ? { email } : {}, mobile ? { mobile } : {}],
+      //     [Op.or]: [email ? { email } : {}],
+      //   },
+      // });
+
+      // user.isDeleted = true;
+      // await user.save();
+      // return res.status(200).send({
+      //   status: true,
+      //   message: "Organizer deleted successfully",
+      // });
     } catch (error) {
       console.error("Error updating organizer:", error);
       return res.status(500).send({ status: false, message: error });

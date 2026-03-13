@@ -86,7 +86,7 @@ module.exports = {
         .json({ status: false, message: "Email required", otp: "" });
 
     const contactFilter = mobile ? { mobile } : { email };
-    const user = await usersModel.findOne({ where: contactFilter });
+    const user = await usersModel.findOne({ where: contactFilter, order: [['id', 'DESC']] });
     if (!user) {
       return res.status(200).json({
         status: false,
@@ -178,8 +178,21 @@ module.exports = {
     const { mobile, email, otp } = req.body;
     const filter = mobile ? { mobile } : { email };
 
-    const user = await usersModel.findOne({ where: filter });
-    const organizer = await organizersModel.findOne({ where: filter });
+    // const user = await usersModel.findOne({ where: filter });
+    // const organizer = await organizersModel.findOne({ where: filter });
+    const user = await usersModel.findOne({
+      where: {
+        ...filter,
+        isDeleted: false
+      }
+    });
+    
+    const organizer = await organizersModel.findOne({
+      where: {
+        ...filter,
+        isDeleted: false
+      }
+    });
     if (!user || user.otp !== otp || new Date() > user.otpExpiry) {
       return res.status(400).json({ message: "Invalid or expired OTP" });
     }

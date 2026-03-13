@@ -134,6 +134,7 @@ module.exports = {
                           "state",
                           "city",
                         ],
+                        where: { isDeleted: false },
                       },
                       {
                         model: eventCategoriesModel,
@@ -430,7 +431,7 @@ module.exports = {
       const offset = (page - 1) * limit;
 
       const search = req.body.filters || {};
-
+      console.log("search", search);
       const orConditions = [];
       const whereClause = { isDeleted: false };
       // Country filter
@@ -438,6 +439,10 @@ module.exports = {
         whereClause.country = { [Op.like]: `%${search.country}%` };
       }
 
+      // State filter ONLY if country is selected
+      if (search.searchByEventName) {
+        whereClause.eventName = { [Op.like]: `%${search.searchByEventName}%` };
+      }
       // State filter ONLY if country is selected
       if (search.country && search.state) {
         whereClause.state = { [Op.like]: `%${search.state}%` };
@@ -450,6 +455,11 @@ module.exports = {
         //   { [Op.like]: `%${search.city.toLowerCase()}%` }
         // );
         whereClause.city = { [Op.like]: `%${search.city}%` };
+      }
+
+      // for admin
+      if (search.searchByCity) {
+        whereClause.city = { [Op.like]: `%${search.searchByCity}%` };
       }
 
       // Date range filter
@@ -503,6 +513,16 @@ module.exports = {
             { eventFromDate: { [Op.between]: [from, to] } },
             { eventToDate: { [Op.between]: [from, to] } },
           ],
+        });
+      }
+
+      if (search.searchByDate) {
+        const date = new Date(search.searchByDate);
+
+        whereClause[Op.and] = whereClause[Op.and] || [];
+        whereClause[Op.and].push({
+          eventFromDate: { [Op.lte]: date },
+          eventToDate: { [Op.gte]: date },
         });
       }
 
@@ -571,7 +591,8 @@ module.exports = {
         whereClause[Op.and] = whereClause[Op.and] || [];
         if (requestType && requestType == "Public") {
           whereClause[Op.and].push({
-            eventToDate: { [Op.gte]: new Date().toISOString().split("T")[0] }, // events ending today or later
+            status: "active",
+            // eventToDate: { [Op.gte]: new Date().toISOString().split("T")[0] }, // events ending today or later
           });
         }
         // whereClause[Op.and].push({
@@ -602,6 +623,7 @@ module.exports = {
         where: whereClause,
         offset,
         limit,
+        distinct: true,  
         order: [["createdAt", "DESC"]],
         include: [
           {
@@ -616,6 +638,7 @@ module.exports = {
               "state",
               "city",
             ],
+            where: { isDeleted: 0 },
           },
           {
             model: eventCategoriesModel,
@@ -637,6 +660,8 @@ module.exports = {
         "Matched city/event names:",
         result.rows.map((r) => `${r.city} - ${r.eventName}`)
       );
+
+      console.log("result.count ", result.rows);
 
       const totalPages = Math.ceil(result.count / limit);
 
@@ -834,7 +859,9 @@ module.exports = {
 
   async getEventDetails(req, res) {
     try {
-      console.log("req.params.id", req.query.id);
+      console.log("req.params.id: ", req.query.id);
+      console.log("req.query.view: ", req.query.view);
+      let view = req.query.view;
 
       const today = new Date();
       today.setHours(0, 0, 0, 0); // remove time part
@@ -844,11 +871,15 @@ module.exports = {
         order: [["id", "DESC"]],
         where: {
           id: req.query.id,
-          eventToDate: {
-            [Op.gte]: today, // eventToDate >= today
-          },
+          // eventToDate: {
+          //   [Op.gte]: today, // eventToDate >= today
+          // },
         },
       };
+
+      if (view === "public") {
+        query.where.status = "active";
+      }
 
       const event = await eventModel.findOne(query);
 
@@ -872,6 +903,14 @@ module.exports = {
       const organizer = await organizersModel.findOne({
         where: { id: event.organizer },
       });
+
+      if (organizer.isDeleted) {
+        return res.status(404).send({
+          message: "Organizer not found",
+        });
+      }
+
+      // console.log("organizer =>> " , organizer.isDeleted);
 
       const category = await eventCategoriesModel.findOne({
         where: { id: event.type },
@@ -972,7 +1011,8 @@ module.exports = {
 
   async activeEvent(req, res) {
     const eventId = req.body.eventId;
-
+    const status = req.body.status || "draft";
+    console.log("status ", status);
     try {
       // 1. Get current value of isActive
       const event = await eventModel.findByPk(eventId);
@@ -984,7 +1024,7 @@ module.exports = {
       }
 
       // 2. Toggle isActive
-      const newStatus = event.status === "active" ? "draft" : "active";
+      const newStatus = status;
 
       // 3. Update the value
       await event.update({ status: newStatus });
