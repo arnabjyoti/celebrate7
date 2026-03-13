@@ -1,11 +1,17 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-file-upload',
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.css'],
 })
 export class FileUploadComponent {
+  constructor(
+    private http: HttpClient,
+  ) {
+  }
+
   @Output() filesSelected = new EventEmitter<File[]>(); // Send array to parent
   @Input() staticFiles:any = false;
 
@@ -61,5 +67,26 @@ export class FileUploadComponent {
     this.filesSelected.emit(this.selectedFiles); // update parent
   }
 
+  removeImageStatic(file: any) {
+    console.log('file ', file);
+    let imageId = file.id
+
+    this.staticFiles = this.staticFiles.filter((item: any) => item.id !== imageId);
+    let requestObject = {
+      imageId
+    };
+    this.http
+      .post(`${environment.BASE_URL}/api/deletedImage`, requestObject)
+      .subscribe((res: any) => {
+        console.log('res ', res);
+        
+       
+      });
+    
+    // const index = this.staticFiles.indexOf(file);
+    // if (index !== -1) {
+    //   this.staticFiles.splice(index, 1);
+    // }
+  }
 
 }

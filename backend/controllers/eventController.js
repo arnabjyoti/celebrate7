@@ -333,6 +333,7 @@ module.exports = {
         const user = await usersModel.findOne({
           where: {
             email: eventData.userEmail,
+            isDeleted: false
           },
         });
         if (user) {
@@ -691,37 +692,45 @@ module.exports = {
       const page = parseInt(req.body.page) || 1;
       const limit = parseInt(req.body.limit) || 50;
       const offset = (page - 1) * limit;
-
+  
       asyncLib.waterfall(
         [
-          // Step 1
+          // Step 1: Get user by email
           function (callback) {
             (async () => {
-              let response = {
-                status: false,
-                data: null,
-                message: "No organizer found",
-              };
-              if (email) {
-                const organizer = await organizersModel.findOne({
-                  where: {
-                    email: email,
-                    isDeleted: false,
-                    status: "Active",
-                  },
-                });
-                response = {
-                  status: true,
-                  data: organizer,
-                  message: "Organizer found",
+              try {
+                let response = {
+                  status: false,
+                  data: null,
+                  message: "User not found",
                 };
+  
+                if (email) {
+                  const user = await usersModel.findOne({
+                    where: {
+                      email: email,
+                      isDeleted: false,
+                    },
+                  });
+  
+                  if (user) {
+                    response = {
+                      status: true,
+                      data: user,
+                      message: "User found",
+                    };
+                  }
+                }
+  
+                callback(null, response);
+              } catch (err) {
+                callback(err);
               }
-              callback(null, response);
             })();
           },
-
-          // Step 2
-          function (organizer, callback) {
+  
+          // Step 2: Get events by createdBy
+          function (user, callback) {
             (async () => {
               try {
                 let response = {
@@ -730,32 +739,37 @@ module.exports = {
                   pagination: null,
                   message: "No event found",
                 };
-                if (organizer?.status && organizer?.data?.id) {
+  
+                if (user?.status && user?.data?.id) {
                   const search = req.body.search || {};
                   const orConditions = [];
-                  console.log("search ===>> ", search);
-
+  
                   if (search.state) {
                     orConditions.push({
                       state: { [Op.like]: `%${search.state}%` },
                     });
                   }
+  
                   if (search.searchByCity) {
                     orConditions.push({
                       city: { [Op.like]: `%${search.searchByCity}%` },
                     });
                   }
+  
                   if (search.searchByEventName) {
                     orConditions.push({
                       eventName: { [Op.like]: `%${search.searchByEventName}%` },
                     });
                   }
+  
                   if (search.searchByDate) {
                     orConditions.push({
-                      eventFromDate: { [Op.like]: `%${search.searchByDate}%` },
+                      eventFromDate: {
+                        [Op.like]: `%${search.searchByDate}%`,
+                      },
                     });
                   }
-
+  
                   if (search.fromDate && search.toDate) {
                     orConditions.push({
                       [Op.or]: [
@@ -772,20 +786,23 @@ module.exports = {
                       ],
                     });
                   }
-
+  
                   const whereClause =
                     orConditions.length > 0
                       ? {
                           [Op.and]: [
                             {
                               isDeleted: false,
-                              organizer: organizer?.data?.id,
+                              createdBy: user.data.id,
                             },
                             { [Op.or]: orConditions },
                           ],
                         }
-                      : { isDeleted: false, organizer: organizer?.data?.id };
-
+                      : {
+                          isDeleted: false,
+                          createdBy: user.data.id,
+                        };
+  
                   const events = await eventModel.findAndCountAll({
                     where: whereClause,
                     offset,
@@ -807,8 +824,9 @@ module.exports = {
                       },
                     ],
                   });
-
+  
                   const totalPages = Math.ceil(events.count / limit);
+  
                   response = {
                     status: true,
                     data: events.rows,
@@ -821,7 +839,7 @@ module.exports = {
                     message: "Events found",
                   };
                 }
-
+  
                 callback(null, response);
               } catch (err) {
                 callback(err);
@@ -837,14 +855,14 @@ module.exports = {
               message: "Error fetching events",
               data: err,
             });
-          } else {
-            return res.status(200).json({
-              status: result.status,
-              data: result.data,
-              pagination: result.pagination,
-              message: result.message,
-            });
           }
+  
+          return res.status(200).json({
+            status: result.status,
+            data: result.data,
+            pagination: result.pagination,
+            message: result.message,
+          });
         }
       );
     } catch (error) {
@@ -856,6 +874,178 @@ module.exports = {
       });
     }
   },
+
+  // getEventsByOrganizer(req, res) {
+  //   try {
+  //     const email = req.body.email || "";
+  //     const page = parseInt(req.body.page) || 1;
+  //     const limit = parseInt(req.body.limit) || 50;
+  //     const offset = (page - 1) * limit;
+
+  //     asyncLib.waterfall(
+  //       [
+  //         // Step 1
+  //         function (callback) {
+  //           (async () => {
+  //             let response = {
+  //               status: false,
+  //               data: null,
+  //               message: "No organizer found",
+  //             };
+  //             if (email) {
+  //               const organizer = await organizersModel.findOne({
+  //                 where: {
+  //                   email: email,
+  //                   isDeleted: false,
+  //                   status: "Active",
+  //                 },
+  //               });
+  //               response = {
+  //                 status: true,
+  //                 data: organizer,
+  //                 message: "Organizer found",
+  //               };
+  //             }
+  //             callback(null, response);
+  //           })();
+  //         },
+
+  //         // Step 2
+  //         function (organizer, callback) {
+  //           (async () => {
+  //             try {
+  //               let response = {
+  //                 status: false,
+  //                 data: [],
+  //                 pagination: null,
+  //                 message: "No event found",
+  //               };
+  //               if (organizer?.status && organizer?.data?.id) {
+  //                 const search = req.body.search || {};
+  //                 const orConditions = [];
+  //                 console.log("search ===>> ", search);
+
+  //                 if (search.state) {
+  //                   orConditions.push({
+  //                     state: { [Op.like]: `%${search.state}%` },
+  //                   });
+  //                 }
+  //                 if (search.searchByCity) {
+  //                   orConditions.push({
+  //                     city: { [Op.like]: `%${search.searchByCity}%` },
+  //                   });
+  //                 }
+  //                 if (search.searchByEventName) {
+  //                   orConditions.push({
+  //                     eventName: { [Op.like]: `%${search.searchByEventName}%` },
+  //                   });
+  //                 }
+  //                 if (search.searchByDate) {
+  //                   orConditions.push({
+  //                     eventFromDate: { [Op.like]: `%${search.searchByDate}%` },
+  //                   });
+  //                 }
+
+  //                 if (search.fromDate && search.toDate) {
+  //                   orConditions.push({
+  //                     [Op.or]: [
+  //                       {
+  //                         eventFromDate: {
+  //                           [Op.between]: [search.fromDate, search.toDate],
+  //                         },
+  //                       },
+  //                       {
+  //                         eventToDate: {
+  //                           [Op.between]: [search.fromDate, search.toDate],
+  //                         },
+  //                       },
+  //                     ],
+  //                   });
+  //                 }
+
+  //                 const whereClause =
+  //                   orConditions.length > 0
+  //                     ? {
+  //                         [Op.and]: [
+  //                           {
+  //                             isDeleted: false,
+  //                             organizer: organizer?.data?.id,
+  //                           },
+  //                           { [Op.or]: orConditions },
+  //                         ],
+  //                       }
+  //                     : { isDeleted: false, organizer: organizer?.data?.id };
+
+  //                 const events = await eventModel.findAndCountAll({
+  //                   where: whereClause,
+  //                   offset,
+  //                   limit,
+  //                   order: [["createdAt", "DESC"]],
+  //                   include: [
+  //                     {
+  //                       model: eventImageModel,
+  //                       as: "images",
+  //                       attributes: [
+  //                         "id",
+  //                         "filename",
+  //                         "path",
+  //                         "originalname",
+  //                         "isDefault",
+  //                       ],
+  //                       where: { isDeleted: false },
+  //                       required: false,
+  //                     },
+  //                   ],
+  //                 });
+
+  //                 const totalPages = Math.ceil(events.count / limit);
+  //                 response = {
+  //                   status: true,
+  //                   data: events.rows,
+  //                   pagination: {
+  //                     totalItems: events.count,
+  //                     totalPages,
+  //                     currentPage: page,
+  //                     perPage: limit,
+  //                   },
+  //                   message: "Events found",
+  //                 };
+  //               }
+
+  //               callback(null, response);
+  //             } catch (err) {
+  //               callback(err);
+  //             }
+  //           })();
+  //         },
+  //       ],
+  //       function (err, result) {
+  //         if (err) {
+  //           console.error("Error===>", err);
+  //           return res.status(400).json({
+  //             success: false,
+  //             message: "Error fetching events",
+  //             data: err,
+  //           });
+  //         } else {
+  //           return res.status(200).json({
+  //             status: result.status,
+  //             data: result.data,
+  //             pagination: result.pagination,
+  //             message: result.message,
+  //           });
+  //         }
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.error("Error fetching events:", error);
+  //     return res.status(400).json({
+  //       success: false,
+  //       message: "Error fetching events",
+  //       error,
+  //     });
+  //   }
+  // },
 
   async getEventDetails(req, res) {
     try {
@@ -893,7 +1083,7 @@ module.exports = {
       // console.log("event==>", event);
 
       const eventImages = await eventImageModel.findAll({
-        where: { eventId: req.query.id },
+        where: { eventId: req.query.id, isDeleted: false },
       });
 
       const ticket_details = await ticketModel.findAll({
@@ -1054,6 +1244,7 @@ module.exports = {
         user = await usersModel.findOne({
           where: {
             email: email,
+            isDeleted: false
           },
         });
       }
@@ -1144,6 +1335,14 @@ module.exports = {
           },
           order: [["createdAt", "DESC"]],
           limit: 5,
+          include: [
+            {
+              model: organizersModel,
+              as: "organizerDetails",
+              attributes: ["id"],
+              where: { isDeleted: false },
+            }
+          ]
         });
       }
 
@@ -1165,15 +1364,42 @@ module.exports = {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
+      // const rows = await eventModel.findAll({
+      //   where: {
+      //     isDeleted: false,
+      //     // eventToDate: {
+      //     //   [Op.gte]: today,
+      //     // },
+      //     status: "active"
+      //   },
+      //   attributes: ["country", "state", "city"],
+      //   raw: true,
+      //   include: [
+      //     {
+      //       model: organizersModel,
+      //       as: "organizer",
+      //       attributes: ["id", "name", "email"],
+      //       where: { isDeleted: false },
+      //     }
+      //   ]
+      // });
+
+
       const rows = await eventModel.findAll({
         where: {
           isDeleted: false,
-          eventToDate: {
-            [Op.gte]: today,
-          },
+          status: "active"
         },
         attributes: ["country", "state", "city"],
         raw: true,
+        include: [
+          {
+            model: organizersModel,
+            as: "organizerDetails",
+            attributes: ["id"],
+            where: { isDeleted: false },
+          }
+        ]
       });
 
       const allCountries = new Set();
@@ -1235,6 +1461,26 @@ module.exports = {
         countries: [],
         statesByCountry: [],
       });
+    }
+  },
+
+
+  async deletedImage(req, res) {
+    const { imageId } = req.body;
+    console.log("imageId : ", imageId);
+    try {
+      const event = await eventImageModel.findByPk(imageId);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+
+      event.isDeleted = 1;
+      await event.save();
+
+      return res.status(200).json({ message: "Image deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting image:", error);
+      return res.status(500).json({ message: "Error deleting image" });
     }
   },
 };
