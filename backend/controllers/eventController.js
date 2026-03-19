@@ -625,7 +625,7 @@ module.exports = {
         offset,
         limit,
         distinct: true,  
-        order: [["createdAt", "DESC"]],
+        order: [["eventFromDate", "ASC"]],
         include: [
           {
             model: organizersModel,

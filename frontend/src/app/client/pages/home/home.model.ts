@@ -14,5 +14,6 @@ export interface Event {
   city?: string;
   organizer?: string;
   poster?: string;
+  eventFromDate?: string;
 }
 
