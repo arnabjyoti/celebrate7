@@ -68,6 +68,7 @@ export class AddEventComponent implements OnInit, AfterViewInit {
       ['bold', 'italic', 'underline'],
       [{ list: 'ordered' }, { list: 'bullet' }],
       ['clean'],
+      ['link'],
     ],
   };
 
